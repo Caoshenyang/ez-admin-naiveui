@@ -1,11 +1,33 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { AliwangwangFilled } from '@vicons/antd'
+</script>
 
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+   <n-space>
+    <n-button>Default</n-button>
+    <n-button type="tertiary">
+      Tertiary
+    </n-button>
+    <n-button type="primary">
+      Primary
+    </n-button>
+    <n-button type="info">
+      Info
+    </n-button>
+    <n-button type="success">
+      Success
+    </n-button>
+    <n-button type="warning">
+      Warning
+    </n-button>
+    <n-button type="error">
+      Error
+    </n-button>
+  </n-space>
+
+  <n-icon size="40">
+    <AliwangwangFilled />
+  </n-icon>
 </template>
 
 <style scoped></style>

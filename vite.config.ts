@@ -12,7 +12,17 @@ export default defineConfig({
   plugins: [
     vue(),
     vueDevTools(),
-    
+    AutoImport({
+      // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
+      imports: ['vue'],
+      resolvers: [NaiveUiResolver()],
+    }),
+    Components({
+      dirs: [
+        'src/components', // 默认会扫描
+      ],
+      resolvers: [NaiveUiResolver()],
+    }),
   ],
   resolve: {
     alias: {
