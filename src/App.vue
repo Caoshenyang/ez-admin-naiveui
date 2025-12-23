@@ -1,9 +1,15 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useSystemStore } from './stores/modules/system';
+
+
+const systemStore = useSystemStore()
+
+</script>
 
 <template>
-  <div class="bg-red-500">
-    <h1>Hello World</h1>
-  </div>
+  <n-config-provider :theme="systemStore.getTheme">
+       <RouterView />
+   </n-config-provider>
 </template>
 
 <style scoped></style>
