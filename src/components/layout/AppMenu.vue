@@ -4,7 +4,6 @@
       :options="menuOptions"
       :collapsed="systemStore.isCollapse"
       :collapsed-width="MenuWidthEnum.CLOSE"
-      :icon-size="24"
       :default-value="defaultMenuKey"
       @update:value="handleMenuSelect"
     />
@@ -14,9 +13,9 @@
 <script setup lang="ts">
 import { HomeOutlined } from '@vicons/antd'
 import { useSystemStore, MenuWidthEnum } from '@/stores/modules/system'
-import { h, ref, type Component } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { NIcon } from 'naive-ui'
+import { renderIcon } from '@/utils/icon'
 
 const systemStore = useSystemStore()
 const router = useRouter()
@@ -29,10 +28,6 @@ const menuOptions = [
     icon: renderIcon(HomeOutlined),
   },
 ]
-
-function renderIcon(icon: Component) {
-  return () => h(NIcon, null, { default: () => h(icon) })
-}
 
 const defaultMenuKey = ref('/home')
 

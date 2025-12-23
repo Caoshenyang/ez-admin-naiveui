@@ -21,3 +21,13 @@ export interface RouteMeta {
   // 面包屑导航
   breadcrumb?: boolean;
 }
+
+// 工作标签页类型定义
+export interface WorkTab {
+  // 标签页标题
+  title: string;
+  // 标签页路径
+  path: string;
+  // 是否固定标签（不能关闭）
+  fixed?: boolean;
+}

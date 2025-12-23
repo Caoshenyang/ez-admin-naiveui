@@ -43,6 +43,15 @@ const staticRoutes = [
           showInMenu: true,
         },
       },
+      {
+        path: 'profile',
+        name: 'Profile',
+        component: () => import('@/views/profile/ProfilePage.vue'),
+        meta: {
+          title: '个人资料',
+          showInMenu: false,
+        },
+      },
     ],
   },
   // 错误页 - 静态路由，处理系统错误

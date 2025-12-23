@@ -16,6 +16,7 @@ declare module 'vue' {
     AppLogo: typeof import('./src/components/layout/AppLogo.vue')['default']
     AppMenu: typeof import('./src/components/layout/AppMenu.vue')['default']
     AppTopBar: typeof import('./src/components/layout/AppTopBar.vue')['default']
+    AppWorkTab: typeof import('./src/components/layout/AppWorkTab.vue')['default']
     Layout: typeof import('./src/components/layout/Layout.vue')['default']
     LayoutHeader: typeof import('./src/components/layout/LayoutHeader.vue')['default']
     LayoutSidebar: typeof import('./src/components/layout/LayoutSidebar.vue')['default']
@@ -23,6 +24,7 @@ declare module 'vue' {
     NBreadcrumb: typeof import('naive-ui')['NBreadcrumb']
     NBreadcrumbItem: typeof import('naive-ui')['NBreadcrumbItem']
     NButton: typeof import('naive-ui')['NButton']
+    NCard: typeof import('naive-ui')['NCard']
     NConfigProvider: typeof import('naive-ui')['NConfigProvider']
     NDropdown: typeof import('naive-ui')['NDropdown']
     NForm: typeof import('naive-ui')['NForm']
@@ -38,6 +40,7 @@ declare module 'vue' {
     NLayoutSider: typeof import('naive-ui')['NLayoutSider']
     NMenu: typeof import('naive-ui')['NMenu']
     NSpace: typeof import('naive-ui')['NSpace']
+    NTag: typeof import('naive-ui')['NTag']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

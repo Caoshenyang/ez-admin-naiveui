@@ -3,8 +3,8 @@ import { defineStore } from 'pinia'
 
 import router from '../../router'
 import type { LoginDTO, UserInfoVO } from '@/types'
+import type { WorkTab } from '@/types/common'
 import { loginApi } from '@/api/login'
-
 
 // 你可以对 `defineStore()` 的返回值进行任意命名，但最好使用 store 的名字，同时以 `use` 开头且以 `Store` 结尾。(比如 `useUserStore`，`useCartStore`，`useProductStore`)
 // 第一个参数是你的应用中 Store 的唯一 ID。
@@ -12,6 +12,7 @@ export const useUserInfoStore = defineStore('userInfo', {
   state: () => ({
     isLogin: false, // 登录状态
     userInfo: {} as UserInfoVO, // 用户信息
+    workTabList: [] as WorkTab[], // 工作标签页列表
   }),
   persist: {
     key: 'userInfoStore',
@@ -72,6 +73,44 @@ export const useUserInfoStore = defineStore('userInfo', {
         // 登出后跳转到登录页面
         router.push('/login')
       }
+    },
+
+    /**
+     * 添加工作标签页
+     * @param tab - 标签页信息
+     */
+    addWorkTab(tab: WorkTab) {
+      // 检查是否已存在相同的标签页
+      const existingTab = this.workTabList.find((t: WorkTab) => t.path === tab.path)
+      if (!existingTab) {
+        this.workTabList.push(tab)
+      }
+    },
+
+    /**
+     * 移除工作标签页
+     * @param path - 标签页路径
+     */
+    removeWorkTab(path: string) {
+      // 不允许删除固定的标签页
+      this.workTabList = this.workTabList.filter(
+        (tab: WorkTab) => !(tab.path === path && tab.fixed),
+      )
+    },
+
+    /**
+     * 清空工作标签页（保留固定的）
+     */
+    clearWorkTabs() {
+      this.workTabList = this.workTabList.filter((tab) => tab.fixed)
+    },
+
+    /**
+     * 设置工作标签页列表
+     * @param tabs - 标签页列表
+     */
+    setWorkTabs(tabs: WorkTab[]) {
+      this.workTabList = tabs
     },
   },
 })
