@@ -7,9 +7,7 @@
 ![Naive UI](https://img.shields.io/badge/Naive_UI-2.43.2-orange)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
-![EZ简洁后台logo](https://github.com/user-attachments/assets/64fd42a5-7008-4500-80b6-d157537fe34e)
-
-
+<img width="512" height="512" alt="EZ简洁后台logo" src="https://github.com/user-attachments/assets/36051ed0-02e6-4ee0-b47b-1627e727299d" />
 
 **一款基于 Naive UI 的简单易用的后台管理系统**
 
