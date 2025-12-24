@@ -3,8 +3,9 @@ import { defineStore } from 'pinia'
 
 import router from '../../router'
 import type { LoginDTO, UserInfoVO } from '@/types'
+import type { WorkTab } from '@/types/common'
 import { loginApi } from '@/api/login'
-
+import { routeManager } from '@/utils/routeManager'
 
 // 你可以对 `defineStore()` 的返回值进行任意命名，但最好使用 store 的名字，同时以 `use` 开头且以 `Store` 结尾。(比如 `useUserStore`，`useCartStore`，`useProductStore`)
 // 第一个参数是你的应用中 Store 的唯一 ID。
@@ -12,6 +13,7 @@ export const useUserInfoStore = defineStore('userInfo', {
   state: () => ({
     isLogin: false, // 登录状态
     userInfo: {} as UserInfoVO, // 用户信息
+    workTabList: [] as WorkTab[], // 工作标签页列表
   }),
   persist: {
     key: 'userInfoStore',
@@ -20,18 +22,9 @@ export const useUserInfoStore = defineStore('userInfo', {
   getters: {
     // 判断用户信息是否存在
     hasUserInfo: (state) => Object.keys(state.userInfo).length > 0,
-    // 获取用户权限列表
-    userPermissions: (state) => state.userInfo.permissions || [],
-    // 获取用户角色列表
-    userRoles: (state) => state.userInfo.roles || [],
-    // 判断用户是否有某个权限
-    hasPermission: (state) => (permissionKey: string) => {
-      return state.userInfo.permissions?.some((p) => p.permissionKey === permissionKey) || false
-    },
-    // 判断用户是否有某个角色
-    hasRole: (state) => (roleKey: string) => {
-      return state.userInfo.roles?.some((r) => r.roleKey === roleKey) || false
-    },
+
+    // 获取原始菜单数据
+    menuList: (state) => state.userInfo.menus || [],
   },
   actions: {
     /**
@@ -68,10 +61,48 @@ export const useUserInfoStore = defineStore('userInfo', {
         this.isLogin = false
         this.userInfo = {} as UserInfoVO
         // 清除动态路由
-        // routeManager.clearRoutes()
+        routeManager.clearRoutes()
         // 登出后跳转到登录页面
         router.push('/login')
       }
+    },
+
+    /**
+     * 添加工作标签页
+     * @param tab - 标签页信息
+     */
+    addWorkTab(tab: WorkTab) {
+      // 检查是否已存在相同的标签页
+      const existingTab = this.workTabList.find((t: WorkTab) => t.path === tab.path)
+      if (!existingTab) {
+        this.workTabList.push(tab)
+      }
+    },
+
+    /**
+     * 移除工作标签页
+     * @param path - 标签页路径
+     */
+    removeWorkTab(path: string) {
+      // 不允许删除固定的标签页
+      this.workTabList = this.workTabList.filter(
+        (tab: WorkTab) => !(tab.path === path && !tab.fixed),
+      )
+    },
+
+    /**
+     * 清空工作标签页（保留固定的）
+     */
+    clearWorkTabs() {
+      this.workTabList = this.workTabList.filter((tab) => tab.fixed)
+    },
+
+    /**
+     * 设置工作标签页列表
+     * @param tabs - 标签页列表
+     */
+    setWorkTabs(tabs: WorkTab[]) {
+      this.workTabList = tabs
     },
   },
 })

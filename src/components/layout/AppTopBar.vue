@@ -1,15 +1,88 @@
 <script setup lang="ts">
+import router from '@/router'
 import { useSystemStore } from '@/stores/modules/system'
+import { useUserInfoStore } from '@/stores/modules/user'
+import { renderIcon } from '@/utils/icon'
 import { MenuFoldOutlined, MenuUnfoldOutlined, SyncOutlined } from '@vicons/antd'
-import { MoonOutline, SunnyOutline } from '@vicons/ionicons5'
+import { MoonOutline, SunnyOutline, PersonCircleOutline, LogOutOutline } from '@vicons/ionicons5'
+import { NAvatar, NText } from 'naive-ui'
+import { h } from 'vue'
 
 const systemStore = useSystemStore()
+const userStore = useUserInfoStore()
 
 const refresh = () => {
   location.reload() // 强制浏览器刷新
 }
 
-// 暂时不需要自定义渲染，使用默认的下拉菜单渲染
+function renderCustomHeader() {
+  return h(
+    'div',
+    {
+      style: 'display: flex; align-items: center; padding: 8px 12px;',
+    },
+    [
+      h(NAvatar, {
+        round: true,
+        style: 'margin-right: 12px;',
+        src: 'https://07akioni.oss-cn-beijing.aliyuncs.com/demo1.JPG',
+      }),
+      h('div', null, [
+        h('div', null, [
+          h(
+            NText,
+            { depth: 2 },
+            { default: () => `昵称：${userStore.userInfo.nickname || '未知'}` },
+          ),
+        ]),
+        h('div', { style: 'font-size: 12px;' }, [
+          h(
+            NText,
+            { depth: 3 },
+            { default: () => `用户名：${userStore.userInfo.username || '未知'}` },
+          ),
+        ]),
+      ]),
+    ],
+  )
+}
+
+const options = [
+  {
+    key: 'header',
+    type: 'render',
+    render: renderCustomHeader,
+  },
+  {
+    key: 'header-divider',
+    type: 'divider',
+  },
+  {
+    label: '用户资料',
+    key: 'profile',
+    icon: renderIcon(PersonCircleOutline),
+  },
+  {
+    label: '退出登录',
+    key: 'logout',
+    icon: renderIcon(LogOutOutline),
+  },
+]
+
+function handleSelect(key: string) {
+  switch (key) {
+    case 'profile':
+      // 跳转到用户详情页（比如 /profile，具体路由视项目而定）
+      router.push({ path: '/profile' })
+      break
+    case 'logout':
+      // 发起登出请求
+      userStore.logout()
+      break
+    default:
+      break
+  }
+}
 </script>
 <template>
   <div class="h-16 flex items-center justify-between">
@@ -48,12 +121,19 @@ const refresh = () => {
 
       <!-- 用户头像下拉菜单 -->
       <div class="flex items-center px-2">
-        <n-avatar
-          round
-          :size="24"
-          src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
-          class="cursor-pointer hover:ring-2 hover:ring-blue-500 hover:ring-opacity-50 transition-all duration-200"
-        />
+        <n-dropdown
+          :show-arrow="true"
+          @select="handleSelect"
+          placement="bottom-start"
+          :options="options"
+        >
+          <n-avatar
+            round
+            :size="24"
+            src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
+            class="cursor-pointer hover:ring-2 hover:ring-blue-500 hover:ring-opacity-50 transition-all duration-200"
+          />
+        </n-dropdown>
       </div>
     </div>
   </div>
