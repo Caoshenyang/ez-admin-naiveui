@@ -1,7 +1,8 @@
-import { loadingBar } from '@/hooks/useMessagehook'
+import { loadingBar, message } from '@/hooks/useMessagehook'
 import router, { ROUTE_PATHS } from '@/router'
 import { useUserInfoStore } from '@/stores/modules/user'
 import type { RouteMeta } from '@/types/common'
+import { routeManager } from '@/utils/routeManager'
 
 /** 白名单路由，用户无需登录即可访问 */
 const WHITE_LIST = [ROUTE_PATHS.LOGIN]
@@ -48,19 +49,21 @@ router.beforeEach(async (to, from, next) => {
       }
 
       // 确保动态路由已加载（页面刷新后需要重新加载）
-      // if (!routeManager.isLoaded()) {
-      //   console.log('🔄 开始加载动态路由...')
+      if (!routeManager.isLoaded()) {
+        console.log('🔄 开始加载动态路由...')
 
-      //   try {
-      //     await routeManager.loadRoutes()
-      //     console.log('✅ 动态路由加载完成')
-      //   } catch (error) {
-      //     console.error('❌ 动态路由加载失败:', error)
-      //     message.error((error as Error).message || '路由加载失败，请稍后重试')
-      //     next('/error')
-      //     return
-      //   }
-      // }
+        try {
+          await routeManager.loadRoutes()
+          console.log('✅ 动态路由加载完成')
+          // 动态路由加载完成后，重新导航到目标路由以确保路由匹配生效
+          return next(to.fullPath)
+        } catch (error) {
+          console.error('❌ 动态路由加载失败:', error)
+          message.error((error as Error).message || '路由加载失败，请稍后重试')
+          next('/error')
+          return
+        }
+      }
 
       // 设置页面标题
       const routeMeta = to.meta as RouteMeta

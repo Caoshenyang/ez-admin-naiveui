@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 
 // 路由名称常量
 export const ROUTE_NAMES = {
+  MAIN: 'Main',
   LOGIN: 'Login',
   HOME: 'Home',
   ERROR: 'Error',
@@ -10,6 +11,7 @@ export const ROUTE_NAMES = {
 
 // 路由路径常量
 export const ROUTE_PATHS = {
+  MAIN: '/',
   LOGIN: '/login',
   HOME: '/home',
   ERROR: '/error',
@@ -28,9 +30,10 @@ const staticRoutes = [
       showInMenu: false,
     },
   },
-  // 首页 - 每个用户默认拥有
+  // 嵌套路由根节点，layout
   {
-    path: '/',
+    path: ROUTE_PATHS.MAIN,
+    name: ROUTE_NAMES.MAIN,
     redirect: ROUTE_PATHS.HOME,
     component: () => import('@/components/layout/AppLayout.vue'),
     children: [

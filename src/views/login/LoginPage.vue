@@ -3,7 +3,7 @@ import { ref, reactive } from 'vue'
 
  import { UserOutlined, LockOutlined } from '@vicons/antd'
 import router, { ROUTE_PATHS } from '../../router'
-import type { LoginDTO } from '@/types'
+import type { LoginDTO, UserInfoVO } from '@/types'
 import { useUserInfoStore } from '@/stores/modules/user'
 import type { FormRules } from 'naive-ui'
 
@@ -45,10 +45,13 @@ const handleLogin = async () => {
     await userStore.login(loginFormData)
     // 3.获取用户信息
     await userStore.getUserInfo()
-    // 4.跳转到首页
+    // 4.跳转到首页（由于权限守卫会处理路由加载，这里只需要跳转即可）
     await router.push(ROUTE_PATHS.HOME)
   } catch (error) {
     console.error('登录失败:', error)
+    // 登录失败时重置登录状态
+    userStore.isLogin = false
+    userStore.userInfo = {} as UserInfoVO
   } finally {
     // 验证结束，隐藏loading
     loading.value = false
