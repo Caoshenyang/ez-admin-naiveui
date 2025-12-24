@@ -7,6 +7,10 @@
 ![Naive UI](https://img.shields.io/badge/Naive_UI-2.43.2-orange)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
+![EZ简洁后台logo](https://github.com/user-attachments/assets/64fd42a5-7008-4500-80b6-d157537fe34e)
+
+
+
 **一款基于 Naive UI 的简单易用的后台管理系统**
 
 如果你不知道接下来该干什么，烦于学习更加高深的技术栈，或不想陷入源码的深渊，不妨做点自己擅长的事，加强自己的自信心。后台管理系统大家都不陌生，市面上优秀的产品也很多，有很多优点但也不乏一些弊端。
