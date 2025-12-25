@@ -18,6 +18,7 @@ declare module 'vue' {
     AppPagination: typeof import('./src/components/common/AppPagination.vue')['default']
     AppTopBar: typeof import('./src/components/layout/AppTopBar.vue')['default']
     AppWorkTab: typeof import('./src/components/layout/AppWorkTab.vue')['default']
+    GlobalSearch: typeof import('./src/components/common/GlobalSearch.vue')['default']
     Layout: typeof import('./src/components/layout/Layout.vue')['default']
     LayoutHeader: typeof import('./src/components/layout/LayoutHeader.vue')['default']
     LayoutSidebar: typeof import('./src/components/layout/LayoutSidebar.vue')['default']

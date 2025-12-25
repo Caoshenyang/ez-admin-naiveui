@@ -26,6 +26,8 @@ export interface UserSearchCriteria {
   nickname?: string
   deptId?: number
   status?: number
+  gender?: number
+  email?: string
 }
 
 // 用户分页查询参数
