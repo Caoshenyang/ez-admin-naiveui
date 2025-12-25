@@ -16,15 +16,13 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue'
-import { createUserTableColumns, createPagination, calculateTableScrollWidth } from './userTableConfig'
+import { ref, onMounted } from 'vue'
+import { useTableConfig } from '@/hooks/useTableConfig'
+import { userTableConfig } from './userTableConfig'
 import type { UserListVO, UserQuery } from '@/types'
 import { userApi } from '@/api/user'
 import { message } from '@/hooks/useMessagehook'
 
-// 响应式数据
-const loading = ref(false)
-const userList = ref<UserListVO[]>([])
 // 查询参数
 const queryParams = ref<UserQuery>({
   pageNum: 1,
@@ -37,25 +35,28 @@ const queryParams = ref<UserQuery>({
   },
 })
 
-// 处理编辑用户
-const handleEdit = (row: UserListVO) => {
-  message.info(`编辑用户: ${row.username}`)
-  // TODO: 实现编辑逻辑
-}
+// 使用通用表格配置
+const tableConfig = useTableConfig<UserListVO>(userTableConfig)
 
-// 处理删除用户
-const handleDelete = (row: UserListVO) => {
-  message.warning(`删除用户: ${row.username}`)
-  // TODO: 实现删除逻辑
-}
+// 解构获取需要的响应式数据
+const {
+  loading,
+  dataList: userList,
+  pagination,
+  columns,
+  tableScrollWidth,
+  checkedRowKeys,
+  handleCheck,
+  handlers,
+} = tableConfig
 
-// 加载用户列表
+// 加载用户列表函数
 const loadUserList = async () => {
   try {
     loading.value = true
     // 同步分页参数到查询参数
     queryParams.value.pageNum = pagination.page
-    queryParams.value.pageSize = pagination.pageSize
+    queryParams.value.pageSize = pagination.pageSize || 10
 
     const res = await userApi.page(queryParams.value)
     userList.value = res.records
@@ -69,21 +70,17 @@ const loadUserList = async () => {
   }
 }
 
-// 分页配置
-const pagination = createPagination(loadUserList)
+// 设置业务逻辑函数 - 直接赋值
+handlers.loadData = loadUserList
 
-// 表格列配置
-const columns = createUserTableColumns(handleEdit, handleDelete)
+handlers.handleEdit = (row: UserListVO) => {
+  message.info(`编辑用户: ${row.username}`)
+  // TODO: 实现编辑逻辑
+}
 
-// 动态计算表格总宽度
-const tableScrollWidth = computed(() => calculateTableScrollWidth(columns))
-
-// 选中用户行的处理函数
-const checkedRowKeys = ref<Array<string | number>>([])
-
-function handleCheck(keys: Array<string | number>) {
-  checkedRowKeys.value = keys
-  console.log(checkedRowKeys.value)
+handlers.handleDelete = (row: UserListVO) => {
+  message.warning(`删除用户: ${row.username}`)
+  // TODO: 实现删除逻辑
 }
 
 // 组件挂载时加载数据
