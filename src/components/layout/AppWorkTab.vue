@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center justify-between px-4 py-2">
+  <div class="flex items-center justify-between px-6 py-2">
     <!-- 标签页列表 -->
     <div class="flex gap-2 flex-1">
       <n-tag
@@ -45,7 +45,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useUserInfoStore } from '@/stores/modules/user'
 import { MoreOutlined } from '@vicons/antd'
-import type { WorkTab } from '@/types/common'
+import type { WorkTab } from '@/types'
 import { ROUTE_PATHS } from '@/router'
 
 const router = useRouter()

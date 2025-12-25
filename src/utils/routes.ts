@@ -1,7 +1,6 @@
 import { useUserInfoStore } from '@/stores/modules/user'
-import type { MenuTreeVO } from '@/types'
+import type { MenuTreeVO, RouteMeta } from '@/types'
 import type { RouteRecordRaw } from 'vue-router'
-import type { RouteMeta } from '@/types/common'
 
 /**
  * 获取组件导入函数

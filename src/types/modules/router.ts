@@ -1,3 +1,5 @@
+// 路由相关类型定义
+
 // 路由元信息类型定义
 export interface RouteMeta {
   // 页面标题

@@ -34,7 +34,7 @@ export interface SaveRoleDTO {
 export const roleApi = {
   // 分页查询角色列表
   page: (params: RoleQuery) =>
-    http.get<PageResult<RoleItem>>('/system/role/page', { params }),
+    http.post<PageResult<RoleItem>>('/system/role/page', params),
 
   // 新增角色
   create: (data: SaveRoleDTO) =>

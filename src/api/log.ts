@@ -67,7 +67,7 @@ export interface LoginLogItem {
 export const operLogApi = {
   // 分页查询操作日志列表
   page: (params: OperationLogQuery) =>
-    http.get<PageResult<OperationLogItem>>('/monitor/operlog/page', { params }),
+    http.post<PageResult<OperationLogItem>>('/monitor/operlog/page', params),
 
   // 删除操作日志
   remove: (id: number) =>
@@ -90,7 +90,7 @@ export const operLogApi = {
 export const loginLogApi = {
   // 分页查询登录日志列表
   page: (params: LoginLogQuery) =>
-    http.get<PageResult<LoginLogItem>>('/monitor/loginlog/page', { params }),
+    http.post<PageResult<LoginLogItem>>('/monitor/loginlog/page', params),
 
   // 删除登录日志
   remove: (id: number) =>
