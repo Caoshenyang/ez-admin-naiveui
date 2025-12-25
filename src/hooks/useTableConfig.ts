@@ -68,7 +68,7 @@ export interface PaginationConfigOptions {
  */
 export function createPagination(
   reloadCallback?: () => void,
-  options: PaginationConfigOptions = {}
+  options: PaginationConfigOptions = {},
 ) {
   const {
     pageSizes = [10, 15, 30],
@@ -108,7 +108,9 @@ export function createPagination(
  * @param columns 表格列配置
  * @returns 表格总宽度
  */
-export function calculateTableScrollWidth<T = Record<string, unknown>>(columns: DataTableColumns<T>): number {
+export function calculateTableScrollWidth<T = Record<string, unknown>>(
+  columns: DataTableColumns<T>,
+): number {
   return columns.reduce((total, col) => {
     // 选择列默认宽度为 50px
     if (col.type === 'selection') {
@@ -172,7 +174,7 @@ function createActionButtons<T>(
   actionButtons: NonNullable<TableConfigOptions<T>['actionButtons']>,
   handleEdit?: (row: T) => void,
   handleDelete?: (row: T) => void,
-  row?: T
+  row?: T,
 ) {
   const buttons = []
 
@@ -188,8 +190,8 @@ function createActionButtons<T>(
         },
         {
           default: () => h(NIcon, { size: 20 }, { default: () => h(CreateOutline) }),
-        }
-      )
+        },
+      ),
     )
   }
 
@@ -205,8 +207,8 @@ function createActionButtons<T>(
         },
         {
           default: () => h(NIcon, { size: 20 }, { default: () => h(TrashOutline) }),
-        }
-      )
+        },
+      ),
     )
   }
 
@@ -223,8 +225,8 @@ function createActionButtons<T>(
           },
           {
             default: () => h(NIcon, { size: 20 }, { default: () => h(btn.icon) }),
-          }
-        )
+          },
+        ),
       )
     })
   }
@@ -244,7 +246,7 @@ function createActionColumn<T>(
   actionButtons: NonNullable<TableConfigOptions<T>['actionButtons']>,
   actionWidth: number,
   handleEdit?: (row: T) => void,
-  handleDelete?: (row: T) => void
+  handleDelete?: (row: T) => void,
 ) {
   return {
     title: '操作',
@@ -268,7 +270,7 @@ function createActionColumn<T>(
 export function createTableColumns<T = Record<string, unknown>>(
   options: TableConfigOptions<T>,
   handleEdit?: (row: T) => void,
-  handleDelete?: (row: T) => void
+  handleDelete?: (row: T) => void,
 ): DataTableColumns<T> {
   const {
     columns,
@@ -316,7 +318,7 @@ export function createTableColumns<T = Record<string, unknown>>(
  */
 export function useTableConfig<T = Record<string, unknown>>(
   configOptions: TableConfigOptions<T>,
-  paginationOptions: PaginationConfigOptions = {}
+  paginationOptions: PaginationConfigOptions = {},
 ) {
   // === 响应式状态 ===
   const loading = ref(false)
@@ -325,24 +327,28 @@ export function useTableConfig<T = Record<string, unknown>>(
 
   // === 函数存储 ===
   let loadDataFn: () => Promise<void> | void = () => {
-    throw new Error('loadData function must be implemented. Please assign handlers.loadData = yourFunction')
+    throw new Error(
+      'loadData function must be implemented. Please assign handlers.loadData = yourFunction',
+    )
   }
 
   let handleEditFn: (row: T) => void = () => {
-    throw new Error('handleEdit function must be implemented. Please assign handlers.handleEdit = yourFunction')
+    throw new Error(
+      'handleEdit function must be implemented. Please assign handlers.handleEdit = yourFunction',
+    )
   }
 
   let handleDeleteFn: (row: T) => void = () => {
-    throw new Error('handleDelete function must be implemented. Please assign handlers.handleDelete = yourFunction')
+    throw new Error(
+      'handleDelete function must be implemented. Please assign handlers.handleDelete = yourFunction',
+    )
   }
 
   // === 分页配置 ===
   const pagination = createPagination(undefined, paginationOptions)
 
   // === 计算属性 ===
-  const columns = computed(() =>
-    createTableColumns(configOptions, handleEditFn, handleDeleteFn)
-  )
+  const columns = computed(() => createTableColumns(configOptions, handleEditFn, handleDeleteFn))
 
   const tableScrollWidth = computed(() => calculateTableScrollWidth(columns.value))
 

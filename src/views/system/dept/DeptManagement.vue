@@ -1,90 +1,62 @@
 <template>
-  <!-- 部门列表表格 -->
-  <n-data-table
-    striped
-    remote
-    :columns="columns"
-    :data="deptList"
-    :loading="loading"
-    :pagination="pagination"
-    :checked-row-keys="checkedRowKeys"
-    :row-key="(row) => row.deptId"
-    :scroll-x="tableScrollWidth"
-    max-height="calc(100vh - 250px)"
-    @update:checked-row-keys="handleCheck"
-  />
+  <n-data-table :columns="columns" :data="data" :pagination="pagination" :bordered="false" />
 </template>
 
-<script lang="ts" setup>
-import { ref, onMounted } from 'vue'
-import { useTableConfig } from '@/hooks/useTableConfig'
-import { deptTableConfig } from './deptTableConfig'
-import type { DeptListVO, DeptQuery } from '@/types'
-import { deptApi } from '@/api/dept'
+<script setup lang="ts">
 import { message } from '@/hooks/useMessagehook'
+import type { DataTableColumns } from 'naive-ui'
+import { NButton } from 'naive-ui'
+import { h } from 'vue'
 
-// 查询参数
-const queryParams = ref<DeptQuery>({
-  pageNum: 1,
-  pageSize: 10,
-  search: {
-    deptName: '',
-    status: undefined,
+interface Song {
+  no: number
+  title: string
+  length: string
+}
+
+function createColumns({ play }: { play: (row: Song) => void }): DataTableColumns<Song> {
+  return [
+    {
+      title: 'No',
+      key: 'no',
+    },
+    {
+      title: 'Title',
+      key: 'title',
+    },
+    {
+      title: 'Length',
+      key: 'length',
+    },
+    {
+      title: 'Action',
+      key: 'actions',
+      render(row) {
+        return h(
+          NButton,
+          {
+            strong: true,
+            tertiary: true,
+            size: 'small',
+            onClick: () => play(row),
+          },
+          { default: () => 'Play' },
+        )
+      },
+    },
+  ]
+}
+
+const data: Song[] = [
+  { no: 3, title: 'Wonderwall', length: '4:18' },
+  { no: 4, title: "Don't Look Back in Anger", length: '4:48' },
+  { no: 12, title: 'Champagne Supernova', length: '7:27' },
+]
+
+const columns = createColumns({
+  play(row: Song) {
+    message.info(`Play ${row.title}`)
   },
 })
-
-// 加载部门列表函数
-const loadDeptList = async () => {
-  try {
-    loading.value = true
-    // 同步分页参数到查询参数
-    queryParams.value.pageNum = pagination.page
-    queryParams.value.pageSize = pagination.pageSize || 10
-
-    const res = await deptApi.page(queryParams.value)
-    deptList.value = res.records
-    // 设置总记录数到分页配置（确保类型为number）
-    pagination.itemCount = Number(res.total)
-  } catch (error) {
-    message.error('加载部门列表失败')
-    console.error(error)
-  } finally {
-    loading.value = false
-  }
-}
-
-// 使用通用表格配置
-const tableConfig = useTableConfig<DeptListVO>(deptTableConfig)
-
-// 解构获取需要的响应式数据
-const {
-  loading,
-  dataList: deptList,
-  pagination,
-  columns,
-  tableScrollWidth,
-  checkedRowKeys,
-  handleCheck,
-  handlers,
-} = tableConfig
-
-// 设置业务逻辑函数 - 直接赋值
-handlers.loadData = loadDeptList
-
-handlers.handleEdit = (row: DeptListVO) => {
-  message.info(`编辑部门: ${row.deptName}`)
-  // TODO: 实现编辑逻辑
-}
-
-handlers.handleDelete = (row: DeptListVO) => {
-  message.warning(`删除部门: ${row.deptName}`)
-  // TODO: 实现删除逻辑
-}
-
-// 组件挂载时加载数据
-onMounted(() => {
-  loadDeptList()
-})
+const pagination = false as const
 </script>
-
-<style lang="scss" scoped></style>
