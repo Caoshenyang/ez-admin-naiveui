@@ -28,6 +28,7 @@ export interface UserSearchCriteria {
   status?: number
   gender?: number
   email?: string
+  keywords?: string
 }
 
 // 用户分页查询参数

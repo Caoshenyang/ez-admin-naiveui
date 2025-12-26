@@ -1,102 +1,51 @@
 <template>
   <!-- 搜索表单 -->
-  <n-card class="mb-4">
-    <n-form
-      :show-feedback="false"
-      :model="queryParams.search"
-      label-placement="left"
-      label-width="80"
-    >
-      <!-- 主要搜索条件（前4个） -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-        <n-form-item label="用户名" path="username">
-          <n-input
-            v-model:value="queryParams.search.username"
-            placeholder="请输入用户名"
-            clearable
-            @keydown.enter="handleSearch"
-          />
-        </n-form-item>
-        <n-form-item label="昵称" path="nickname">
-          <n-input
-            v-model:value="queryParams.search.nickname"
-            placeholder="请输入昵称"
-            clearable
-            @keydown.enter="handleSearch"
-          />
-        </n-form-item>
-        <n-form-item label="部门" path="deptId">
-          <n-select
-            v-model:value="queryParams.search.deptId"
-            placeholder="请选择部门"
-            clearable
-            :options="deptOptions"
-          />
-        </n-form-item>
-        <n-form-item label="状态" path="status">
-          <n-select
-            v-model:value="queryParams.search.status"
-            placeholder="请选择状态"
-            clearable
-            :options="statusOptions"
-          />
-        </n-form-item>
-      </div>
+  <SimpleSearch
+    v-model="queryParams.search.keywords"
+    placeholder="请输入用户名、昵称或邮箱进行搜索"
+    @search="handleSearch"
+    @reset="handleReset"
+  />
 
-      <!-- 额外的搜索条件 - 当有更多条件时使用 -->
-      <transition
-        name="search-expand"
-        enter-active-class="transition-all duration-300 ease-in-out"
-        leave-active-class="transition-all duration-200 ease-in-out"
-        enter-from-class="opacity-0 max-h-0 overflow-hidden"
-        enter-to-class="opacity-100 max-h-96 overflow-hidden"
-        leave-from-class="opacity-100 max-h-96 overflow-hidden"
-        leave-to-class="opacity-0 max-h-0 overflow-hidden"
-      >
-        <div
-          v-show="searchExpanded && totalSearchFields > 4"
-          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4"
-        >
-          <n-form-item label="性别" path="gender">
-            <n-select
-              v-model:value="queryParams.search.gender"
-              placeholder="请选择性别"
-              clearable
-              :options="genderOptions"
-            />
-          </n-form-item>
-          <n-form-item label="邮箱" path="email">
-            <n-input
-              v-model:value="queryParams.search.email"
-              placeholder="请输入邮箱"
-              clearable
-              @keydown.enter="handleSearch"
-            />
-          </n-form-item>
-          <!-- 预留位置给未来可能的更多搜索条件 -->
-          <div></div>
-          <div></div>
-        </div>
-      </transition>
-
-      <div class="flex justify-end items-center gap-3">
-        <n-button @click="handleReset">重置</n-button>
-        <n-button type="primary" @click="handleSearch">搜索</n-button>
-        <n-button
-          v-if="showExpandButton"
-          text
-          @click="toggleSearchExpanded"
-          class="flex items-center gap-1 text-blue-600 hover:text-blue-800 transition-colors duration-200"
-        >
-          <n-icon :component="searchExpanded ? ChevronUp : ChevronDown" size="16" />
-          <span>{{ searchExpanded ? '收起' : '展开' }}</span>
-        </n-button>
-      </div>
-    </n-form>
-  </n-card>
+  <!-- 操作按钮组 -->
+  <div class="flex justify-end mb-4">
+    <n-space size="small">
+      <n-button type="primary" size="small" @click="handleAdd">
+        <template #icon>
+          <n-icon size="18">
+            <plus-outlined />
+          </n-icon>
+        </template>
+        新增
+      </n-button>
+      <n-button type="warning" size="small" @click="handleBatchDelete">
+        <template #icon>
+          <n-icon size="18">
+            <trash-outline />
+          </n-icon>
+        </template>
+        批量删除
+      </n-button>
+      <n-button type="info" size="small" @click="handleExport">
+        <template #icon>
+          <n-icon size="18">
+            <download-outlined />
+          </n-icon>
+        </template>
+        导出
+      </n-button>
+      <n-button size="small" @click="handleRefresh">
+        <template #icon>
+          <n-icon size="18">
+            <sync-outline />
+          </n-icon>
+        </template>
+        刷新
+      </n-button>
+    </n-space>
+  </div>
 
   <!-- 用户列表表格 -->
-
   <n-data-table
     striped
     remote
@@ -107,61 +56,30 @@
     :checked-row-keys="checkedRowKeys"
     :row-key="(row) => row.userId"
     :scroll-x="tableScrollWidth"
-    max-height="calc(100vh - 350px)"
+    max-height="calc(100vh - 320px)"
     @update:checked-row-keys="handleCheck"
   />
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, computed } from 'vue'
-import { ChevronDown, ChevronUp } from '@vicons/ionicons5'
+import { ref, onMounted } from 'vue'
 import { useTableConfig } from '@/hooks/useTableConfig'
 import { userTableConfig } from './userTableConfig'
+import SimpleSearch from '@/components/common/SimpleSearch.vue'
 import type { UserListVO, UserQuery } from '@/types'
 import { userApi } from '@/api/user'
 import { message } from '@/hooks/useMessagehook'
-import type { SelectOption } from 'naive-ui'
-
-// 搜索条件总数
-const totalSearchFields = 6
-
-// 搜索表单展开状态 - 当条件总数 <= 4时默认展开，不显示按钮
-const searchExpanded = ref(totalSearchFields <= 4)
-const showExpandButton = computed(() => totalSearchFields > 4)
+import { SyncOutline, TrashOutline } from '@vicons/ionicons5'
+import { DownloadOutlined, PlusOutlined } from '@vicons/antd'
 
 // 查询参数
 const queryParams = ref<UserQuery>({
   pageNum: 1,
   pageSize: 10,
   search: {
-    username: '',
-    nickname: '',
-    deptId: undefined,
-    gender: undefined,
-    status: undefined,
-    email: '',
+    keywords: '',
   },
 })
-
-// 部门选项（暂时使用模拟数据，后续可从API获取）
-const deptOptions = computed<SelectOption[]>(() => [
-  { label: '技术部', value: 1 },
-  { label: '产品部', value: 2 },
-  { label: '设计部', value: 3 },
-  { label: '运营部', value: 4 },
-])
-
-// 性别选项
-const genderOptions = computed<SelectOption[]>(() => [
-  { label: '男', value: 0 },
-  { label: '女', value: 1 },
-])
-
-// 状态选项
-const statusOptions = computed<SelectOption[]>(() => [
-  { label: '正常', value: 0 },
-  { label: '禁用', value: 1 },
-])
 
 // 使用通用表格配置
 const tableConfig = useTableConfig<UserListVO>(userTableConfig)
@@ -211,9 +129,29 @@ handlers.handleDelete = (row: UserListVO) => {
   // TODO: 实现删除逻辑
 }
 
-// 切换搜索表单展开状态
-const toggleSearchExpanded = () => {
-  searchExpanded.value = !searchExpanded.value
+// 按钮处理函数
+const handleAdd = () => {
+  message.info('新增用户')
+  // TODO: 实现新增逻辑
+}
+
+const handleBatchDelete = () => {
+  if (checkedRowKeys.value.length === 0) {
+    message.warning('请先选择要删除的用户')
+    return
+  }
+  message.warning(`批量删除 ${checkedRowKeys.value.length} 个用户`)
+  // TODO: 实现批量删除逻辑
+}
+
+const handleExport = () => {
+  message.info('导出用户数据')
+  // TODO: 实现导出逻辑
+}
+
+const handleRefresh = () => {
+  message.success('刷新数据')
+  loadUserList()
 }
 
 // 搜索处理函数
@@ -227,14 +165,7 @@ const handleSearch = () => {
 
 // 重置搜索条件
 const handleReset = () => {
-  queryParams.value.search = {
-    username: '',
-    nickname: '',
-    deptId: undefined,
-    gender: undefined,
-    status: undefined,
-    email: '',
-  }
+  queryParams.value.search.keywords = ''
   // 重置页码到第一页
   pagination.page = 1
   queryParams.value.pageNum = 1
