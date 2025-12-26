@@ -1,14 +1,19 @@
 import http from '../utils/request'
+import type { PageQuery, PageResult, UserListVO } from '../types'
 
 // 这里的接口路径和字段需要根据你的 Swagger 文档适当调整
 // 下面采用常见的 REST 风格作为默认实现
 
-export interface UserQuery {
-    page?: number
-    size?: number
+// 用户搜索条件
+export interface UserSearchCriteria {
     username?: string
-    status?: string | number
+    nickname?: string
+    deptId?: number
+    status?: number
 }
+
+// 用户分页查询参数
+export type UserQuery = PageQuery<UserSearchCriteria>
 
 export interface UserItem {
     id: number
@@ -21,10 +26,6 @@ export interface UserItem {
     roleNames?: string[]
 }
 
-export interface PageResult<T> {
-    records: T[]
-    total: number
-}
 
 export interface SaveUserDTO {
     id?: number
@@ -40,7 +41,7 @@ export interface SaveUserDTO {
 export const userApi = {
     // 分页查询用户列表
     page: (params: UserQuery) =>
-        http.get<PageResult<UserItem>>('/system/user/page', { params }),
+        http.post<PageResult<UserListVO>>('/system/user/page', params),
 
     // 新增用户
     create: (data: SaveUserDTO) =>
@@ -61,4 +62,8 @@ export const userApi = {
     // 获取详情
     detail: (id: number) =>
         http.get<UserItem>(`/system/user/${id}`),
+
+    // 更新用户状态
+    updateStatus: (id: number, status: number) =>
+        http.put<void>(`/system/user/${id}/status`, { status }),
 }

@@ -70,7 +70,7 @@ export interface SaveDictDataDTO {
 export const dictTypeApi = {
   // 分页查询字典类型列表
   page: (params: DictTypeQuery) =>
-    http.get<PageResult<DictTypeItem>>('/system/dict/type/page', { params }),
+    http.post<PageResult<DictTypeItem>>('/system/dict/type/page', params),
 
   // 获取所有字典类型
   list: () =>
@@ -101,7 +101,7 @@ export const dictTypeApi = {
 export const dictDataApi = {
   // 分页查询字典数据列表
   page: (params: DictDataQuery) =>
-    http.get<PageResult<DictDataItem>>('/system/dict/data/page', { params }),
+    http.post<PageResult<DictDataItem>>('/system/dict/data/page', params),
 
   // 根据字典类型获取字典数据
   listByType: (dictType: string) =>

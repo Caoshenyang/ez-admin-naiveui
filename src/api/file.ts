@@ -69,7 +69,7 @@ export const fileApi = {
 
   // 分页查询文件列表
   page: (params: FileQuery) =>
-    http.get<PageResult<FileItem>>('/file/page', { params }),
+    http.post<PageResult<FileItem>>('/file/page', params),
 
   // 删除文件
   remove: (id: number) =>

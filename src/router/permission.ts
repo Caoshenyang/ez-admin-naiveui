@@ -1,7 +1,7 @@
 import { loadingBar, message } from '@/hooks/useMessagehook'
 import router, { ROUTE_PATHS } from '@/router'
 import { useUserInfoStore } from '@/stores/modules/user'
-import type { RouteMeta } from '@/types/common'
+import type { RouteMeta } from '@/types'
 import { routeManager } from '@/utils/routeManager'
 
 /** 白名单路由，用户无需登录即可访问 */

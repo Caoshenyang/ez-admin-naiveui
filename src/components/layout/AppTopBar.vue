@@ -85,9 +85,9 @@ function handleSelect(key: string) {
 }
 </script>
 <template>
-  <div class="h-16 flex items-center justify-between">
+  <div class="h-16 flex items-center justify-between px-6">
     <!-- 左边部分 折叠按钮、刷新按钮、面包屑 -->
-    <div class="flex items-center px-5">
+    <div class="flex items-center">
       <n-button :focusable="false" quaternary size="small" @click="systemStore.switchFolding">
         <template #icon>
           <n-icon
@@ -112,7 +112,7 @@ function handleSelect(key: string) {
       </div>
     </div>
     <!-- 右边部分 搜索、国际化、消息提醒、聊天、设置、黑夜模式、用户头像 -->
-    <div class="flex items-center px-5 mr-4">
+    <div class="flex items-center mr-4">
       <n-button :focusable="false" quaternary size="small" @click="systemStore.switchNight">
         <template #icon>
           <n-icon size="20" :component="systemStore.isNight ? MoonOutline : SunnyOutline" />

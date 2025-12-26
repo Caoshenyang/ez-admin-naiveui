@@ -1,4 +1,11 @@
 // 统一导出所有类型，方便使用
-export * from './api';
-export * from './user';
-// export * from './common';
+export * from './modules/api'
+export * from './modules/router'
+export * from './modules/menu'
+export * from './modules/user'
+export * from './modules/role'
+export * from './modules/department'
+export * from './modules/dict'
+export * from './modules/log'
+export * from './modules/file'
+export * from './modules/common'

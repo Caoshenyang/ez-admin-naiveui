@@ -46,7 +46,7 @@ export interface SaveDepartmentDTO {
 export const departmentApi = {
   // 分页查询部门列表
   page: (params: DepartmentQuery) =>
-    http.get<PageResult<DepartmentItem>>('/system/department/page', { params }),
+    http.post<PageResult<DepartmentItem>>('/system/department/page', params),
 
   // 获取所有部门树形结构
   tree: () =>

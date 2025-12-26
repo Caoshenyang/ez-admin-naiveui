@@ -22,7 +22,7 @@ const systemStore = useSystemStore()
           <AppTopBar />
         </n-layout-header>
         <AppWorkTab />
-        <n-layout-content content-style="padding: 24px;">
+        <n-layout-content class="px-6 py-1">
           <router-view />
         </n-layout-content>
       </n-layout>

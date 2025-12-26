@@ -2,8 +2,7 @@
 import { defineStore } from 'pinia'
 
 import router from '../../router'
-import type { LoginDTO, UserInfoVO } from '@/types'
-import type { WorkTab } from '@/types/common'
+import type { LoginDTO, UserInfoVO, WorkTab } from '@/types'
 import { loginApi } from '@/api/login'
 import { routeManager } from '@/utils/routeManager'
 
