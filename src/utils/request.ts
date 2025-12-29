@@ -4,7 +4,7 @@ import axios, {
   type AxiosResponse,
   type AxiosError,
 } from 'axios'
-import { message } from '@/hooks/useMessagehook'
+import { message } from '@/hooks/useMessage'
 import { useUserInfoStore } from '../stores/modules/user'
 import router from '../router'
 
@@ -153,10 +153,15 @@ class Request {
   /**
    * DELETE 请求
    * @param url 请求地址
-   * @param data 请求体
-   * @param config 额外配置
+   * @param data 请求体数据或配置对象
+   * @param config 额外配置（当data是数据时使用）
    */
   public delete<T = unknown>(url: string, data?: unknown, config?: RequestConfig): Promise<T> {
+    // 如果data是对象且不是数组，则视为config对象
+    if (data !== null && typeof data === 'object' && !Array.isArray(data)) {
+      return this.request({ ...data as RequestConfig, ...config, method: 'DELETE', url })
+    }
+    // 否则data作为请求体数据
     return this.request({ ...config, method: 'DELETE', url, data })
   }
 }

@@ -344,6 +344,12 @@ export function useTableConfig<T = Record<string, unknown>>(
     )
   }
 
+  let resetSearchFn: () => void = () => {
+    throw new Error(
+      'resetSearch function must be implemented. Please assign handlers.resetSearch = yourFunction',
+    )
+  }
+
   // === 分页配置 ===
   const pagination = createPagination(undefined, paginationOptions)
 
@@ -386,6 +392,28 @@ export function useTableConfig<T = Record<string, unknown>>(
     set handleDelete(fn: (row: T) => void) {
       handleDeleteFn = fn
     },
+
+    /** 重置搜索条件函数 */
+    set resetSearch(fn: () => void) {
+      resetSearchFn = fn
+    },
+  }
+
+  // === 通用搜索处理函数 ===
+  /**
+   * 搜索处理函数
+   * 重置页码到第一页并重新加载数据
+   */
+  const handleSearch = () => {
+    pagination.page = 1
+    loadDataFn()
+  }
+
+
+  const handleReset = () => {
+    resetSearchFn()
+    pagination.page = 1
+    loadDataFn()
   }
 
   // === 返回值 ===
@@ -400,6 +428,8 @@ export function useTableConfig<T = Record<string, unknown>>(
 
     // --- 事件处理 ---
     handleCheck,
+    handleSearch,
+    handleReset,
 
     // --- 业务逻辑处理器 ---
     handlers,

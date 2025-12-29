@@ -1,4 +1,4 @@
-import { loadingBar, message } from '@/hooks/useMessagehook'
+import { loadingBar, message } from '@/hooks/useMessage'
 import router, { ROUTE_PATHS } from '@/router'
 import { useUserInfoStore } from '@/stores/modules/user'
 import type { RouteMeta } from '@/types'
