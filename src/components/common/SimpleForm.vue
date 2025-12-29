@@ -185,6 +185,7 @@
 <script lang="ts" setup>
 import { ref, computed, watch, nextTick } from 'vue'
 import type { FormInst, FormRules } from 'naive-ui'
+import { logger } from '@/utils/logger'
 
 // 表单字段选项
 export interface FormFieldOption {
@@ -313,7 +314,7 @@ const handleSubmit = async () => {
     await formRef.value?.validate()
     emit('submit', { ...props.formData })
   } catch (error) {
-    console.warn('表单验证失败:', error)
+    logger.warn('表单验证失败:', error)
   }
 }
 

@@ -47,6 +47,7 @@ import SimpleForm from '@/components/common/SimpleForm.vue'
 import type { UserListVO, UserQuery, UserCreateDTO, UserUpdateDTO, UserDetailVO } from '@/types'
 import { userApi } from '@/api/user'
 import { message, dialog } from '@/hooks/useMessage'
+import { logger } from '@/utils/logger'
 
 // 查询参数
 const queryParams = ref<UserQuery>({
@@ -98,7 +99,7 @@ const loadUserList = async () => {
     // 设置总记录数到分页配置（确保类型为number）
     pagination.itemCount = Number(res.total)
   } catch (error) {
-    console.error('加载用户列表失败:', error)
+    logger.error('加载用户列表失败:', error)
   } finally {
     loading.value = false
   }
@@ -131,7 +132,7 @@ handlers.handleEdit = async (row: UserListVO) => {
     } as UserUpdateDTO)
     formVisible.value = true
   } catch (error) {
-    console.error('获取用户详情失败:', error)
+    logger.error('获取用户详情失败:', error)
     message.error('获取用户详情失败')
   }
 }
@@ -150,7 +151,7 @@ handlers.handleDelete = async (row: UserListVO) => {
       },
     })
   } catch (error) {
-    console.error('删除用户失败:', error)
+    logger.error('删除用户失败:', error)
   }
 }
 
@@ -169,7 +170,7 @@ const handleAdd = async () => {
     } as UserCreateDTO)
     formVisible.value = true
   } catch (error) {
-    console.error('打开新增用户表单失败:', error)
+    logger.error('打开新增用户表单失败:', error)
   }
 }
 
@@ -202,7 +203,7 @@ const handleFormSubmit = async (data: Partial<UserCreateDTO | UserUpdateDTO>) =>
     formVisible.value = false
     loadUserList() // 刷新列表
   } catch (error) {
-    console.error(`${formMode.value === 'create' ? '新增' : '编辑'}用户失败:`, error)
+    logger.error(`${formMode.value === 'create' ? '新增' : '编辑'}用户失败:`, error)
     message.error(`${formMode.value === 'create' ? '新增' : '编辑'}用户失败`)
   } finally {
     formLoading.value = false
@@ -234,7 +235,7 @@ const handleBatchDelete = async () => {
       },
     })
   } catch (error) {
-    console.error('批量删除用户失败:', error)
+    logger.error('批量删除用户失败:', error)
   }
 }
 
@@ -243,7 +244,7 @@ const handleExport = async () => {
     // TODO: 实现用户数据导出，通常需要调用导出接口下载文件
     message.success('导出用户数据功能待实现')
   } catch (error) {
-    console.error('导出用户数据失败:', error)
+    logger.error('导出用户数据失败:', error)
   }
 }
 

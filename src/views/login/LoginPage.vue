@@ -6,6 +6,7 @@ import router, { ROUTE_PATHS } from '../../router'
 import type { LoginDTO, UserInfoVO } from '@/types'
 import { useUserInfoStore } from '@/stores/modules/user'
 import type { FormRules } from 'naive-ui'
+import { logger } from '@/utils/logger'
 
 
 // 登录表单数据
@@ -48,7 +49,7 @@ const handleLogin = async () => {
     // 4.跳转到首页（由于权限守卫会处理路由加载，这里只需要跳转即可）
     await router.push(ROUTE_PATHS.HOME)
   } catch (error) {
-    console.error('登录失败:', error)
+    logger.error('登录失败:', error)
     // 登录失败时重置登录状态
     userStore.isLogin = false
     userStore.userInfo = {} as UserInfoVO
