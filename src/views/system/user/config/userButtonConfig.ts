@@ -1,10 +1,10 @@
 import type { ActionButton } from '@/components/common/ActionButtonGroup.vue'
 import { SyncOutline, TrashOutline } from '@vicons/ionicons5'
-import { DownloadOutlined, PlusOutlined } from '@vicons/antd'
+import { PlusOutlined } from '@vicons/antd'
 
 /**
  * 用户管理页面按钮配置
- * 直接在用户模块配置，简单明了
+ * 约定：onClick 在页面中运行时注入
  */
 export const userActionButtons: ActionButton[] = [
   {
@@ -24,14 +24,6 @@ export const userActionButtons: ActionButton[] = [
     onClick: () => {}, // 运行时会被替换
   },
   {
-    key: 'export',
-    text: '导出',
-    type: 'info',
-    icon: DownloadOutlined,
-    permission: 'sys:user:export',
-    onClick: () => {}, // 运行时会被替换
-  },
-  {
     key: 'refresh',
     text: '刷新',
     icon: SyncOutline,
@@ -39,28 +31,3 @@ export const userActionButtons: ActionButton[] = [
     onClick: () => {}, // 运行时会被替换
   },
 ]
-
-/**
- * 创建用户按钮配置，注入处理函数
- * @param handlers 按钮点击处理函数
- * @returns 完整的按钮配置数组
- */
-export function createUserActionButtons(handlers: {
-  handleAdd: () => void
-  handleBatchDelete: () => void
-  handleExport: () => void
-  handleRefresh: () => void
-}): ActionButton[] {
-  // 按钮key到处理函数名的映射
-  const keyToHandlerMap: Record<string, keyof typeof handlers> = {
-    'add': 'handleAdd',
-    'batch-delete': 'handleBatchDelete',
-    'export': 'handleExport',
-    'refresh': 'handleRefresh',
-  }
-
-  return userActionButtons.map(button => ({
-    ...button,
-    onClick: handlers[keyToHandlerMap[button.key]!] || (() => {}),
-  }))
-}

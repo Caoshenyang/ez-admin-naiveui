@@ -12,13 +12,13 @@ export const userApi = {
   update: (data: UserUpdateDTO) => http.post<void>('/system/user/update', data),
 
   // 删除单个用户
-  remove: (id: string) => http.delete<void>(`/system/user/delete/${id}`),
+  remove: (id: string | number) => http.delete<void>(`/system/user/delete/${id}`),
 
   // 批量删除
   batchRemove: (ids: string[]) => http.delete<void>('/system/user/batch-delete', ids),
 
   // 获取详情
-  detail: (id: string) => http.get<UserDetailVO>(`/system/user/getUserById/${id}`),
+  detail: (id: string | number) => http.get<UserDetailVO>(`/system/user/getUserById/${id}`),
 
   // 更新用户状态
   updateStatus: (id: string, status: number) =>

@@ -44,15 +44,17 @@ export function createUserFormConfig(mode: 'create' | 'update') {
     gridCols: 24,
     fields: [
       // 编辑模式特有的userId字段
-      ...(isUpdate ? [
-        {
-          key: 'userId',
-          label: '用户ID',
-          type: 'input',
-          disabled: true,
-          span: 12,
-        } as const
-      ] : []),
+      ...(isUpdate
+        ? [
+            {
+              key: 'userId',
+              label: '用户ID',
+              type: 'input' as const,
+              disabled: true,
+              span: 12,
+            },
+          ]
+        : []),
       // 用户名字段
       {
         key: 'username',
@@ -127,10 +129,10 @@ export function createUserFormConfig(mode: 'create' | 'update') {
         key: 'deptId',
         label: '所属部门',
         type: 'input',
-        placeholder: '暂时使用输入框，后续可改为部门选择器',
+        placeholder: '请输入所属部门',
         span: 24,
       },
-    ] as const,
+    ],
     rules: isCreate ? createFormRules : updateFormRules,
-  } as const
+  }
 }

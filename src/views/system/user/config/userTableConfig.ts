@@ -1,7 +1,7 @@
 import { h } from 'vue'
 import { NTag } from 'naive-ui'
 import type { UserListVO } from '@/types/modules/user'
-import { type TableConfigOptions, type TableColumnConfig } from '@/hooks/useTableConfig'
+import { type TableConfigOptions, type TableColumnConfig } from '@/hooks/types/table'
 
 // 状态选项类型
 export interface StatusOption {
