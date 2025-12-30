@@ -81,10 +81,7 @@ export interface CrudConfig<
 /**
  * 创建分页配置
  */
-function createPagination(
-  reloadCallback?: () => void,
-  options: PaginationConfigOptions = {},
-) {
+function createPagination(reloadCallback?: () => void, options: PaginationConfigOptions = {}) {
   const {
     pageSizes = [10, 15, 30],
     showSizePicker = true,
@@ -417,11 +414,17 @@ export function useCrud<
 
       if (formMode.value === 'create') {
         await createApi(submitData as TCreateDTO)
-        const msg = typeof successMessage?.create === 'function' ? successMessage.create() : successMessage?.create
+        const msg =
+          typeof successMessage?.create === 'function'
+            ? successMessage.create()
+            : successMessage?.create
         message.success(msg || '新增成功')
       } else {
         await updateApi(submitData as TUpdateDTO)
-        const msg = typeof successMessage?.update === 'function' ? successMessage.update() : successMessage?.update
+        const msg =
+          typeof successMessage?.update === 'function'
+            ? successMessage.update()
+            : successMessage?.update
         message.success(msg || '更新成功')
       }
 
@@ -453,7 +456,10 @@ export function useCrud<
         onPositiveClick: async () => {
           try {
             await removeApi(id)
-            const msg = typeof successMessage?.delete === 'function' ? successMessage.delete(name) : successMessage?.delete
+            const msg =
+              typeof successMessage?.delete === 'function'
+                ? successMessage.delete(name)
+                : successMessage?.delete
             message.success(msg || `删除 ${name} 成功`)
             onSuccess?.()
           } catch (error) {
@@ -482,13 +488,18 @@ export function useCrud<
       const count = ids.length
       await dialog.warning({
         title: batchDeleteConfirm?.title || '批量删除确认',
-        content: batchDeleteConfirm?.content?.(count) || `确定要删除选中的 ${count} 条数据吗？此操作不可撤销。`,
+        content:
+          batchDeleteConfirm?.content?.(count) ||
+          `确定要删除选中的 ${count} 条数据吗？此操作不可撤销。`,
         positiveText: batchDeleteConfirm?.positiveText || '确定删除',
         negativeText: batchDeleteConfirm?.negativeText || '取消',
         onPositiveClick: async () => {
           try {
             await batchRemoveApi(ids)
-            const msg = typeof successMessage?.batchDelete === 'function' ? successMessage.batchDelete(count) : successMessage?.batchDelete
+            const msg =
+              typeof successMessage?.batchDelete === 'function'
+                ? successMessage.batchDelete(count)
+                : successMessage?.batchDelete
             message.success(msg || `成功删除 ${count} 条数据`)
             onSuccess?.()
           } catch (error) {

@@ -3,7 +3,7 @@
   <SimpleSearch
     v-model="queryParams.search.keywords"
     placeholder="请输入用户名、昵称或邮箱进行搜索"
-    @search="handleSearchWithReset"
+    @search="handleSearch"
     @reset="handleResetSearch"
   />
 
@@ -93,12 +93,6 @@ const loadUserList = async () => {
 
 // === 设置加载数据函数（约定：通过配置驱动） ===
 setLoadData(loadUserList)
-
-// === 搜索处理（重置搜索条件） ===
-const handleSearchWithReset = () => {
-  queryParams.value.search.keywords = ''
-  handleSearch()
-}
 
 const handleResetSearch = () => {
   queryParams.value.search.keywords = ''

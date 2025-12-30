@@ -10,8 +10,6 @@ import { userTableConfig } from './userTableConfig'
  * 用户管理 CRUD 配置
  */
 export const userCrudConfig = {
-  // 表格配置
-  tableConfig: userTableConfig,
   // 查询参数初始值
   queryParams: {
     pageNum: 1,
@@ -20,7 +18,8 @@ export const userCrudConfig = {
       keywords: '',
     },
   } as UserQuery,
-
+  // 表格配置
+  tableConfig: userTableConfig,
   // API配置
   pageApi: userApi.page,
   detailApi: userApi.detail,
@@ -105,4 +104,3 @@ export const userCrudConfig = {
     detail: '获取用户详情失败',
   },
 }
-

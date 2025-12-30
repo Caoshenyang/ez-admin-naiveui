@@ -29,5 +29,5 @@ export const userActionButtons: ActionButton[] = [
     icon: SyncOutline,
     permission: '', // 刷新不需要权限
     onClick: () => {}, // 运行时会被替换
-  },
+  }
 ]
