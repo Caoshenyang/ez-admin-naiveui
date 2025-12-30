@@ -1,3 +1,6 @@
+<!--
+  EzSearch 搜索组件
+-->
 <template>
   <!-- 搜索组件布局容器，使用flexbox水平排列搜索框和按钮 -->
   <div class="flex gap-3 items-center justify-center mb-4">

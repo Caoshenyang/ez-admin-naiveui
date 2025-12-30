@@ -11,7 +11,6 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    ActionButtonGroup: typeof import('./src/components/common/ActionButtonGroup.vue')['default']
     AppBreadcrumb: typeof import('./src/components/layout/AppBreadcrumb.vue')['default']
     AppLayout: typeof import('./src/components/layout/AppLayout.vue')['default']
     AppLogo: typeof import('./src/components/layout/AppLogo.vue')['default']
@@ -19,6 +18,10 @@ declare module 'vue' {
     AppPagination: typeof import('./src/components/common/AppPagination.vue')['default']
     AppTopBar: typeof import('./src/components/layout/AppTopBar.vue')['default']
     AppWorkTab: typeof import('./src/components/layout/AppWorkTab.vue')['default']
+    EzButtonGroup: typeof import('./src/components/common/EzButtonGroup.vue')['default']
+    EzForm: typeof import('./src/components/common/EzForm.vue')['default']
+    EzSearch: typeof import('./src/components/common/EzSearch.vue')['default']
+    EzTable: typeof import('./src/components/common/EzTable.vue')['default']
     GlobalSearch: typeof import('./src/components/common/GlobalSearch.vue')['default']
     Layout: typeof import('./src/components/layout/Layout.vue')['default']
     LayoutHeader: typeof import('./src/components/layout/LayoutHeader.vue')['default']
@@ -62,7 +65,5 @@ declare module 'vue' {
     NTag: typeof import('naive-ui')['NTag']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    SimpleForm: typeof import('./src/components/common/SimpleForm.vue')['default']
-    SimpleSearch: typeof import('./src/components/common/SimpleSearch.vue')['default']
   }
 }

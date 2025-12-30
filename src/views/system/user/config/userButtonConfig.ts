@@ -7,7 +7,7 @@
  * - 权限控制通过permission字段实现
  */
 
-import type { ActionButton } from '@/components/common/ActionButtonGroup.vue'
+import type { ActionButton } from '@/components/common/EzButtonGroup.vue'
 import { SyncOutline, TrashOutline } from '@vicons/ionicons5'
 import { PlusOutlined } from '@vicons/antd'
 
