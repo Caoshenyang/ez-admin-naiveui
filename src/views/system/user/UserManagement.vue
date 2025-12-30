@@ -8,7 +8,7 @@
   />
 
   <!-- 操作按钮组 -->
-  <ActionButtonGroup :buttons="actionButtons" />
+  <ActionButtonGroup :buttons="userActionButtons" @action="handleAction" />
 
   <!-- 用户列表表格 -->
   <n-data-table
@@ -40,6 +40,7 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted } from 'vue'
 import { useCrud } from '@/hooks/useCrud'
+import { handleButtonActions } from '@/utils/actionHandler'
 import { createUserFormConfig, userActionButtons, userCrudConfig } from './config'
 import type { UserListVO, UserDetailVO, UserQuery, UserCreateDTO, UserUpdateDTO } from '@/types'
 
@@ -119,17 +120,11 @@ const handleRefresh = () => {
   loadUserList()
 }
 
-// === 按钮配置（约定：通过配置自动生成） ===
-const actionButtons = userActionButtons.map((btn) => {
-  const keyToHandlerMap: Record<string, () => void | Promise<void>> = {
-    add: handleAdd,
-    'batch-delete': handleBatchDeleteClick,
-    refresh: handleRefresh,
-  }
-  return {
-    ...btn,
-    onClick: keyToHandlerMap[btn.key] || (() => {}),
-  }
+// === 按钮action处理器 ===
+const handleAction = handleButtonActions({
+  add: handleAdd, // 新增按钮 -> 打开新增表单
+  'batch-delete': handleBatchDeleteClick, // 批量删除按钮 -> 执行批量删除
+  refresh: handleRefresh, // 刷新按钮 -> 刷新数据列表
 })
 
 // === 组件挂载时加载数据 ===

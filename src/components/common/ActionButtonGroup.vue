@@ -1,6 +1,12 @@
+<!--
+  操作按钮组组件
+  通过emit事件触发，让父组件处理业务逻辑
+-->
 <template>
+  <!-- 按钮组容器，右对齐布局 -->
   <div class="flex justify-end mb-4">
     <n-space size="small">
+      <!-- 遍历可见按钮列表，渲染按钮 -->
       <n-button
         v-for="button in visibleButtons"
         :key="button.key"
@@ -10,6 +16,7 @@
         :loading="button.loading"
         @click="handleClick(button)"
       >
+        <!-- 按钮图标，支持动态组件 -->
         <template #icon v-if="button.icon">
           <n-icon :size="button.iconSize || 18">
             <component :is="button.icon" />
@@ -21,32 +28,54 @@
   </div>
 </template>
 
+<!--
+  操作按钮组组件脚本
+-->
 <script lang="ts" setup>
 import { computed, type Component } from 'vue'
 import { useUserInfoStore } from '@/stores/modules/user'
 
+/**
+ * 操作按钮配置接口
+ * 通过emit事件触发，父组件根据key处理具体业务逻辑
+ */
 export interface ActionButton {
-  key: string
-  text: string
-  type?: 'primary' | 'info' | 'success' | 'warning' | 'error' | 'default'
-  size?: 'tiny' | 'small' | 'medium' | 'large'
-  icon?: Component
-  iconSize?: number
-  disabled?: boolean
-  loading?: boolean
-  permission?: string // 权限标识，如果为空则始终显示
-  onClick?: () => void
+  key: string                    // 按钮唯一标识，用于事件分发
+  text: string                   // 按钮显示文本
+  type?: 'primary' | 'info' | 'success' | 'warning' | 'error' | 'default' // 按钮类型
+  size?: 'tiny' | 'small' | 'medium' | 'large'                          // 按钮尺寸
+  icon?: Component              // 按钮图标组件
+  iconSize?: number             // 图标尺寸，默认18px
+  disabled?: boolean            // 是否禁用
+  loading?: boolean             // 是否显示加载状态
+  permission?: string           // 权限标识，如果为空则始终显示
 }
 
+/**
+ * 组件属性接口
+ */
 interface Props {
-  buttons: ActionButton[]
+  buttons: ActionButton[]        // 按钮配置数组
 }
 
-const props = defineProps<Props>()
+/**
+ * 组件事件接口
+ */
+interface Emits {
+  (e: 'action', key: string, button: ActionButton): void // 按钮点击事件，传递按钮key和完整按钮对象
+}
 
+// 定义组件属性和事件
+const props = defineProps<Props>()
+const emit = defineEmits<Emits>()
+
+// 获取用户权限信息，用于按钮权限控制
 const userStore = useUserInfoStore()
 
-// 根据权限过滤可见的按钮
+/**
+ * 根据用户权限过滤可见按钮
+ * 没有设置权限标识的按钮始终显示
+ */
 const visibleButtons = computed(() => {
   const userPermissions = userStore.userInfo.permissions || []
   return props.buttons.filter(button => {
@@ -57,10 +86,13 @@ const visibleButtons = computed(() => {
   })
 })
 
-// 处理按钮点击
+/**
+ * 处理按钮点击事件
+ * 只有在按钮未禁用且未加载状态时才触发事件
+ */
 const handleClick = (button: ActionButton) => {
-  if (button.onClick && !button.disabled && !button.loading) {
-    button.onClick()
+  if (!button.disabled && !button.loading) {
+    emit('action', button.key, button)
   }
 }
 </script>
