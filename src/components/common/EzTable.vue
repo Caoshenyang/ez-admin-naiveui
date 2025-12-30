@@ -1,5 +1,6 @@
 <!--
   EzTable 表格组件
+  基于CommonTable重命名，二次封装n-data-table
 -->
 <template>
   <!-- 表格容器 -->
@@ -28,27 +29,42 @@
     <slot />
   </n-data-table>
 </template>
-
-<script setup lang="ts">
+<!--
+  Vue 3 Composition API 泛型组件语法
+  定义一个泛型参数 T，它必须继承自 RowData (Naive UI 的数据行类型)
+  这使得组件可以接受不同类型的表格数据，同时保持类型安全
+-->
+<script setup lang="ts" generic="T extends RowData">
 import { ref, computed, watch } from 'vue'
-import type { PaginationProps, DataTableColumns } from 'naive-ui'
+import type { DataTableColumns, PaginationProps } from 'naive-ui'
+import type { RowData, InternalRowData } from 'naive-ui/es/data-table/src/interface'
 
 /**
- * 表格配置接口
+ * 🎯 EzTable 泛型组件设计说明：
+ *
+ * 1. 使用 Vue 3 的 generic="T extends RowData" 语法定义泛型参数
+ * 2. T 必须继承自 RowData，确保与 Naive UI 的类型兼容
+ * 3. 通过 generic="T" 属性将泛型传递给 n-data-table
+ * 4. 这样可以获得完整的类型安全和 IDE 支持
+ *
+ * 使用示例：
+ * <EzTable<UserListVO> :config="tableConfig" />
  */
-export interface TableConfig {
-  /** 列配置 */
-  columns: DataTableColumns
-  /** 数据源 */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data?: readonly any[]
+
+/**
+ * EzTable 组件配置接口
+ */
+export interface EzTableConfig<T extends RowData> {
+  /** 表格列配置 */
+  columns: DataTableColumns<T>
+  /** 表格数据源 */
+  data: T[]
   /** 是否显示加载状态 */
   loading?: boolean
   /** 分页配置 */
   pagination?: PaginationProps
   /** 行主键字段 */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  rowKey?: string | ((row: any) => string | number)
+  rowKey?: (row: T) => string | number
   /** 横向滚动宽度 */
   scrollX?: string | number
   /** 最大高度 */
@@ -72,24 +88,21 @@ export interface TableConfig {
 /**
  * 表格事件接口
  */
-export interface TableEmits {
+export interface EzTableEmits<T extends RowData> {
   /** 行选择改变事件 */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (e: 'check-change', keys: (string | number)[], rows: any[]): void
+  (e: 'check-change', keys: (string | number)[], rows: T[]): void
   /** 排序改变事件 */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (e: 'sort-change', sorter: any): void
+  (e: 'sort-change', sorter: Record<string, unknown>): void
   /** 筛选改变事件 */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (e: 'filter-change', filters: any): void
+  (e: 'filter-change', filters: Record<string, unknown>): void
 }
 
 /**
  * 组件属性接口
  */
-export interface TableProps {
+export interface EzTableProps<T extends RowData> {
   /** 表格配置 */
-  config: TableConfig
+  config: EzTableConfig<T>
   /** 选中的行keys */
   checkedKeys?: (string | number)[]
 }
@@ -97,14 +110,14 @@ export interface TableProps {
 /**
  * 组件属性定义
  */
-const props = withDefaults(defineProps<TableProps>(), {
+const props = withDefaults(defineProps<EzTableProps<T>>(), {
   checkedKeys: () => [],
 })
 
 /**
  * 组件事件定义
  */
-const emit = defineEmits<TableEmits>()
+const emit = defineEmits<EzTableEmits<T>>()
 
 /**
  * 表格引用
@@ -123,7 +136,7 @@ watch(
   () => props.checkedKeys,
   (newKeys) => {
     internalCheckedKeys.value = newKeys
-  }
+  },
 )
 
 /**
@@ -134,8 +147,7 @@ const columns = computed(() => props.config.columns)
 /**
  * 计算属性：表格数据
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const data = computed(() => (props.config.data || []) as any)
+const data = computed(() => props.config.data)
 
 /**
  * 计算属性：加载状态
@@ -150,8 +162,7 @@ const pagination = computed(() => props.config.pagination)
 /**
  * 计算属性：行主键
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const rowKey = computed(() => props.config.rowKey as any)
+const rowKey = computed(() => props.config.rowKey)
 
 /**
  * 计算属性：横向滚动
@@ -201,25 +212,22 @@ const singleColumn = computed(() => props.config.singleColumn ?? false)
 /**
  * 处理行选择改变事件
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const handleCheckedChange = (keys: (string | number)[], rows: any[]) => {
+const handleCheckedChange = (keys: (string | number)[], rows: InternalRowData[]) => {
   internalCheckedKeys.value = keys
-  emit('check-change', keys, rows)
+  emit('check-change', keys, rows as T[])
 }
 
 /**
  * 处理排序改变事件
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const handleSorterChange = (sorter: any) => {
+const handleSorterChange = (sorter: Record<string, unknown>) => {
   emit('sort-change', sorter)
 }
 
 /**
  * 处理筛选改变事件
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const handleFiltersChange = (filters: any) => {
+const handleFiltersChange = (filters: Record<string, unknown>) => {
   emit('filter-change', filters)
 }
 </script>

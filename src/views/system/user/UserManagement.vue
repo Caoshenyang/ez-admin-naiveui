@@ -11,11 +11,7 @@
   <EzButtonGroup :buttons="userActionButtons" @action="handleAction" />
 
   <!-- 用户列表表格 -->
-  <EzTable
-    :config="tableConfig"
-    :checked-keys="checkedRowKeys"
-    @check-change="handleCheck"
-  />
+  <EzTable :config="tableConfig" :checked-keys="checkedRowKeys" @check-change="handleCheck" />
 
   <!-- 用户表单 -->
   <EzForm
@@ -36,6 +32,7 @@ import { handleButtonActions } from '@/utils/actionHandler'
 import EzTable from '@/components/common/EzTable.vue'
 import { createUserFormConfig, userActionButtons, userCrudConfig } from './config'
 import type { UserListVO, UserDetailVO, UserQuery, UserCreateDTO, UserUpdateDTO } from '@/types'
+import type { EzTableConfig } from '@/hooks/types/table'
 
 // === 查询参数管理 ===
 const queryParams = ref<UserQuery>(userCrudConfig.queryParams)
@@ -72,14 +69,11 @@ const {
   setLoadData,
 } = crud
 
-// === 计算属性 ===
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const formConfig = computed(() => createUserFormConfig(formMode.value) as any)
+
 
 // 表格配置
-const tableConfig = computed(() => ({
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  columns: columns.value as any,
+const tableConfig = computed<EzTableConfig<UserListVO>>(() => ({
+  columns: columns.value,
   data: userList.value,
   loading: loading.value,
   pagination: pagination,
@@ -88,8 +82,15 @@ const tableConfig = computed(() => ({
   maxHeight: 'calc(100vh - 320px)',
   striped: true,
   remote: true,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-}) as any)
+}))
+
+
+
+// === 计算属性 ===
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const formConfig = computed(() => createUserFormConfig(formMode.value) as any)
+
+
 
 // === 数据加载（集成表格分页和查询参数） ===
 const loadUserList = async () => {
@@ -114,8 +115,7 @@ const handleFormSubmit = async (data: Partial<UserCreateDTO | UserUpdateDTO>) =>
 }
 
 // === 表格行选择处理 ===
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const handleCheck = (keys: (string | number)[], _rows: UserListVO[]) => {
+const handleCheck = (keys: (string | number)[]) => {
   checkedRowKeys.value = keys
 }
 
@@ -145,5 +145,3 @@ onMounted(() => {
   loadUserList()
 })
 </script>
-
-<style lang="scss" scoped></style>

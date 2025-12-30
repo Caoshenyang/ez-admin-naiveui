@@ -6,12 +6,13 @@ import { TrashOutline, CreateOutline } from '@vicons/ionicons5'
 import { message, dialog } from '@/hooks/useMessage'
 import { logger } from '@/utils/logger'
 import type { TableConfigOptions, PaginationConfigOptions, TableColumnConfig } from './types/table'
+import type { RowData } from 'naive-ui/es/data-table/src/interface'
 
 /**
  * CRUD配置接口
  */
 export interface CrudConfig<
-  TListVO = Record<string, unknown>,
+  TListVO extends RowData = RowData,
   TQuery extends PageQuery = PageQuery,
   TCreateDTO = Record<string, unknown>,
   TUpdateDTO = Record<string, unknown>,
@@ -282,7 +283,7 @@ function createTableColumns<T = Record<string, unknown>>(
  * 约定大于配置：通过配置即可完成完整的CRUD功能（包含表格）
  */
 export function useCrud<
-  TListVO = Record<string, unknown>,
+  TListVO extends RowData = RowData,
   TQuery extends PageQuery = PageQuery,
   TCreateDTO = Record<string, unknown>,
   TUpdateDTO = Record<string, unknown>,

@@ -20,8 +20,10 @@ export interface TableColumnConfig<T = Record<string, unknown>> {
   render?: (row: T) => unknown
 }
 
-/** 表格配置选项接口 */
-export interface TableConfigOptions<T = Record<string, unknown>> {
+import type { RowData } from 'naive-ui/es/data-table/src/interface'
+
+/** 表格配置选项接口（用于配置生成最终的表格配置） */
+export interface TableConfigOptions<T extends RowData = RowData> {
   /** 列配置 */
   columns: TableColumnConfig<T>[]
   /** 是否显示选择列 */
@@ -41,6 +43,38 @@ export interface TableConfigOptions<T = Record<string, unknown>> {
   }
   /** 操作列宽度 */
   actionWidth?: number
+}
+
+/** EzTable 组件配置接口（最终传递给 EzTable 组件的配置） */
+export interface EzTableConfig<T extends RowData = RowData> {
+  /** 表格列配置 */
+  columns: import('naive-ui').DataTableColumns<T>
+  /** 表格数据源 */
+  data: T[]
+  /** 是否显示加载状态 */
+  loading?: boolean
+  /** 分页配置 */
+  pagination?: import('naive-ui').PaginationProps
+  /** 行主键字段 */
+  rowKey?: (row: T) => string | number
+  /** 横向滚动宽度 */
+  scrollX?: string | number
+  /** 最大高度 */
+  maxHeight?: string | number
+  /** 是否显示斑马纹 */
+  striped?: boolean
+  /** 是否远程分页 */
+  remote?: boolean
+  /** 是否单行显示 */
+  singleLine?: boolean
+  /** 表格尺寸 */
+  size?: 'small' | 'medium' | 'large'
+  /** 是否显示边框 */
+  bordered?: boolean
+  /** 是否显示底部边框 */
+  bottomBordered?: boolean
+  /** 是否单列模式 */
+  singleColumn?: boolean
 }
 
 /** 分页配置选项接口 */
