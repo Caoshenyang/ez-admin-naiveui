@@ -41,11 +41,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useCrud } from '@/hooks/useCrud'
 import { createUserFormConfig, userActionButtons, userCrudConfig } from './config'
-import SimpleSearch from '@/components/common/SimpleSearch.vue'
-import ActionButtonGroup from '@/components/common/ActionButtonGroup.vue'
-import SimpleForm from '@/components/common/SimpleForm.vue'
-import type { UserListVO, UserQuery, UserCreateDTO, UserUpdateDTO } from '@/types'
-import { logger } from '@/utils/logger'
+import type { UserListVO, UserDetailVO, UserQuery, UserCreateDTO, UserUpdateDTO } from '@/types'
 
 // === 查询参数管理 ===
 const queryParams = ref<UserQuery>(userCrudConfig.queryParams)
@@ -56,7 +52,7 @@ const crud = useCrud<
   UserQuery,
   UserCreateDTO,
   UserUpdateDTO,
-  import('@/types').UserDetailVO
+  UserDetailVO
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 >(userCrudConfig as any)
 
@@ -92,12 +88,7 @@ const loadUserList = async () => {
   // 同步分页参数到查询参数
   queryParams.value.pageNum = pagination.page
   queryParams.value.pageSize = pagination.pageSize || 10
-
-  try {
-    await crud.loadData(queryParams.value)
-  } catch (error) {
-    logger.error('加载用户列表失败:', error)
-  }
+  await crud.loadData(queryParams.value)
 }
 
 // === 设置加载数据函数（约定：通过配置驱动） ===
@@ -128,7 +119,6 @@ const handleBatchDeleteClick = async () => {
     await loadUserList()
   })
 }
-
 
 // === 刷新功能 ===
 const handleRefresh = () => {
