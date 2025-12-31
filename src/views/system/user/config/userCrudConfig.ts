@@ -4,7 +4,7 @@
  */
 import type { UserQuery, UserCreateDTO, UserUpdateDTO, UserDetailVO, UserListVO } from '@/types'
 import { userApi } from '@/api/user'
-import { userTableConfig } from './userTableConfig'
+import { userTableConfig } from './userConfig'
 
 /**
  * 用户管理 CRUD 配置
