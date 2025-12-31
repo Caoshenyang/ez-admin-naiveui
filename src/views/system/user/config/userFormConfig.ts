@@ -1,13 +1,15 @@
+import type { FormConfig } from '@/components/common/EzForm.vue'
+import type { FormRules } from 'naive-ui'
+import type { UserCreateDTO, UserUpdateDTO } from '@/types'
+
 // 表单验证规则（新增和编辑使用相同的规则）
-const formRules = {
+const formRules: FormRules = {
   username: [
     { required: true, message: '请输入用户名', trigger: 'blur' },
     { min: 3, max: 20, message: '用户名长度应在3-20个字符之间', trigger: 'blur' },
     { pattern: /^[a-zA-Z0-9_]+$/, message: '用户名只能包含字母、数字和下划线', trigger: 'blur' },
   ],
-  password: [
-    { min: 6, max: 20, message: '密码长度应在6-20个字符之间', trigger: 'blur' },
-  ],
+  password: [{ min: 6, max: 20, message: '密码长度应在6-20个字符之间', trigger: 'blur' }],
   nickname: [
     { required: true, message: '请输入昵称', trigger: 'blur' },
     { min: 2, max: 20, message: '昵称长度应在2-20个字符之间', trigger: 'blur' },
@@ -32,7 +34,7 @@ const statusOptions = [
   { label: '禁用', value: 0 },
 ]
 
-export function createUserFormConfig(mode: 'create' | 'update') {
+export function createUserFormConfig(mode: 'create' | 'update'): FormConfig<UserCreateDTO | UserUpdateDTO> {
   const isCreate = mode === 'create'
   const isUpdate = mode === 'update'
 
@@ -40,8 +42,8 @@ export function createUserFormConfig(mode: 'create' | 'update') {
     title: isCreate ? '新增用户' : '编辑用户',
     submitText: '保存',
     gridCols: 24,
+    /* prettier-ignore */
     fields: [
-      // 不显示 userId 字段，无论新增还是编辑
       { key: 'username', label: '用户名', type: 'input', required: true, placeholder: '请输入用户名', span: 12, disabled: isUpdate},
       { key: 'password', label: '密码', type: 'password', required: isCreate, placeholder: '请输入密码', span: 12 },
       { key: 'nickname', label: '昵称', type: 'input', required: true, placeholder: '请输入昵称', span: 12 },

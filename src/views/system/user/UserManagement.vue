@@ -69,8 +69,6 @@ const {
   setLoadData,
 } = crud
 
-
-
 // 表格配置
 const tableConfig = computed<EzTableConfig<UserListVO>>(() => ({
   columns: columns.value,
@@ -84,13 +82,8 @@ const tableConfig = computed<EzTableConfig<UserListVO>>(() => ({
   remote: true,
 }))
 
-
-
 // === 计算属性 ===
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const formConfig = computed(() => createUserFormConfig(formMode.value) as any)
-
-
+const formConfig = computed(() => createUserFormConfig(formMode.value))
 
 // === 数据加载（集成表格分页和查询参数） ===
 const loadUserList = async () => {
