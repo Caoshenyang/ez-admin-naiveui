@@ -19,8 +19,9 @@
       :rules="formRules"
       label-placement="left"
       :disabled="loading"
+      label-width="80"
     >
-      <n-grid :cols="gridCols" :x-gap="16" :y-gap="16">
+      <n-grid :cols="gridCols" :x-gap="16" :y-gap="4">
         <n-grid-item v-for="field in visibleFields" :key="field.key" :span="field.span || 24">
           <n-form-item :label="field.label" :path="field.key" :required="field.required">
             <!-- 输入框 -->
