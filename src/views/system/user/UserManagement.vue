@@ -83,7 +83,22 @@ const tableConfig = computed<EzTableConfig<UserListVO>>(() => ({
 }))
 
 // === 计算属性 ===
-const formConfig = computed(() => userFormConfig[formMode.value])
+const formConfig = computed(() => ({
+  ...userFormConfig,
+  title: formMode.value === 'create' ? '新增用户' : '编辑用户',
+  fields: userFormConfig.fields.map((field) => {
+    if (formMode.value === 'create') {
+      return field
+    } else {
+      switch (field.key) {
+        case 'username':
+          return { ...field, disabled: true }
+        default:
+          return field
+      }
+    }
+  }),
+}))
 
 // === 数据加载（集成表格分页和查询参数） ===
 const loadUserList = async () => {
