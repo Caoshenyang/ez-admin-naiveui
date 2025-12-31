@@ -19,9 +19,8 @@ const formRules: FormRules = {
 }
 
 /**
- * 根据模式生成用户表单配置（完全类型安全）
- * @param mode 表单模式：'create' | 'update'
- * @returns 类型安全的表单配置对象
+ * 用户表单配置常量
+ * 基于基础字段配置，通过模式差异化处理，避免重复代码
  */
 // 性别选项
 const genderOptions = [
@@ -34,26 +33,61 @@ const statusOptions = [
   { label: '禁用', value: 0 },
 ]
 
-export function createUserFormConfig(mode: 'create' | 'update'): FormConfig<UserCreateDTO | UserUpdateDTO> {
-  const isCreate = mode === 'create'
-  const isUpdate = mode === 'update'
+// 基础字段配置（共同的部分）
+/* prettier-ignore */
+const baseFields = [
+  { key: 'username' as const, label: '用户名', type: 'input' as const, required: true, placeholder: '请输入用户名', span: 12 },
+  { key: 'password' as const, label: '密码', type: 'password' as const, placeholder: '请输入密码', span: 12 },
+  { key: 'nickname' as const, label: '昵称', type: 'input' as const, required: true, placeholder: '请输入昵称', span: 12 },
+  { key: 'email' as const, label: '邮箱', type: 'input' as const, inputType: 'email' as const, placeholder: '请输入邮箱地址', span: 12 },
+  { key: 'phoneNumber' as const, label: '手机号', type: 'input' as const, inputType: 'tel' as const, placeholder: '请输入手机号码', span: 12 },
+  { key: 'gender' as const, label: '性别', type: 'radio' as const, options: genderOptions, span: 12 },
+  { key: 'status' as const, label: '状态', type: 'radio' as const, options: statusOptions, required: true, span: 12 },
+  { key: 'deptId' as const, label: '所属部门', type: 'input' as const, placeholder: '请输入所属部门', span: 24 },
+]
 
-  return {
-    title: isCreate ? '新增用户' : '编辑用户',
-    submitText: '保存',
-    gridCols: 24,
-    /* prettier-ignore */
-    fields: [
-      { key: 'username', label: '用户名', type: 'input', required: true, placeholder: '请输入用户名', span: 12, disabled: isUpdate},
-      { key: 'password', label: '密码', type: 'password', required: isCreate, placeholder: '请输入密码', span: 12 },
-      { key: 'nickname', label: '昵称', type: 'input', required: true, placeholder: '请输入昵称', span: 12 },
-      { key: 'email', label: '邮箱', type: 'input', inputType: 'email', placeholder: '请输入邮箱地址', span: 12 },
-      { key: 'phoneNumber', label: '手机号', type: 'input', inputType: 'tel', placeholder: '请输入手机号码', span: 12 },
-      { key: 'gender', label: '性别', type: 'radio', options: genderOptions, span: 12 },
-      { key: 'status', label: '状态', type: 'radio', options: statusOptions, required: true, span: 12 },
-      { key: 'deptId', label: '所属部门', type: 'input', placeholder: '请输入所属部门', span: 24 },
-    ],
-    // userId 只作为数据字段存在于编辑时的 detail/initData，不渲染 form field
-    rules: formRules,
-  }
+// 表单基础配置
+const baseFormConfig = {
+  submitText: '保存' as const,
+  gridCols: 24 as const,
+  rules: formRules,
+}
+
+/**
+ * 用户表单配置类型
+ */
+export type UserFormConfigType = {
+  create: FormConfig<UserCreateDTO>
+  update: FormConfig<UserUpdateDTO>
+}
+
+/**
+ * 用户表单配置
+ * 统一配置形式，与其他配置保持一致
+ */
+export const userFormConfig: UserFormConfigType = {
+  create: {
+    ...baseFormConfig,
+    title: '新增用户',
+    fields: baseFields.map((field) =>
+      field.key === 'password'
+        ? { ...field, required: true }
+        : field
+    ),
+  },
+
+  update: {
+    ...baseFormConfig,
+    title: '编辑用户',
+    fields: baseFields.map((field) => {
+      switch (field.key) {
+        case 'username':
+          return { ...field, disabled: true }
+        case 'password':
+          return { ...field, required: false, placeholder: '留空表示不修改密码' }
+        default:
+          return field
+      }
+    }),
+  },
 }

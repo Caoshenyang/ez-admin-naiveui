@@ -30,7 +30,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useCrud } from '@/hooks/useCrud'
 import { handleButtonActions } from '@/utils/actionHandler'
 import EzTable from '@/components/common/EzTable.vue'
-import { createUserFormConfig, userActionButtons, userCrudConfig } from './config'
+import { userFormConfig, userActionButtons, userCrudConfig } from './config'
 import type { UserListVO, UserDetailVO, UserQuery, UserCreateDTO, UserUpdateDTO } from '@/types'
 import type { EzTableConfig } from '@/hooks/types/table'
 
@@ -83,7 +83,7 @@ const tableConfig = computed<EzTableConfig<UserListVO>>(() => ({
 }))
 
 // === 计算属性 ===
-const formConfig = computed(() => createUserFormConfig(formMode.value))
+const formConfig = computed(() => userFormConfig[formMode.value])
 
 // === 数据加载（集成表格分页和查询参数） ===
 const loadUserList = async () => {
