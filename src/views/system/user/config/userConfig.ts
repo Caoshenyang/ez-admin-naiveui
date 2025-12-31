@@ -2,8 +2,8 @@
  * 用户管理页面配置
  *
  * 整合表单、表格和操作按钮的所有配置
+ * 按照依赖关系组织：选项 → 验证规则 → UI配置
  */
-
 import type { FormConfig } from '@/components/common/EzForm.vue'
 import type { FormRules } from 'naive-ui'
 import type { UserCreateDTO, UserUpdateDTO, UserListVO } from '@/types'
@@ -13,7 +13,20 @@ import { renderStatusTag } from '@/utils/icon'
 import { SyncOutline, TrashOutline } from '@vicons/ionicons5'
 import { PlusOutlined } from '@vicons/antd'
 
-// === 表单验证规则 ===
+// === 基础选项配置 ===
+// 这些选项被表单和表格共同使用，确保数据一致性
+const genderOptions = [
+  { label: '男', value: 1 },
+  { label: '女', value: 2 },
+]
+
+const statusOptions = [
+  { label: '启用', value: 1, type: 'success' as const },
+  { label: '禁用', value: 0, type: 'error' as const },
+]
+
+// === 表单验证规则配置 ===
+// 定义所有表单字段的验证规则，新增和编辑共用
 const formRules: FormRules = {
   username: [
     { required: true, message: '请输入用户名', trigger: 'blur' },
@@ -29,18 +42,9 @@ const formRules: FormRules = {
   phoneNumber: [{ pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号码', trigger: 'blur' }],
 }
 
-// === 选项配置 ===
-const genderOptions = [
-  { label: '男', value: 1 },
-  { label: '女', value: 2 },
-]
-
-const statusOptions = [
-  { label: '启用', value: 1, type: 'success' as const },
-  { label: '禁用', value: 0, type: 'error' as const },
-]
-
 // === 表单配置 ===
+// 用户表单的基础配置，包含所有字段定义和验证规则
+// 注意：具体的字段差异（如必填、禁用状态）在组件中使用时动态调整
 export const userFormConfig: FormConfig<UserCreateDTO | UserUpdateDTO> = {
   title: '用户表单',
   gridCols: 24,
@@ -54,10 +58,12 @@ export const userFormConfig: FormConfig<UserCreateDTO | UserUpdateDTO> = {
     { key: 'status', label: '状态', type: 'radio', options: statusOptions, required: true, span: 12 },
     { key: 'deptId', label: '所属部门', type: 'input', placeholder: '请输入所属部门', span: 24 },
   ],
+  // 表单验证规则
   rules: formRules,
 }
 
 // === 表格配置 ===
+// 用户列表表格的列定义和显示配置
 export const userTableConfig: TableConfigOptions<UserListVO> = {
   columns: [
     { title: '用户名', key: 'username', width: 100 },
@@ -70,6 +76,7 @@ export const userTableConfig: TableConfigOptions<UserListVO> = {
 }
 
 // === 操作按钮配置 ===
+// 页面顶部操作按钮的定义，每个按钮通过key唯一标识
 export const userActionButtons: ActionButton[] = [
   { key: 'add', text: '新增', type: 'primary', icon: PlusOutlined, permission: 'sys:user:add' },
   { key: 'batch-delete', text: '批量删除', type: 'warning', icon: TrashOutline, permission: 'sys:user:delete' },

@@ -87,7 +87,7 @@ const formConfig = computed(() => ({
   ...userFormConfig,
   title: formMode.value === 'create' ? '新增用户' : '编辑用户',
   fields: userFormConfig.fields.map((field) => {
-    if (formMode.value === 'create') {
+    if (formMode.value === 'update') {
       return field
     } else {
       switch (field.key) {
