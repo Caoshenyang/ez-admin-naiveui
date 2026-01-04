@@ -18,7 +18,7 @@ import { useSystemStore, MenuWidthEnum } from '@/stores/modules/system'
 import { useUserInfoStore } from '@/stores/modules/user'
 import { computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { renderIcon } from '@/utils/icon'
+import { renderIcon } from '@/utils/renderers'
 import type { MenuTreeVO } from '@/types'
 import type { MenuOption } from 'naive-ui'
 

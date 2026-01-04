@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { message } from '@/hooks/useMessagehook'
+import { message } from '@/hooks/useMessage'
 import type { DataTableColumns } from 'naive-ui'
 import { NButton } from 'naive-ui'
 import { h } from 'vue'

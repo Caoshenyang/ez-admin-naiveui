@@ -1,6 +1,7 @@
 import { useUserInfoStore } from '@/stores/modules/user'
 import type { MenuTreeVO, RouteMeta } from '@/types'
 import type { RouteRecordRaw } from 'vue-router'
+import { logger } from '@/hooks/useMessage'
 
 /**
  * 获取组件导入函数
@@ -134,7 +135,7 @@ export const generateUserRoutes = async (): Promise<{
     const routes = convertMenusToRoutes(menus)
     return { routes, success: true }
   } catch (error) {
-    console.error('获取用户菜单失败:', error)
+    logger.error('获取用户菜单失败:', error)
     return { routes: [], success: false }
   }
 }

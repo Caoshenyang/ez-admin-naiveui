@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { useUserInfoStore } from '@/stores/modules/user'
-import { message } from '@/hooks/useMessagehook'
+import { message } from '@/hooks/useMessage'
 
 const userStore = useUserInfoStore()
 

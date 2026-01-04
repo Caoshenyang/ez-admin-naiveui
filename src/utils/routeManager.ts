@@ -1,5 +1,6 @@
 import router, { STATIC_ROUTE_NAMES } from '@/router'
 import { generateUserRoutes } from '@/utils/routes'
+import { logger } from '@/hooks/useMessage'
 
 /**
  * 动态路由管理器
@@ -26,9 +27,9 @@ export class RouteManager {
       // 获取用户路由（总是成功，不会抛出异常）
       const { routes: userRoutes, success } = await generateUserRoutes()
       if (success) {
-        console.log('✅ 动态路由组装完成', userRoutes)
+        logger.log('✅ 动态路由组装完成', userRoutes)
       } else {
-        console.warn('⚠️ 动态路由加载失败，使用默认路由', userRoutes)
+        logger.warn('⚠️ 动态路由加载失败，使用默认路由', userRoutes)
       }
       // 通过路由名称找到布局路由并插入子节点
       const layoutRoute = router.getRoutes().find((r) => r.name === 'Main')
@@ -36,13 +37,13 @@ export class RouteManager {
         userRoutes.forEach((route) => {
           router.addRoute('Main', route)
         })
-        console.log('✅ 路由添加成功', router.getRoutes())
+        logger.log('✅ 路由添加成功', router.getRoutes())
       } else {
-        console.error('❌ 添加路由失败:', '未找到 Main 布局路由，无法插入子路由')
+        logger.error('❌ 添加路由失败:', '未找到 Main 布局路由，无法插入子路由')
       }
       this.isRoutesLoaded = true
     } catch (error) {
-      console.error('❌ 路由加载过程中发生意外错误:', error)
+      logger.error('❌ 路由加载过程中发生意外错误:', error)
       // 即使发生意外错误，也要确保路由状态为已加载，避免死循环
       this.isRoutesLoaded = true
     }
@@ -53,12 +54,12 @@ export class RouteManager {
    */
   async loadRoutes() {
     if (this.isRoutesLoaded || this.isLoading) {
-      console.log('路由已加载或正在加载中，跳过')
+      logger.log('路由已加载或正在加载中，跳过')
       return
     }
 
     this.isLoading = true
-    console.log('开始加载动态路由...')
+    logger.log('开始加载动态路由...')
 
     // 创建超时Promise (10秒超时)
     const timeoutPromise = new Promise<never>((_, reject) => {
@@ -71,7 +72,7 @@ export class RouteManager {
       // 使用Promise.race实现超时控制
       await Promise.race([this.doLoadRoutes(), timeoutPromise])
     } catch (timeoutError) {
-      console.error('❌ 路由加载超时:', timeoutError)
+      logger.error('❌ 路由加载超时:', timeoutError)
       // 超时后强制设置加载状态，避免死循环
       this.isRoutesLoaded = true
       throw timeoutError // 重新抛出错误，让调用方处理
@@ -119,7 +120,7 @@ export class RouteManager {
    */
   forceSetLoaded(): void {
     this.isRoutesLoaded = true
-    console.log('🔧 已强制设置路由状态为已加载')
+    logger.log('🔧 已强制设置路由状态为已加载')
   }
 }
 

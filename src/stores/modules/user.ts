@@ -5,6 +5,7 @@ import router from '../../router'
 import type { LoginDTO, UserInfoVO, WorkTab } from '@/types'
 import { loginApi } from '@/api/login'
 import { routeManager } from '@/utils/routeManager'
+import { logger } from '@/hooks/useMessage'
 
 // 你可以对 `defineStore()` 的返回值进行任意命名，但最好使用 store 的名字，同时以 `use` 开头且以 `Store` 结尾。(比如 `useUserStore`，`useCartStore`，`useProductStore`)
 // 第一个参数是你的应用中 Store 的唯一 ID。
@@ -55,7 +56,7 @@ export const useUserInfoStore = defineStore('userInfo', {
       try {
         await loginApi.logout()
       } catch (error) {
-        console.error('登出失败:', error)
+        logger.error('登出失败:', error)
       } finally {
         this.isLogin = false
         this.userInfo = {} as UserInfoVO

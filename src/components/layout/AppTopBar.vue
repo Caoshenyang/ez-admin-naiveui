@@ -2,7 +2,7 @@
 import router from '@/router'
 import { useSystemStore } from '@/stores/modules/system'
 import { useUserInfoStore } from '@/stores/modules/user'
-import { renderIcon } from '@/utils/icon'
+import { renderIcon } from '@/utils/renderers'
 import { MenuFoldOutlined, MenuUnfoldOutlined, SyncOutlined } from '@vicons/antd'
 import { MoonOutline, SunnyOutline, PersonCircleOutline, LogOutOutline } from '@vicons/ionicons5'
 import { NAvatar, NText } from 'naive-ui'

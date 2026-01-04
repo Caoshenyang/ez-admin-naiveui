@@ -1,182 +1,147 @@
 <template>
   <!-- 搜索表单 -->
-  <SimpleSearch
+  <EzSearch
     v-model="queryParams.search.keywords"
     placeholder="请输入用户名、昵称或邮箱进行搜索"
     @search="handleSearch"
-    @reset="handleReset"
+    @reset="handleResetSearch"
   />
 
   <!-- 操作按钮组 -->
-  <div class="flex justify-end mb-4">
-    <n-space size="small">
-      <n-button type="primary" size="small" @click="handleAdd">
-        <template #icon>
-          <n-icon size="18">
-            <plus-outlined />
-          </n-icon>
-        </template>
-        新增
-      </n-button>
-      <n-button type="warning" size="small" @click="handleBatchDelete">
-        <template #icon>
-          <n-icon size="18">
-            <trash-outline />
-          </n-icon>
-        </template>
-        批量删除
-      </n-button>
-      <n-button type="info" size="small" @click="handleExport">
-        <template #icon>
-          <n-icon size="18">
-            <download-outlined />
-          </n-icon>
-        </template>
-        导出
-      </n-button>
-      <n-button size="small" @click="handleRefresh">
-        <template #icon>
-          <n-icon size="18">
-            <sync-outline />
-          </n-icon>
-        </template>
-        刷新
-      </n-button>
-    </n-space>
-  </div>
+  <EzButtonGroup :buttons="userActionButtons" @action="handleAction" />
 
   <!-- 用户列表表格 -->
-  <n-data-table
-    striped
-    remote
-    :columns="columns"
-    :data="userList"
-    :loading="loading"
-    :pagination="pagination"
-    :checked-row-keys="checkedRowKeys"
-    :row-key="(row) => row.userId"
-    :scroll-x="tableScrollWidth"
-    max-height="calc(100vh - 320px)"
-    @update:checked-row-keys="handleCheck"
+  <EzTable :config="tableConfig" :checked-keys="checkedRowKeys" @check-change="handleCheck" />
+
+  <!-- 用户表单 -->
+  <EzForm
+    v-model="formVisible"
+    :config="formConfig"
+    :loading="formLoading"
+    :form-data="formData"
+    @update:form-data="handleFormDataUpdate"
+    @submit="handleFormSubmit"
+    @cancel="handleCancel"
   />
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
-import { useTableConfig } from '@/hooks/useTableConfig'
-import { userTableConfig } from './userTableConfig'
-import SimpleSearch from '@/components/common/SimpleSearch.vue'
-import type { UserListVO, UserQuery } from '@/types'
-import { userApi } from '@/api/user'
-import { message } from '@/hooks/useMessagehook'
-import { SyncOutline, TrashOutline } from '@vicons/ionicons5'
-import { DownloadOutlined, PlusOutlined } from '@vicons/antd'
+import { ref, computed, onMounted } from 'vue'
+import { useCrud } from '@/hooks/useCrud'
+import { handleButtonActions } from '@/utils/actionHandler'
+import EzTable from '@/components/common/EzTable.vue'
+import { userFormConfig, userActionButtons, userCrudConfig } from './config'
+import type { UserListVO, UserDetailVO, UserQuery, UserCreateDTO, UserUpdateDTO } from '@/types'
+import type { EzTableConfig } from '@/hooks/types/table'
 
-// 查询参数
-const queryParams = ref<UserQuery>({
-  pageNum: 1,
-  pageSize: 10,
-  search: {
-    keywords: '',
-  },
+// === 查询参数管理 ===
+const queryParams = ref<UserQuery>(userCrudConfig.queryParams)
+
+// === 使用CRUD Hook（约定：自动处理所有CRUD逻辑，包含表格） ===
+const crud = useCrud<
+  UserListVO,
+  UserQuery,
+  UserCreateDTO,
+  UserUpdateDTO,
+  UserDetailVO
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+>(userCrudConfig as any)
+
+// === 解构响应式数据和方法（按功能分组） ===
+
+// 表格相关状态
+const { loading, dataList: userList, pagination, columns, tableScrollWidth, checkedRowKeys } = crud
+
+// 表单相关状态
+const { formVisible, formLoading, formMode, formData, handleCancel, handleFormDataUpdate } = crud
+
+// 查询相关方法
+const { handleSearch, handleReset, setLoadData } = crud
+
+// CRUD操作方法
+const { handleAdd, handleSubmit, handleBatchDelete } = crud
+
+// 表格配置
+const tableConfig = computed<EzTableConfig<UserListVO>>(() => ({
+  columns: columns.value,
+  data: userList.value,
+  loading: loading.value,
+  pagination: pagination,
+  rowKey: (row: UserListVO) => row.userId,
+  scrollX: tableScrollWidth.value,
+  maxHeight: 'calc(100vh - 320px)',
+  striped: true,
+  remote: true,
+}))
+
+// === 计算属性 ===
+const formConfig = computed(() => ({
+  ...userFormConfig,
+  title: formMode.value === 'create' ? '新增用户' : '编辑用户',
+  fields: userFormConfig.fields.map((field) => {
+    if (formMode.value === 'update') {
+      return field
+    } else {
+      switch (field.key) {
+        case 'username':
+          return { ...field, disabled: true }
+        default:
+          return field
+      }
+    }
+  }),
+}))
+
+// === 数据加载（集成表格分页和查询参数） ===
+const loadUserList = async () => {
+  // 同步分页参数到查询参数
+  queryParams.value.pageNum = pagination.page
+  queryParams.value.pageSize = pagination.pageSize || 10
+  await crud.loadData(queryParams.value)
+}
+
+// === 设置加载数据函数（约定：通过配置驱动） ===
+setLoadData(loadUserList)
+
+const handleResetSearch = () => {
+  queryParams.value.search.keywords = ''
+  handleReset()
+}
+
+// === 表单提交（成功后刷新列表） ===
+const handleFormSubmit = async (data: Partial<UserCreateDTO | UserUpdateDTO>) => {
+  await handleSubmit(data)
+  await loadUserList() // 刷新列表
+}
+
+// === 表格行选择处理 ===
+const handleCheck = (keys: (string | number)[]) => {
+  checkedRowKeys.value = keys
+}
+
+// === 批量删除（集成表格选中状态） ===
+const handleBatchDeleteClick = async () => {
+  const ids = checkedRowKeys.value.map((id) => String(id))
+  await handleBatchDelete(ids, async () => {
+    checkedRowKeys.value = []
+    await loadUserList()
+  })
+}
+
+// === 刷新功能 ===
+const handleRefresh = () => {
+  loadUserList()
+}
+
+// === 按钮action处理器 ===
+const handleAction = handleButtonActions({
+  add: handleAdd, // 新增按钮 -> 打开新增表单
+  'batch-delete': handleBatchDeleteClick, // 批量删除按钮 -> 执行批量删除
+  refresh: handleRefresh, // 刷新按钮 -> 刷新数据列表
 })
 
-// 使用通用表格配置
-const tableConfig = useTableConfig<UserListVO>(userTableConfig)
-
-// 解构获取需要的响应式数据
-const {
-  loading,
-  dataList: userList,
-  pagination,
-  columns,
-  tableScrollWidth,
-  checkedRowKeys,
-  handleCheck,
-  handlers,
-} = tableConfig
-
-// 加载用户列表函数
-const loadUserList = async () => {
-  try {
-    loading.value = true
-    // 同步分页参数到查询参数
-    queryParams.value.pageNum = pagination.page
-    queryParams.value.pageSize = pagination.pageSize || 10
-
-    const res = await userApi.page(queryParams.value)
-    userList.value = res.records
-    // 设置总记录数到分页配置（确保类型为number）
-    pagination.itemCount = Number(res.total)
-  } catch (error) {
-    message.error('加载用户列表失败')
-    console.error(error)
-  } finally {
-    loading.value = false
-  }
-}
-
-// 设置业务逻辑函数 - 直接赋值
-handlers.loadData = loadUserList
-
-handlers.handleEdit = (row: UserListVO) => {
-  message.info(`编辑用户: ${row.username}`)
-  // TODO: 实现编辑逻辑
-}
-
-handlers.handleDelete = (row: UserListVO) => {
-  message.warning(`删除用户: ${row.username}`)
-  // TODO: 实现删除逻辑
-}
-
-// 按钮处理函数
-const handleAdd = () => {
-  message.info('新增用户')
-  // TODO: 实现新增逻辑
-}
-
-const handleBatchDelete = () => {
-  if (checkedRowKeys.value.length === 0) {
-    message.warning('请先选择要删除的用户')
-    return
-  }
-  message.warning(`批量删除 ${checkedRowKeys.value.length} 个用户`)
-  // TODO: 实现批量删除逻辑
-}
-
-const handleExport = () => {
-  message.info('导出用户数据')
-  // TODO: 实现导出逻辑
-}
-
-const handleRefresh = () => {
-  message.success('刷新数据')
-  loadUserList()
-}
-
-// 搜索处理函数
-const handleSearch = () => {
-  // 重置页码到第一页
-  pagination.page = 1
-  queryParams.value.pageNum = 1
-  // 重新加载数据
-  loadUserList()
-}
-
-// 重置搜索条件
-const handleReset = () => {
-  queryParams.value.search.keywords = ''
-  // 重置页码到第一页
-  pagination.page = 1
-  queryParams.value.pageNum = 1
-  // 重新加载数据
-  loadUserList()
-}
-
-// 组件挂载时加载数据
+// === 组件挂载时加载数据 ===
 onMounted(() => {
   loadUserList()
 })
 </script>
-
-<style lang="scss" scoped></style>
