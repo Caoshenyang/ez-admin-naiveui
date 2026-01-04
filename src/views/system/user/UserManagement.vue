@@ -38,14 +38,7 @@ import type { EzTableConfig } from '@/hooks/types/table'
 const queryParams = ref<UserQuery>(userCrudConfig.queryParams)
 
 // === 使用CRUD Hook（约定：自动处理所有CRUD逻辑，包含表格） ===
-const crud = useCrud<
-  UserListVO,
-  UserQuery,
-  UserCreateDTO,
-  UserUpdateDTO,
-  UserDetailVO
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
->(userCrudConfig as any)
+const crud = useCrud<UserListVO, UserQuery, UserCreateDTO, UserUpdateDTO, UserDetailVO>(userCrudConfig)
 
 // === 解构响应式数据和方法（按功能分组） ===
 
@@ -79,7 +72,7 @@ const formConfig = computed(() => ({
   ...userFormConfig,
   title: formMode.value === 'create' ? '新增用户' : '编辑用户',
   fields: userFormConfig.fields.map((field) => {
-    if (formMode.value === 'update') {
+    if (formMode.value === 'create') {
       return field
     } else {
       switch (field.key) {

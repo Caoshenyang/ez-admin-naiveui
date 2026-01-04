@@ -15,7 +15,7 @@ export const userApi = {
   remove: (id: string | number) => http.delete<void>(`/system/user/delete/${id}`),
 
   // 批量删除
-  batchRemove: (ids: string[]) => http.delete<void>('/system/user/batch-delete', ids),
+  batchRemove: (ids: (string | number)[]) => http.delete<void>('/system/user/batch-delete', { ids }),
 
   // 获取详情
   detail: (id: string | number) => http.get<UserDetailVO>(`/system/user/getUserById/${id}`),
