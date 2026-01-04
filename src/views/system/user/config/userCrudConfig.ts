@@ -2,23 +2,14 @@
  * 用户管理 CRUD 配置
  * 约定：只配置业务相关的动态值，通用逻辑由 hooks 处理
  */
-import type { UserCreateDTO, UserDetailVO, UserListVO, UserQuery, UserUpdateDTO } from '@/types'
+import type { UserCrudConfig } from '@/types'
 import { userApi } from '@/api/user'
 import { userTableConfig } from './userConfig'
-import type { CrudConfig } from '@/hooks/useCrud'
 
 /**
  * 用户管理 CRUD 配置
  */
-export const userCrudConfig: CrudConfig<UserListVO, UserQuery, UserCreateDTO, UserUpdateDTO, UserDetailVO> = {
-  // 查询参数初始值
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10,
-    search: {
-      keywords: '',
-    },
-  },
+export const userCrudConfig: UserCrudConfig = {
   // 表格配置
   tableConfig: userTableConfig,
   // API配置
@@ -39,5 +30,5 @@ export const userCrudConfig: CrudConfig<UserListVO, UserQuery, UserCreateDTO, Us
   createDefaultValues: {
     status: 1, // 默认启用
     gender: 1, // 默认男
-  } as Partial<UserCreateDTO>,
+  },
 }

@@ -1,6 +1,7 @@
 // 用户相关类型定义
 import type { PageQuery } from './api'
 import type { MenuTreeVO } from './menu'
+import type { CrudConfig } from '@/hooks/useCrud'
 
 // 用户登录DTO
 export interface LoginDTO {
@@ -81,3 +82,6 @@ export interface UserDetailVO {
   createTime: string
   updateTime?: string
 }
+
+// 用户管理 CRUD 配置类型
+export type UserCrudConfig = CrudConfig<UserListVO, UserQuery, UserCreateDTO, UserUpdateDTO, UserDetailVO>

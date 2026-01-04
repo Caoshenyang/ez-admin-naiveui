@@ -8,6 +8,20 @@ import type { TableConfigOptions, PaginationConfigOptions, TableColumnConfig } f
 import type { RowData } from 'naive-ui/es/data-table/src/interface'
 
 /**
+ * 创建默认的查询参数
+ * 用于减少组件中的样板代码
+ */
+export function createDefaultQueryParams<T extends PageQuery>(
+  searchDefaults: T['search'] = {} as T['search']
+): T {
+  return {
+    pageNum: 1,
+    pageSize: 10,
+    search: searchDefaults,
+  } as T
+}
+
+/**
  * CRUD配置接口
  */
 export interface CrudConfig<
@@ -18,7 +32,7 @@ export interface CrudConfig<
   TDetailVO = Record<string, unknown>,
 > {
   /** 查询参数初始值 */
-  queryParams: TQuery
+  queryParams?: TQuery
   /** 分页查询API */
   pageApi: (params: TQuery) => Promise<PageResult<TListVO>>
   /** 获取详情API */

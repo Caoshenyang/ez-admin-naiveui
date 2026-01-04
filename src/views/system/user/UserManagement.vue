@@ -27,7 +27,7 @@
 
 <script lang="ts" setup>
 import { ref, computed, onMounted } from 'vue'
-import { useCrud } from '@/hooks/useCrud'
+import { useCrud, createDefaultQueryParams } from '@/hooks/useCrud'
 import { handleButtonActions } from '@/utils/actionHandler'
 import EzTable from '@/components/common/EzTable.vue'
 import { userFormConfig, userActionButtons, userCrudConfig } from './config'
@@ -35,7 +35,9 @@ import type { UserListVO, UserDetailVO, UserQuery, UserCreateDTO, UserUpdateDTO 
 import type { EzTableConfig } from '@/hooks/types/table'
 
 // === 查询参数管理 ===
-const queryParams = ref<UserQuery>(userCrudConfig.queryParams)
+const queryParams = ref<UserQuery>(createDefaultQueryParams<UserQuery>({
+  keywords: '',
+}))
 
 // === 使用CRUD Hook（约定：自动处理所有CRUD逻辑，包含表格） ===
 const crud = useCrud<UserListVO, UserQuery, UserCreateDTO, UserUpdateDTO, UserDetailVO>(userCrudConfig)
