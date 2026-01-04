@@ -31,16 +31,18 @@ import { useCrud, createDefaultQueryParams } from '@/hooks/useCrud'
 import { handleButtonActions } from '@/utils/actionHandler'
 import EzTable from '@/components/common/EzTable.vue'
 import { userFormConfig, userActionButtons, userCrudConfig } from './config'
-import type { UserListVO, UserDetailVO, UserQuery, UserCreateDTO, UserUpdateDTO } from '@/types'
+import type { UserListVO, UserQuery, UserCreateDTO, UserUpdateDTO } from '@/types'
 import type { EzTableConfig } from '@/hooks/types/table'
 
 // === 查询参数管理 ===
-const queryParams = ref<UserQuery>(createDefaultQueryParams<UserQuery>({
-  keywords: '',
-}))
+const queryParams = ref<UserQuery>(
+  createDefaultQueryParams<UserQuery>({
+    keywords: '',
+  }),
+)
 
 // === 使用CRUD Hook（约定：自动处理所有CRUD逻辑，包含表格） ===
-const crud = useCrud<UserListVO, UserQuery, UserCreateDTO, UserUpdateDTO, UserDetailVO>(userCrudConfig)
+const crud = useCrud(userCrudConfig)
 
 // === 解构响应式数据和方法（按功能分组） ===
 

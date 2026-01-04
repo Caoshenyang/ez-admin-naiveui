@@ -280,6 +280,13 @@ function createTableColumns<T extends RowData>(
 /**
  * 通用CRUD Hook
  * 约定大于配置：通过配置即可完成完整的CRUD功能（包含表格）
+ *
+ * 调用示例：
+ * // 传统方式（推荐用于复杂场景）
+ * const crud = useCrud<UserListVO, UserQuery, UserCreateDTO, UserUpdateDTO, UserDetailVO>(config)
+ *
+ * // 简化方式（当有预定义配置类型时）
+ * const crud = useCrud(config) // TypeScript 会自动推断类型
  */
 export function useCrud<
   TListVO extends RowData = RowData,
