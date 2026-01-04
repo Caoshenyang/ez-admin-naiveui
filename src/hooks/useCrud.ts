@@ -1,10 +1,9 @@
-import { ref, reactive, computed, h } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import type { PageQuery, PageResult } from '@/types/modules/api'
 import type { DataTableColumns } from 'naive-ui'
-import { NButton, NIcon } from 'naive-ui'
 import { TrashOutline, CreateOutline } from '@vicons/ionicons5'
-import { message, dialog } from '@/hooks/useMessage'
-import { logger } from '@/utils/logger'
+import { message, dialog, logger } from '@/hooks/useMessage'
+import { createButton, createButtonGroup } from '@/utils/renderers'
 import type { TableConfigOptions, PaginationConfigOptions, TableColumnConfig } from './types/table'
 import type { RowData } from 'naive-ui/es/data-table/src/interface'
 
@@ -45,10 +44,7 @@ export interface CrudConfig<
   /** 编辑时数据转换（从详情VO转换为更新DTO） */
   transformDetailToUpdate?: (detail: TDetailVO) => Partial<TUpdateDTO>
   /** 提交前数据转换（处理特殊字段，如密码等） */
-  transformBeforeSubmit?: (
-    data: Partial<TCreateDTO | TUpdateDTO>,
-    mode: 'create' | 'update',
-  ) => TCreateDTO | TUpdateDTO
+  transformBeforeSubmit?: (data: Partial<TCreateDTO | TUpdateDTO>, mode: 'create' | 'update') => TCreateDTO | TUpdateDTO
   /** 删除确认文案 */
   deleteConfirm?: {
     title?: string
@@ -117,9 +113,7 @@ function createPagination(reloadCallback?: () => void, options: PaginationConfig
 /**
  * 计算表格总宽度
  */
-function calculateTableScrollWidth<T = Record<string, unknown>>(
-  columns: DataTableColumns<T>,
-): number {
+function calculateTableScrollWidth<T extends RowData>(columns: DataTableColumns<T>): number {
   return columns.reduce((total, col) => {
     if (col.type === 'selection') {
       return total + 50
@@ -165,7 +159,7 @@ function createDataColumns<T>(columnsConfig: TableColumnConfig<T>[]): DataTableC
 /**
  * 创建操作按钮
  */
-function createActionButtons<T>(
+function createActionButtons<T extends RowData>(
   actionButtons: NonNullable<TableConfigOptions<T>['actionButtons']>,
   handleEdit?: (row: T) => void,
   handleDelete?: (row: T) => void,
@@ -175,32 +169,26 @@ function createActionButtons<T>(
 
   if (actionButtons.edit && row) {
     buttons.push(
-      h(
-        NButton,
+      createButton(
         {
           type: 'primary',
           tertiary: true,
           onClick: () => handleEdit?.(row),
         },
-        {
-          default: () => h(NIcon, { size: 20 }, { default: () => h(CreateOutline) }),
-        },
+        CreateOutline,
       ),
     )
   }
 
   if (actionButtons.delete && row) {
     buttons.push(
-      h(
-        NButton,
+      createButton(
         {
           type: 'error',
           tertiary: true,
           onClick: () => handleDelete?.(row),
         },
-        {
-          default: () => h(NIcon, { size: 20 }, { default: () => h(TrashOutline) }),
-        },
+        TrashOutline,
       ),
     )
   }
@@ -208,16 +196,13 @@ function createActionButtons<T>(
   if (actionButtons.custom && row) {
     actionButtons.custom.forEach((btn) => {
       buttons.push(
-        h(
-          NButton,
+        createButton(
           {
             type: btn.type,
             tertiary: btn.tertiary ?? true,
             onClick: () => btn.onClick(row),
           },
-          {
-            default: () => h(NIcon, { size: 20 }, { default: () => h(btn.icon) }),
-          },
+          btn.icon,
         ),
       )
     })
@@ -229,7 +214,7 @@ function createActionButtons<T>(
 /**
  * 创建操作列
  */
-function createActionColumn<T>(
+function createActionColumn<T extends RowData>(
   actionButtons: NonNullable<TableConfigOptions<T>['actionButtons']>,
   actionWidth: number,
   handleEdit?: (row: T) => void,
@@ -242,7 +227,7 @@ function createActionColumn<T>(
     fixed: 'right' as const,
     render(row: T) {
       const buttons = createActionButtons(actionButtons, handleEdit, handleDelete, row)
-      return h('div', { style: { display: 'flex', gap: '8px' } }, buttons)
+      return createButtonGroup(buttons)
     },
   }
 }
@@ -250,7 +235,7 @@ function createActionColumn<T>(
 /**
  * 创建通用表格列配置
  */
-function createTableColumns<T = Record<string, unknown>>(
+function createTableColumns<T extends RowData>(
   options: TableConfigOptions<T>,
   handleEdit?: (row: T) => void,
   handleDelete?: (row: T) => void,
@@ -373,8 +358,7 @@ export function useCrud<
 
   const handleAdd = () => {
     formMode.value = 'create'
-    const defaults =
-      typeof createDefaultValues === 'function' ? createDefaultValues() : createDefaultValues
+    const defaults = typeof createDefaultValues === 'function' ? createDefaultValues() : createDefaultValues
     Object.assign(formData, defaults)
     formVisible.value = true
   }
@@ -415,27 +399,18 @@ export function useCrud<
 
       if (formMode.value === 'create') {
         await createApi(submitData as TCreateDTO)
-        const msg =
-          typeof successMessage?.create === 'function'
-            ? successMessage.create()
-            : successMessage?.create
+        const msg = typeof successMessage?.create === 'function' ? successMessage.create() : successMessage?.create
         message.success(msg || '新增成功')
       } else {
         await updateApi(submitData as TUpdateDTO)
-        const msg =
-          typeof successMessage?.update === 'function'
-            ? successMessage.update()
-            : successMessage?.update
+        const msg = typeof successMessage?.update === 'function' ? successMessage.update() : successMessage?.update
         message.success(msg || '更新成功')
       }
 
       formVisible.value = false
       return true
     } catch (error) {
-      const msg =
-        formMode.value === 'create'
-          ? errorMessage?.create || '新增失败'
-          : errorMessage?.update || '更新失败'
+      const msg = formMode.value === 'create' ? errorMessage?.create || '新增失败' : errorMessage?.update || '更新失败'
       logger.error(msg, error)
       message.error(msg)
       throw error
@@ -458,9 +433,7 @@ export function useCrud<
           try {
             await removeApi(id)
             const msg =
-              typeof successMessage?.delete === 'function'
-                ? successMessage.delete(name)
-                : successMessage?.delete
+              typeof successMessage?.delete === 'function' ? successMessage.delete(name) : successMessage?.delete
             message.success(msg || `删除 ${name} 成功`)
             onSuccess?.()
           } catch (error) {
@@ -489,9 +462,7 @@ export function useCrud<
       const count = ids.length
       await dialog.warning({
         title: batchDeleteConfirm?.title || '批量删除确认',
-        content:
-          batchDeleteConfirm?.content?.(count) ||
-          `确定要删除选中的 ${count} 条数据吗？此操作不可撤销。`,
+        content: batchDeleteConfirm?.content?.(count) || `确定要删除选中的 ${count} 条数据吗？此操作不可撤销。`,
         positiveText: batchDeleteConfirm?.positiveText || '确定删除',
         negativeText: batchDeleteConfirm?.negativeText || '取消',
         onPositiveClick: async () => {

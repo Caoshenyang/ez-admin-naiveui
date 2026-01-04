@@ -6,7 +6,7 @@ import router, { ROUTE_PATHS } from '../../router'
 import type { LoginDTO, UserInfoVO } from '@/types'
 import { useUserInfoStore } from '@/stores/modules/user'
 import type { FormRules } from 'naive-ui'
-import { logger } from '@/utils/logger'
+import { logger } from '@/hooks/useMessage'
 
 
 // 登录表单数据

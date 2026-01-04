@@ -47,27 +47,19 @@ const crud = useCrud<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 >(userCrudConfig as any)
 
-// === 解构需要的响应式数据和方法 ===
-const {
-  loading,
-  dataList: userList,
-  pagination,
-  columns,
-  tableScrollWidth,
-  checkedRowKeys,
-  formVisible,
-  formLoading,
-  formMode,
-  formData,
-  handleAdd,
-  handleSubmit,
-  handleBatchDelete,
-  handleCancel,
-  handleFormDataUpdate,
-  handleSearch,
-  handleReset,
-  setLoadData,
-} = crud
+// === 解构响应式数据和方法（按功能分组） ===
+
+// 表格相关状态
+const { loading, dataList: userList, pagination, columns, tableScrollWidth, checkedRowKeys } = crud
+
+// 表单相关状态
+const { formVisible, formLoading, formMode, formData, handleCancel, handleFormDataUpdate } = crud
+
+// 查询相关方法
+const { handleSearch, handleReset, setLoadData } = crud
+
+// CRUD操作方法
+const { handleAdd, handleSubmit, handleBatchDelete } = crud
 
 // 表格配置
 const tableConfig = computed<EzTableConfig<UserListVO>>(() => ({

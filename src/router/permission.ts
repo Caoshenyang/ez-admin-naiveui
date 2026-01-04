@@ -3,7 +3,7 @@ import router, { ROUTE_PATHS } from '@/router'
 import { useUserInfoStore } from '@/stores/modules/user'
 import type { RouteMeta } from '@/types'
 import { routeManager } from '@/utils/routeManager'
-import { logger } from '@/utils/logger'
+import { logger } from '@/hooks/useMessage'
 
 /** 白名单路由，用户无需登录即可访问 */
 const WHITE_LIST = [ROUTE_PATHS.LOGIN]

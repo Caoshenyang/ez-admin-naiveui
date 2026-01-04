@@ -64,7 +64,6 @@ export const userCrudConfig = {
       const updateData = data as UserUpdateDTO
       // 如果密码为空，删除密码字段（表示不修改密码）
       if (!updateData.password || updateData.password.trim() === '') {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password, ...restData } = updateData
         return restData as UserUpdateDTO
       }

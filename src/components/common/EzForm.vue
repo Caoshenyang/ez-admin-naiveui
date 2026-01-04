@@ -189,7 +189,7 @@
 <script lang="ts" setup>
 import { ref, computed, watch, nextTick } from 'vue'
 import type { FormInst, FormRules } from 'naive-ui'
-import { logger } from '@/utils/logger'
+import { logger } from '@/hooks/useMessage'
 
 // 表单字段选项
 export interface FormFieldOption {

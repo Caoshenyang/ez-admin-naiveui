@@ -1,4 +1,4 @@
-import { h, type Component } from 'vue'
+import { h, type Component, type VNode } from 'vue'
 import { NIcon, NTag, NButton } from 'naive-ui'
 import type { TagProps, ButtonProps } from 'naive-ui'
 
@@ -52,4 +52,24 @@ export function renderStatusTag<T = Record<string, unknown>>(
       type: option?.type || 'default'
     })()
   }
+}
+
+/**
+ * 创建按钮VNode（用于表格操作列）
+ * @param props - 按钮属性
+ * @param icon - 图标组件（可选）
+ * @returns 返回按钮VNode
+ */
+export function createButton(props: ButtonProps, icon?: Component) {
+  const children = icon ? { default: () => h(NIcon, { size: 20 }, { default: () => h(icon) }) } : undefined
+  return h(NButton, props, children)
+}
+
+/**
+ * 创建操作按钮组的容器
+ * @param buttons - 按钮VNode数组
+ * @returns 返回容器VNode
+ */
+export function createButtonGroup(buttons: VNode[]) {
+  return h('div', { style: { display: 'flex', gap: '8px' } }, buttons)
 }

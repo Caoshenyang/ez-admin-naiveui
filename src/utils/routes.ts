@@ -1,7 +1,7 @@
 import { useUserInfoStore } from '@/stores/modules/user'
 import type { MenuTreeVO, RouteMeta } from '@/types'
 import type { RouteRecordRaw } from 'vue-router'
-import { logger } from '@/utils/logger'
+import { logger } from '@/hooks/useMessage'
 
 /**
  * 获取组件导入函数

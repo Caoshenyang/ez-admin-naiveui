@@ -9,7 +9,7 @@ import type { FormRules } from 'naive-ui'
 import type { UserCreateDTO, UserUpdateDTO, UserListVO } from '@/types'
 import { type TableConfigOptions } from '@/hooks/types/table'
 import type { ActionButton } from '@/components/common/EzButtonGroup.vue'
-import { renderStatusTag } from '@/utils/icon'
+import { renderStatusTag } from '@/utils/renderers'
 import { SyncOutline, TrashOutline } from '@vicons/ionicons5'
 import { PlusOutlined } from '@vicons/antd'
 

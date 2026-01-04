@@ -1,6 +1,6 @@
 import router, { STATIC_ROUTE_NAMES } from '@/router'
 import { generateUserRoutes } from '@/utils/routes'
-import { logger } from '@/utils/logger'
+import { logger } from '@/hooks/useMessage'
 
 /**
  * 动态路由管理器
