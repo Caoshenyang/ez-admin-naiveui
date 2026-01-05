@@ -1,17 +1,19 @@
 /**
- * 用户管理页面配置
+ * 用户管理配置
  *
- * 整合表单、表格和操作按钮的所有配置
- * 按照依赖关系组织：选项 → 验证规则 → UI配置
+ * 统一导出所有用户相关的配置项
  */
+import type { UserCrudConfig } from '@/types'
 import type { FormConfig } from '@/components/common/EzForm.vue'
 import type { FormRules } from 'naive-ui'
 import type { UserCreateDTO, UserUpdateDTO, UserListVO } from '@/types'
 import { type TableConfigOptions } from '@/hooks/types/table'
 import type { ActionButton } from '@/components/common/EzButtonGroup.vue'
-import { renderStatusTag } from '@/utils/renderers'
+import { userApi } from '@/api/user'
+import { renderTag, renderStatusTag } from '@/utils/renderers'
 import { SyncOutline, TrashOutline } from '@vicons/ionicons5'
 import { PlusOutlined } from '@vicons/antd'
+import type { DetailModalConfig } from '@/hooks/types/table'
 
 // === 基础选项配置 ===
 // 这些选项被表单和表格共同使用，确保数据一致性
@@ -73,6 +75,14 @@ export const userTableConfig: TableConfigOptions<UserListVO> = {
     { title: '状态', key: 'status', width: 80, render: renderStatusTag(statusOptions) },
     { title: '创建时间', key: 'createTime', width: 200 },
   ],
+  // 操作按钮配置
+  actionButtons: {
+    view: true,
+    edit: true,
+    delete: true,
+  },
+  // 增加操作列宽度以容纳查看按钮
+  actionWidth: 180,
 }
 
 // === 操作按钮配置 ===
@@ -82,3 +92,62 @@ export const userActionButtons: ActionButton[] = [
   { key: 'batch-delete', text: '批量删除', type: 'warning', icon: TrashOutline, permission: 'sys:user:delete' },
   { key: 'refresh', text: '刷新', icon: SyncOutline, permission: '' },
 ]
+
+// === 详情配置 ===
+export const userDetailConfig: DetailModalConfig = {
+  title: (data) => `用户详情 - ${data.username || ''}`,
+  column: 2,
+  fields: [
+    { key: 'username', label: '用户名' },
+    { key: 'nickname', label: '昵称' },
+    { key: 'email', label: '邮箱' },
+    { key: 'phoneNumber', label: '手机号' },
+    {
+      key: 'gender',
+      label: '性别',
+      format: (value) => (value === 1 ? '男' : value === 2 ? '女' : '-'),
+    },
+    {
+      key: 'status',
+      label: '状态',
+      render: (value) => {
+        const statusOptions = [
+          { label: '启用', value: 1, type: 'success' as const },
+          { label: '禁用', value: 0, type: 'error' as const },
+        ]
+        const option = statusOptions.find((opt) => opt.value === value)
+        return option ? renderTag(option.label, { type: option.type })() : '-'
+      },
+    },
+    { key: 'deptId', label: '所属部门' },
+    { key: 'createTime', label: '创建时间' },
+  ],
+}
+
+// === CRUD 配置 ===
+// 用户管理 CRUD 配置，约定：只配置业务相关的动态值，通用逻辑由 hooks 处理
+export const userCrudConfig: UserCrudConfig = {
+  // 表格配置
+  tableConfig: userTableConfig,
+  // 详情配置
+  detailConfig: userDetailConfig,
+  // API配置
+  pageApi: userApi.page,
+  detailApi: userApi.detail,
+  createApi: userApi.create,
+  updateApi: userApi.update,
+  removeApi: userApi.remove,
+  batchRemoveApi: userApi.batchRemove,
+
+  // 主键字段
+  idKey: 'userId' as const,
+
+  // 显示名称字段（用于删除确认等）
+  nameKey: 'username' as const,
+
+  // 新增表单默认值
+  createDefaultValues: {
+    status: 1, // 默认启用
+    gender: 1, // 默认男
+  },
+}

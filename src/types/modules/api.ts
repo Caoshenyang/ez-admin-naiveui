@@ -35,16 +35,3 @@ export interface PageResult<T> {
   // 总页数
   pages: number
 }
-
-// 分页配置接口
-export interface PaginationConfig {
-  page: number
-  pageSize: number
-  showSizePicker: boolean
-  pageSizes: number[]
-  showQuickJumper: boolean
-  prefix: () => string
-  itemCount: number
-  onChange: (page: number) => void
-  onUpdatePageSize: (pageSize: number) => void
-}

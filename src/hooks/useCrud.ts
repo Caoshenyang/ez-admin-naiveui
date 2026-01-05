@@ -1,11 +1,25 @@
 import { ref, reactive, computed } from 'vue'
 import type { PageQuery, PageResult } from '@/types/modules/api'
 import type { DataTableColumns } from 'naive-ui'
-import { TrashOutline, CreateOutline } from '@vicons/ionicons5'
+import { TrashOutline, CreateOutline, EyeOutline } from '@vicons/ionicons5'
 import { message, dialog, logger } from '@/hooks/useMessage'
 import { createButton, createButtonGroup } from '@/utils/renderers'
-import type { TableConfigOptions, PaginationConfigOptions, TableColumnConfig } from './types/table'
+import type { TableConfigOptions, PaginationConfigOptions, TableColumnConfig, DetailModalConfig } from './types/table'
 import type { RowData } from 'naive-ui/es/data-table/src/interface'
+
+/**
+ * 创建默认的查询参数
+ * 用于减少组件中的样板代码
+ */
+export function createDefaultQueryParams<T extends PageQuery>(
+  searchDefaults: T['search'] = {} as T['search']
+): T {
+  return {
+    pageNum: 1,
+    pageSize: 10,
+    search: searchDefaults,
+  } as T
+}
 
 /**
  * CRUD配置接口
@@ -18,7 +32,7 @@ export interface CrudConfig<
   TDetailVO = Record<string, unknown>,
 > {
   /** 查询参数初始值 */
-  queryParams: TQuery
+  queryParams?: TQuery
   /** 分页查询API */
   pageApi: (params: TQuery) => Promise<PageResult<TListVO>>
   /** 获取详情API */
@@ -35,6 +49,8 @@ export interface CrudConfig<
   tableConfig: TableConfigOptions<TListVO>
   /** 分页配置选项 */
   paginationOptions?: PaginationConfigOptions
+  /** 详情模态框配置 */
+  detailConfig?: DetailModalConfig
   /** 主键字段名（用于获取ID） */
   idKey?: keyof TListVO | ((row: TListVO) => string | number)
   /** 显示名称字段（用于确认对话框） */
@@ -163,9 +179,23 @@ function createActionButtons<T extends RowData>(
   actionButtons: NonNullable<TableConfigOptions<T>['actionButtons']>,
   handleEdit?: (row: T) => void,
   handleDelete?: (row: T) => void,
+  handleView?: (row: T) => void,
   row?: T,
 ) {
   const buttons = []
+
+  if (actionButtons.view && row) {
+    buttons.push(
+      createButton(
+        {
+          type: 'info',
+          tertiary: true,
+          onClick: () => handleView?.(row),
+        },
+        EyeOutline,
+      ),
+    )
+  }
 
   if (actionButtons.edit && row) {
     buttons.push(
@@ -219,6 +249,7 @@ function createActionColumn<T extends RowData>(
   actionWidth: number,
   handleEdit?: (row: T) => void,
   handleDelete?: (row: T) => void,
+  handleView?: (row: T) => void,
 ) {
   return {
     title: '操作',
@@ -226,7 +257,7 @@ function createActionColumn<T extends RowData>(
     width: actionWidth,
     fixed: 'right' as const,
     render(row: T) {
-      const buttons = createActionButtons(actionButtons, handleEdit, handleDelete, row)
+      const buttons = createActionButtons(actionButtons, handleEdit, handleDelete, handleView, row)
       return createButtonGroup(buttons)
     },
   }
@@ -239,12 +270,13 @@ function createTableColumns<T extends RowData>(
   options: TableConfigOptions<T>,
   handleEdit?: (row: T) => void,
   handleDelete?: (row: T) => void,
+  handleView?: (row: T) => void,
 ): DataTableColumns<T> {
   const {
     columns,
     showSelection = true,
     showActions = true,
-    actionButtons = { edit: true, delete: true },
+    actionButtons = { edit: true, delete: true, view: false },
     actionWidth = 140,
   } = options
 
@@ -257,7 +289,7 @@ function createTableColumns<T extends RowData>(
   tableColumns.push(...createDataColumns(columns))
 
   if (showActions) {
-    tableColumns.push(createActionColumn(actionButtons, actionWidth, handleEdit, handleDelete))
+    tableColumns.push(createActionColumn(actionButtons, actionWidth, handleEdit, handleDelete, handleView))
   }
 
   return tableColumns
@@ -266,6 +298,13 @@ function createTableColumns<T extends RowData>(
 /**
  * 通用CRUD Hook
  * 约定大于配置：通过配置即可完成完整的CRUD功能（包含表格）
+ *
+ * 调用示例：
+ * // 传统方式（推荐用于复杂场景）
+ * const crud = useCrud<UserListVO, UserQuery, UserCreateDTO, UserUpdateDTO, UserDetailVO>(config)
+ *
+ * // 简化方式（当有预定义配置类型时）
+ * const crud = useCrud(config) // TypeScript 会自动推断类型
  */
 export function useCrud<
   TListVO extends RowData = RowData,
@@ -283,6 +322,7 @@ export function useCrud<
     batchRemoveApi,
     tableConfig,
     paginationOptions = {},
+    detailConfig,
     idKey = 'id' as keyof TListVO,
     nameKey = 'name' as keyof TListVO,
     createDefaultValues = {},
@@ -306,6 +346,11 @@ export function useCrud<
   const formMode = ref<'create' | 'update'>('create')
   const formData = reactive<Partial<TCreateDTO | TUpdateDTO>>({})
 
+  // 详情状态
+  const detailVisible = ref(false)
+  const detailLoading = ref(false)
+  const detailData = reactive<Partial<TDetailVO>>({})
+
   // === 表格和分页配置 ===
   let loadDataFn: () => Promise<void> | void = () => {
     throw new Error('loadData function must be implemented')
@@ -320,7 +365,7 @@ export function useCrud<
       loadDataFn()
     })
   }
-  const columns = computed(() => createTableColumns(tableConfig, handleEdit, handleDeleteForTable))
+  const columns = computed(() => createTableColumns(tableConfig, handleEdit, handleDeleteForTable, detailConfig ? handleView : undefined))
   const tableScrollWidth = computed(() => calculateTableScrollWidth(columns.value))
 
   // === 工具函数 ===
@@ -345,8 +390,8 @@ export function useCrud<
       loading.value = true
       const res = await pageApi(queryParams)
       dataList.value = res.records
-      total.value = res.total
-      pagination.itemCount = res.total
+      total.value = Number(res.total)
+      pagination.itemCount = Number(res.total)
       return res
     } catch (error) {
       logger.error('加载数据列表失败:', error)
@@ -383,6 +428,22 @@ export function useCrud<
       message.error(errorMessage?.detail || '获取详情失败')
     } finally {
       formLoading.value = false
+    }
+  }
+
+  const handleView = async (row: TListVO) => {
+    try {
+      detailLoading.value = true
+      const id = getRowId(row)
+      const detail = await detailApi(id)
+
+      Object.assign(detailData, detail)
+      detailVisible.value = true
+    } catch (error) {
+      logger.error(errorMessage?.detail || '获取详情失败:', error)
+      message.error(errorMessage?.detail || '获取详情失败')
+    } finally {
+      detailLoading.value = false
     }
   }
 
@@ -531,6 +592,9 @@ export function useCrud<
     formLoading,
     formMode,
     formData,
+    detailVisible,
+    detailLoading,
+    detailData,
     checkedRowKeys,
     pagination,
     columns,
@@ -541,6 +605,7 @@ export function useCrud<
     setLoadData,
     handleAdd,
     handleEdit,
+    handleView,
     handleSubmit,
     handleDelete,
     handleBatchDelete,

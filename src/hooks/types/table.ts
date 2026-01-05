@@ -34,6 +34,7 @@ export interface TableConfigOptions<T extends RowData = RowData> {
   actionButtons?: {
     edit?: boolean
     delete?: boolean
+    view?: boolean
     custom?: Array<{
       type: 'primary' | 'success' | 'warning' | 'error' | 'info'
       tertiary?: boolean
@@ -87,5 +88,22 @@ export interface PaginationConfigOptions {
   showQuickJumper?: boolean
   /** 分页前缀函数 */
   prefix?: (info: { itemCount: number | undefined }) => string
+}
+
+/** 详情模态框字段配置接口 */
+export interface DetailField {
+  key: string
+  label: string
+  /** 自定义渲染函数 */
+  render?: (value: unknown, data: Record<string, unknown>) => unknown
+  /** 值格式化函数 */
+  format?: (value: unknown) => string
+}
+
+/** 详情模态框配置接口 */
+export interface DetailModalConfig {
+  title?: string | ((data: Record<string, unknown>) => string)
+  column?: number
+  fields: DetailField[]
 }
 

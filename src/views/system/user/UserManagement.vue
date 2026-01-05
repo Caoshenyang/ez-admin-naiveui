@@ -23,29 +23,35 @@
     @submit="handleFormSubmit"
     @cancel="handleCancel"
   />
+
+  <!-- 用户详情模态框 -->
+  <EzDetailModal
+    v-model:show="detailVisible"
+    :data="detailData"
+    :config="userCrudConfig.detailConfig"
+    :loading="detailLoading"
+  />
 </template>
 
 <script lang="ts" setup>
 import { ref, computed, onMounted } from 'vue'
-import { useCrud } from '@/hooks/useCrud'
+import { useCrud, createDefaultQueryParams } from '@/hooks/useCrud'
 import { handleButtonActions } from '@/utils/actionHandler'
 import EzTable from '@/components/common/EzTable.vue'
-import { userFormConfig, userActionButtons, userCrudConfig } from './config'
-import type { UserListVO, UserDetailVO, UserQuery, UserCreateDTO, UserUpdateDTO } from '@/types'
+import EzDetailModal from '@/components/common/EzDetailModal.vue'
+import { userFormConfig, userActionButtons, userCrudConfig } from './'
+import type { UserListVO, UserQuery, UserCreateDTO, UserUpdateDTO } from '@/types'
 import type { EzTableConfig } from '@/hooks/types/table'
 
 // === 查询参数管理 ===
-const queryParams = ref<UserQuery>(userCrudConfig.queryParams)
+const queryParams = ref<UserQuery>(
+  createDefaultQueryParams<UserQuery>({
+    keywords: '',
+  }),
+)
 
 // === 使用CRUD Hook（约定：自动处理所有CRUD逻辑，包含表格） ===
-const crud = useCrud<
-  UserListVO,
-  UserQuery,
-  UserCreateDTO,
-  UserUpdateDTO,
-  UserDetailVO
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
->(userCrudConfig as any)
+const crud = useCrud(userCrudConfig)
 
 // === 解构响应式数据和方法（按功能分组） ===
 
@@ -54,6 +60,9 @@ const { loading, dataList: userList, pagination, columns, tableScrollWidth, chec
 
 // 表单相关状态
 const { formVisible, formLoading, formMode, formData, handleCancel, handleFormDataUpdate } = crud
+
+// 详情相关状态
+const { detailVisible, detailLoading, detailData } = crud
 
 // 查询相关方法
 const { handleSearch, handleReset, setLoadData } = crud
@@ -79,7 +88,7 @@ const formConfig = computed(() => ({
   ...userFormConfig,
   title: formMode.value === 'create' ? '新增用户' : '编辑用户',
   fields: userFormConfig.fields.map((field) => {
-    if (formMode.value === 'update') {
+    if (formMode.value === 'create') {
       return field
     } else {
       switch (field.key) {

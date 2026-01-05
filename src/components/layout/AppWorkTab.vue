@@ -6,7 +6,7 @@
         v-for="item in workTabList"
         :key="item.path"
         :type="item.path === activeTab ? 'success' : 'default'"
-        class="work-tab-item cursor-pointer select-none transition-all duration-200 text-sm"
+        class="work-tab-item"
         :closable="!item.fixed"
         @click="changeTab(item.path)"
         @close="removeTab(item.path)"
@@ -17,17 +17,8 @@
 
     <!-- 操作按钮 -->
     <div class="shrink-0 ml-2 tab-actions">
-      <n-dropdown
-        :options="dropdownOptions"
-        @select="handleClose"
-        trigger="click"
-        placement="bottom-end"
-      >
-        <n-button
-          text
-          size="small"
-          class="action-btn w-8 h-8 rounded transition-all duration-200 hover:bg-gray-100"
-        >
+      <n-dropdown :options="dropdownOptions" @select="handleClose" trigger="click" placement="bottom-end">
+        <n-button text size="small" class="action-btn w-8 h-8 rounded transition-all duration-200 hover:bg-gray-100">
           <template #icon>
             <n-icon size="16">
               <MoreOutlined />
@@ -194,4 +185,9 @@ watch(
 )
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.work-tab-item {
+  cursor: pointer;
+  user-select: none;
+}
+</style>
