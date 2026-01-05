@@ -30,7 +30,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useCrud, createDefaultQueryParams } from '@/hooks/useCrud'
 import { handleButtonActions } from '@/utils/actionHandler'
 import EzTable from '@/components/common/EzTable.vue'
-import { userFormConfig, userActionButtons, userCrudConfig } from './config'
+import { userFormConfig, userActionButtons, userCrudConfig } from './'
 import type { UserListVO, UserQuery, UserCreateDTO, UserUpdateDTO } from '@/types'
 import type { EzTableConfig } from '@/hooks/types/table'
 
