@@ -23,6 +23,14 @@
     @submit="handleFormSubmit"
     @cancel="handleCancel"
   />
+
+  <!-- 用户详情模态框 -->
+  <EzDetailModal
+    v-model:show="detailVisible"
+    :data="detailData"
+    :config="userCrudConfig.detailConfig"
+    :loading="detailLoading"
+  />
 </template>
 
 <script lang="ts" setup>
@@ -30,6 +38,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useCrud, createDefaultQueryParams } from '@/hooks/useCrud'
 import { handleButtonActions } from '@/utils/actionHandler'
 import EzTable from '@/components/common/EzTable.vue'
+import EzDetailModal from '@/components/common/EzDetailModal.vue'
 import { userFormConfig, userActionButtons, userCrudConfig } from './'
 import type { UserListVO, UserQuery, UserCreateDTO, UserUpdateDTO } from '@/types'
 import type { EzTableConfig } from '@/hooks/types/table'
@@ -51,6 +60,9 @@ const { loading, dataList: userList, pagination, columns, tableScrollWidth, chec
 
 // 表单相关状态
 const { formVisible, formLoading, formMode, formData, handleCancel, handleFormDataUpdate } = crud
+
+// 详情相关状态
+const { detailVisible, detailLoading, detailData } = crud
 
 // 查询相关方法
 const { handleSearch, handleReset, setLoadData } = crud

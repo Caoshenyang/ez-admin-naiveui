@@ -13,6 +13,7 @@ import { userApi } from '@/api/user'
 import { renderStatusTag } from '@/utils/renderers'
 import { SyncOutline, TrashOutline } from '@vicons/ionicons5'
 import { PlusOutlined } from '@vicons/antd'
+import type { DetailModalConfig } from '@/hooks/types/table'
 
 // === 基础选项配置 ===
 // 这些选项被表单和表格共同使用，确保数据一致性
@@ -74,6 +75,14 @@ export const userTableConfig: TableConfigOptions<UserListVO> = {
     { title: '状态', key: 'status', width: 80, render: renderStatusTag(statusOptions) },
     { title: '创建时间', key: 'createTime', width: 200 },
   ],
+  // 操作按钮配置
+  actionButtons: {
+    view: true,
+    edit: true,
+    delete: true,
+  },
+  // 增加操作列宽度以容纳查看按钮
+  actionWidth: 180,
 }
 
 // === 操作按钮配置 ===
@@ -84,11 +93,44 @@ export const userActionButtons: ActionButton[] = [
   { key: 'refresh', text: '刷新', icon: SyncOutline, permission: '' },
 ]
 
+// === 详情配置 ===
+export const userDetailConfig: DetailModalConfig = {
+  title: (data) => `用户详情 - ${data.username || ''}`,
+  column: 2,
+  fields: [
+    { key: 'username', label: '用户名' },
+    { key: 'nickname', label: '昵称' },
+    { key: 'email', label: '邮箱' },
+    { key: 'phoneNumber', label: '手机号' },
+    {
+      key: 'gender',
+      label: '性别',
+      format: (value) => value === 1 ? '男' : value === 2 ? '女' : '-'
+    },
+    {
+      key: 'status',
+      label: '状态',
+      format: (value) => {
+        const statusOptions = [
+          { label: '启用', value: 1 },
+          { label: '禁用', value: 0 },
+        ]
+        const option = statusOptions.find(opt => opt.value === value)
+        return option ? option.label : '-'
+      }
+    },
+    { key: 'deptId', label: '所属部门' },
+    { key: 'createTime', label: '创建时间' },
+  ],
+}
+
 // === CRUD 配置 ===
 // 用户管理 CRUD 配置，约定：只配置业务相关的动态值，通用逻辑由 hooks 处理
 export const userCrudConfig: UserCrudConfig = {
   // 表格配置
   tableConfig: userTableConfig,
+  // 详情配置
+  detailConfig: userDetailConfig,
   // API配置
   pageApi: userApi.page,
   detailApi: userApi.detail,

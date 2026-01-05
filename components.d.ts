@@ -19,6 +19,7 @@ declare module 'vue' {
     AppTopBar: typeof import('./src/components/layout/AppTopBar.vue')['default']
     AppWorkTab: typeof import('./src/components/layout/AppWorkTab.vue')['default']
     EzButtonGroup: typeof import('./src/components/common/EzButtonGroup.vue')['default']
+    EzDetailModal: typeof import('./src/components/common/EzDetailModal.vue')['default']
     EzForm: typeof import('./src/components/common/EzForm.vue')['default']
     EzSearch: typeof import('./src/components/common/EzSearch.vue')['default']
     EzTable: typeof import('./src/components/common/EzTable.vue')['default']
