@@ -10,7 +10,7 @@ import type { UserCreateDTO, UserUpdateDTO, UserListVO } from '@/types'
 import { type TableConfigOptions } from '@/hooks/types/table'
 import type { ActionButton } from '@/components/common/EzButtonGroup.vue'
 import { userApi } from '@/api/user'
-import { renderStatusTag } from '@/utils/renderers'
+import { renderTag, renderStatusTag } from '@/utils/renderers'
 import { SyncOutline, TrashOutline } from '@vicons/ionicons5'
 import { PlusOutlined } from '@vicons/antd'
 import type { DetailModalConfig } from '@/hooks/types/table'
@@ -105,19 +105,19 @@ export const userDetailConfig: DetailModalConfig = {
     {
       key: 'gender',
       label: '性别',
-      format: (value) => value === 1 ? '男' : value === 2 ? '女' : '-'
+      format: (value) => (value === 1 ? '男' : value === 2 ? '女' : '-'),
     },
     {
       key: 'status',
       label: '状态',
-      format: (value) => {
+      render: (value) => {
         const statusOptions = [
-          { label: '启用', value: 1 },
-          { label: '禁用', value: 0 },
+          { label: '启用', value: 1, type: 'success' as const },
+          { label: '禁用', value: 0, type: 'error' as const },
         ]
-        const option = statusOptions.find(opt => opt.value === value)
-        return option ? option.label : '-'
-      }
+        const option = statusOptions.find((opt) => opt.value === value)
+        return option ? renderTag(option.label, { type: option.type })() : '-'
+      },
     },
     { key: 'deptId', label: '所属部门' },
     { key: 'createTime', label: '创建时间' },
