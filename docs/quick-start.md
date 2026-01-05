@@ -23,7 +23,7 @@ npm install -g pnpm
 ### 克隆项目
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/Caoshenyang/ez-admin-naiveui.git
 cd ez-admin-naiveui
 ```
 

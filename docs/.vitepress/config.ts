@@ -12,6 +12,12 @@ export default defineConfig({
       { text: '开发指南', link: '/development' }
     ],
 
+    // 页面目录配置
+    outline: {
+      level: [2, 3], // 显示 h2 和 h3 标题
+      label: '页面导航' // 自定义目录标题
+    },
+
     sidebar: [
       {
         text: '项目介绍',
@@ -64,7 +70,7 @@ export default defineConfig({
     ],
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com' }
+      { icon: 'github', link: 'https://github.com/Caoshenyang/ez-admin-naiveui' }
     ]
   }
 })
