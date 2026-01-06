@@ -70,6 +70,14 @@ export function createButton(props: ButtonProps, icon?: Component) {
  * @param buttons - 按钮VNode数组
  * @returns 返回容器VNode
  */
-export function createButtonGroup(buttons: VNode[]) {
-  return h('div', { style: { display: 'flex', gap: '8px' } }, buttons)
+export function createButtonGroup(buttons: VNode[], options?: { justify?: 'flex-start' | 'center' | 'flex-end' }) {
+  const justify = options?.justify || 'flex-start'
+  return h('div', {
+    style: {
+      display: 'flex',
+      gap: '8px',
+      justifyContent: justify,
+      width: '100%'
+    }
+  }, buttons)
 }

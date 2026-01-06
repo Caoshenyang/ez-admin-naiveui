@@ -25,7 +25,7 @@ export function createDefaultQueryParams<T extends PageQuery>(searchDefaults: T[
  */
 export interface CrudConfig<
   TListVO extends RowData = RowData,
-  TQuery extends PageQuery = PageQuery,
+  TQuery = Record<string, unknown>,
   TCreateDTO = Record<string, unknown>,
   TUpdateDTO = Record<string, unknown>,
   TDetailVO = Record<string, unknown>,
@@ -37,8 +37,7 @@ export interface CrudConfig<
   /** 分页查询API（普通列表模式使用） */
   pageApi?: (params: TQuery) => Promise<PageResult<TListVO>>
   /** 树形查询API（树形模式使用，替代pageApi） */
-
-  treeApi?: () => Promise<TListVO[]>
+  treeApi?: (params?: TQuery) => Promise<TListVO[]>
   /** 获取详情API */
   detailApi: (id: string | number) => Promise<TDetailVO>
   /** 新增API */
@@ -243,6 +242,7 @@ function createActionColumn<T extends RowData>(
     title: '操作',
     key: 'action',
     width: actionWidth,
+    align: 'center' as const, // 操作栏表头默认居中
     fixed: fixedActionColumn ? ('right' as const) : undefined,
     render(row: T) {
       const buttons = createActionButtons(
@@ -254,7 +254,7 @@ function createActionColumn<T extends RowData>(
         customActionHandlers,
         row,
       )
-      return createButtonGroup(buttons)
+      return createButtonGroup(buttons, { justify: 'center' })
     },
   }
 }
@@ -318,7 +318,7 @@ function createTableColumns<T extends RowData>(
  */
 export function useCrud<
   TListVO extends RowData = RowData,
-  TQuery extends PageQuery = PageQuery,
+  TQuery = Record<string, unknown>,
   TCreateDTO = Record<string, unknown>,
   TUpdateDTO = Record<string, unknown>,
   TDetailVO = Record<string, unknown>,
@@ -416,7 +416,7 @@ export function useCrud<
         if (!treeApi) {
           throw new Error('树形模式下必须提供treeApi')
         }
-        const treeData = await treeApi()
+        const treeData = await treeApi(queryParams)
         dataList.value = treeData
         total.value = treeData.length
         // 树形模式下不设置分页总数

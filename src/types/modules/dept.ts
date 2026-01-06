@@ -1,5 +1,4 @@
 // 部门相关类型定义
-import type { PageQuery } from './api'
 import type { CrudConfig } from '@/hooks/useCrud'
 
 // 部门列表VO（匹配接口文档字段）
@@ -28,14 +27,11 @@ export interface DeptDetailVO {
 
 // 部门搜索条件
 export interface DeptSearchCriteria {
-  deptName?: string
-  status?: number
-  parentId?: number
   keywords?: string
 }
 
-// 部门分页查询参数
-export type DeptQuery = PageQuery<DeptSearchCriteria>
+// 部门查询参数（树形模式，无分页）
+export type DeptQuery = DeptSearchCriteria
 
 // 部门创建DTO（匹配接口文档）
 export interface DeptCreateDTO {

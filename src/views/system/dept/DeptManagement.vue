@@ -1,7 +1,7 @@
 <template>
   <!-- 搜索表单 -->
   <EzSearch
-    v-model="queryParams.search.keywords"
+    v-model="queryParams.keywords"
     placeholder="请输入部门名称进行搜索"
     @search="handleSearch"
     @reset="handleResetSearch"
@@ -35,22 +35,20 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { useCrud, createDefaultQueryParams } from '@/hooks/useCrud'
+import { useCrud } from '@/hooks/useCrud'
 import { handleButtonActions } from '@/utils/actionHandler'
 // 移除了不再需要的导入
 import EzTable from '@/components/common/EzTable.vue'
 import EzDetailModal from '@/components/common/EzDetailModal.vue'
 import { deptFormConfig, deptActionButtons, deptCrudConfig } from './'
-import type { DeptListVO, DeptQuery, DeptCreateDTO, DeptUpdateDTO } from '@/types'
+import type { DeptListVO, DeptQuery, DeptCreateDTO, DeptUpdateDTO, DeptCrudConfig } from '@/types'
 import type { EzTableConfig } from '@/hooks/types/table'
 import type { TreeOption } from '@/components/common/EzForm.vue'
 
 // === 查询参数管理 ===
-const queryParams = ref<DeptQuery>(
-  createDefaultQueryParams<DeptQuery>({
-    keywords: '',
-  }),
-)
+const queryParams = ref<DeptQuery>({
+  keywords: '',
+})
 
 // === 部门树数据管理 ===
 const deptTreeOptions = ref<TreeOption[]>([])
@@ -73,7 +71,7 @@ const handleAddChild = (row: DeptListVO) => {
 }
 
 // === 自定义CRUD配置（添加动态的自定义按钮处理函数） ===
-const customCrudConfig = computed(() => ({
+const customCrudConfig = computed<DeptCrudConfig>(() => ({
   ...deptCrudConfig,
   customActionHandlers: {
     addChild: handleAddChild,
@@ -159,7 +157,7 @@ const loadDeptTree = async () => {
 setLoadData(loadDeptList)
 
 const handleResetSearch = () => {
-  queryParams.value.search.keywords = ''
+  queryParams.value.keywords = ''
   loadDeptList() // 重新加载数据
 }
 
