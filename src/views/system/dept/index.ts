@@ -1,0 +1,116 @@
+/**
+ * 部门管理配置
+ *
+ * 统一导出所有部门相关的配置项
+ */
+import type { DeptCrudConfig } from '@/types'
+import type { FormConfig } from '@/components/common/EzForm.vue'
+import type { FormRules } from 'naive-ui'
+import type { DeptCreateDTO, DeptUpdateDTO, DeptListVO } from '@/types'
+import { type TableConfigOptions } from '@/hooks/types/table'
+import type { ActionButton } from '@/components/common/EzButtonGroup.vue'
+import { deptApi } from '@/api/dept'
+import { renderStatusTag, renderTag } from '@/utils/renderers'
+import { SyncOutline, TrashOutline } from '@vicons/ionicons5'
+import { PlusOutlined } from '@vicons/antd'
+import type { DetailModalConfig } from '@/hooks/types/table'
+
+// === 基础选项配置 ===
+const statusOptions = [
+  { label: '启用', value: 1, type: 'success' as const },
+  { label: '禁用', value: 0, type: 'error' as const },
+]
+
+// === 表单验证规则配置 ===
+const formRules: FormRules = {
+  deptName: [
+    { required: true, message: '请输入部门名称', trigger: 'blur' },
+    { min: 1, max: 50, message: '部门名称长度应在1-50个字符之间', trigger: 'blur' },
+  ],
+}
+
+// === 表单配置 ===
+export const deptFormConfig: FormConfig<DeptCreateDTO | DeptUpdateDTO> = {
+  title: '部门表单',
+  gridCols: 24,
+  size: 'medium',
+  fields: [
+    { key: 'deptName', label: '部门名称', type: 'input', required: true, placeholder: '请输入部门名称', span: 12 },
+    { key: 'parentId', label: '上级部门', type: 'tree-select', placeholder: '请选择上级部门', span: 12 },
+    { key: 'sort', label: '排序', type: 'number', placeholder: '请输入排序号', span: 12 },
+    { key: 'status', label: '状态', type: 'radio', options: statusOptions, required: true, span: 12 },
+  ],
+  // 表单验证规则
+  rules: formRules,
+}
+
+// === 表格配置 ===
+export const deptTableConfig: TableConfigOptions<DeptListVO> = {
+  columns: [
+    { title: '部门名称', key: 'deptName', width: 250 },
+    { title: '状态', key: 'status', width: 120, render: renderStatusTag(statusOptions) },
+    { title: '排序', key: 'sort', width: 120 },
+    { title: '创建时间', key: 'createdTime', width: 200 },
+  ],
+  // 操作按钮配置
+  actionButtons: {
+    view: true,
+    edit: true,
+    delete: true,
+  },
+  // 增加操作列宽度以容纳查看按钮
+  actionWidth: 180,
+}
+
+// === 操作按钮配置 ===
+export const deptActionButtons: ActionButton[] = [
+  { key: 'add', text: '新增', type: 'primary', icon: PlusOutlined, permission: 'sys:dept:add' },
+  { key: 'batch-delete', text: '批量删除', type: 'warning', icon: TrashOutline, permission: 'sys:dept:delete' },
+  { key: 'refresh', text: '刷新', icon: SyncOutline, permission: '' },
+]
+
+// === 详情配置 ===
+export const deptDetailConfig: DetailModalConfig = {
+  title: (data) => `部门详情 - ${data.deptName || ''}`,
+  column: 2,
+  fields: [
+    { key: 'deptName', label: '部门名称' },
+    {
+      key: 'status',
+      label: '状态',
+      render: (value) => {
+        const option = statusOptions.find((opt) => opt.value === value)
+        return option ? renderTag(option.label, { type: option.type })() : '-'
+      },
+    },
+    { key: 'sort', label: '排序' },
+    { key: 'createdTime', label: '创建时间' },
+  ],
+}
+
+// === CRUD 配置 ===
+export const deptCrudConfig: DeptCrudConfig = {
+  // 表格配置
+  tableConfig: deptTableConfig,
+  // 详情配置
+  detailConfig: deptDetailConfig,
+  // API配置
+  pageApi: deptApi.page,
+  detailApi: deptApi.detail,
+  createApi: deptApi.create,
+  updateApi: deptApi.update,
+  removeApi: deptApi.remove,
+  batchRemoveApi: deptApi.batchRemove,
+
+  // 主键字段
+  idKey: 'id' as const,
+
+  // 显示名称字段（用于删除确认等）
+  nameKey: 'deptName' as const,
+
+  // 新增表单默认值
+  createDefaultValues: {
+    status: 1, // 默认启用
+    sort: 0, // 默认排序
+  },
+}

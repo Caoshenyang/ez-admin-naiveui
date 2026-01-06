@@ -79,6 +79,7 @@ const tableConfig = computed<EzTableConfig<UserListVO>>(() => ({
   rowKey: (row: UserListVO) => row.userId,
   scrollX: tableScrollWidth.value,
   maxHeight: 'calc(100vh - 320px)',
+  bordered:true,
   striped: true,
   remote: true,
 }))

@@ -44,6 +44,8 @@ export interface TableConfigOptions<T extends RowData = RowData> {
   }
   /** 操作列宽度 */
   actionWidth?: number
+  /** 是否固定操作列 */
+  fixedActionColumn?: boolean
 }
 
 /** EzTable 组件配置接口（最终传递给 EzTable 组件的配置） */

@@ -73,14 +73,14 @@ export const roleFormRules: FormRules = {
 /**
  * 部门表单验证规则
  */
-export const departmentFormRules: FormRules = {
-  departmentName: [
+export const deptFormRules: FormRules = {
+  deptName: [
     { required: true, message: '请输入部门名称', trigger: ['blur', 'input'] },
     { min: 2, max: 50, message: '部门名称长度在 2 到 50 个字符', trigger: ['blur', 'input'] },
   ],
-  departmentKey: [
+  deptKey: [
     { required: true, message: '请输入部门标识', trigger: ['blur', 'input'] },
-    { pattern: /^[A-Z][A-Z0-9_]*$/, message: '部门标识必须以大写字母开头，只能包含大写字母、数字和下划线', trigger: ['blur', 'input'] },
+    { pattern: /^[a-zA-Z0-9_]+$/, message: '部门标识只能包含字母、数字和下划线', trigger: ['blur', 'input'] },
   ],
   leader: [
     { min: 2, max: 20, message: '负责人姓名长度在 2 到 20 个字符', trigger: ['blur', 'input'] }
