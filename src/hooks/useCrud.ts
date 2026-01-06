@@ -6,6 +6,7 @@ import { message, dialog, logger } from '@/hooks/useMessage'
 import { createButton, createButtonGroup } from '@/utils/renderers'
 import type { TableConfigOptions, PaginationConfigOptions, TableColumnConfig, DetailModalConfig } from './types/table'
 import type { RowData } from 'naive-ui/es/data-table/src/interface'
+import type { VNode } from 'vue'
 
 /**
  * 创建默认的查询参数
@@ -182,43 +183,45 @@ function createDataColumns<T>(columnsConfig: TableColumnConfig<T>[]): DataTableC
  */
 function createActionButtons<T extends RowData>(
   actionButtons: NonNullable<TableConfigOptions<T>['actionButtons']>,
+  actionOrder: Array<'custom' | 'view' | 'edit' | 'delete'>,
   handleEdit?: (row: T) => void,
   handleDelete?: (row: T) => void,
   handleView?: (row: T) => void,
   customActionHandlers?: Record<string, (row: T) => void>,
   row?: T,
 ) {
-  const buttons = []
-
-  if (actionButtons.view && row) {
-    buttons.push(
-      createButton(
-        {
-          type: 'info',
-          tertiary: true,
-          onClick: () => handleView?.(row),
-        },
-        EyeOutline,
-      ),
-    )
+  const buttons: VNode[] = []
+  const buttonGenerators = {
+    view: () => {
+      if (actionButtons.view && row) {
+        buttons.push(createButton({ type: 'info', tertiary: true, onClick: () => handleView?.(row) }, EyeOutline))
+      }
+    },
+    edit: () => {
+      if (actionButtons.edit && row) {
+        buttons.push(createButton({ type: 'primary', tertiary: true, onClick: () => handleEdit?.(row) }, CreateOutline))
+      }
+    },
+    delete: () => {
+      if (actionButtons.delete && row) {
+        buttons.push(createButton({ type: 'error', tertiary: true, onClick: () => handleDelete?.(row) }, TrashOutline))
+      }
+    },
+    custom: () => {
+      if (actionButtons.custom && row) {
+        actionButtons.custom.forEach((btn) => {
+          const handler = customActionHandlers?.[btn.actionKey]
+          buttons.push(
+            createButton({ type: btn.type, tertiary: btn.tertiary ?? true, onClick: () => handler?.(row) }, btn.icon),
+          )
+        })
+      }
+    },
   }
-
-  if (actionButtons.edit && row) {
-    buttons.push(createButton({ type: 'primary', tertiary: true, onClick: () => handleEdit?.(row) }, CreateOutline))
-  }
-
-  if (actionButtons.delete && row) {
-    buttons.push(createButton({ type: 'error', tertiary: true, onClick: () => handleDelete?.(row) }, TrashOutline))
-  }
-
-  if (actionButtons.custom && row) {
-    actionButtons.custom.forEach((btn) => {
-      const handler = customActionHandlers?.[btn.actionKey]
-      buttons.push(
-        createButton({ type: btn.type, tertiary: btn.tertiary ?? true, onClick: () => handler?.(row) }, btn.icon),
-      )
-    })
-  }
+  // 按照指定的顺序生成按钮
+  actionOrder.forEach((actionType) => {
+    buttonGenerators[actionType]?.()
+  })
 
   return buttons
 }
@@ -228,6 +231,7 @@ function createActionButtons<T extends RowData>(
  */
 function createActionColumn<T extends RowData>(
   actionButtons: NonNullable<TableConfigOptions<T>['actionButtons']>,
+  actionOrder: Array<'custom' | 'view' | 'edit' | 'delete'>,
   actionWidth: number,
   fixedActionColumn: boolean = true,
   handleEdit?: (row: T) => void,
@@ -241,7 +245,15 @@ function createActionColumn<T extends RowData>(
     width: actionWidth,
     fixed: fixedActionColumn ? ('right' as const) : undefined,
     render(row: T) {
-      const buttons = createActionButtons(actionButtons, handleEdit, handleDelete, handleView, customActionHandlers, row)
+      const buttons = createActionButtons(
+        actionButtons,
+        actionOrder,
+        handleEdit,
+        handleDelete,
+        handleView,
+        customActionHandlers,
+        row,
+      )
       return createButtonGroup(buttons)
     },
   }
@@ -262,6 +274,7 @@ function createTableColumns<T extends RowData>(
     showSelection = true,
     showActions = true,
     actionButtons = { edit: true, delete: true, view: false },
+    actionOrder = ['custom', 'view', 'edit', 'delete'],
     actionWidth = 140,
   } = options
 
@@ -276,7 +289,16 @@ function createTableColumns<T extends RowData>(
   if (showActions) {
     const fixedActionColumn = options.fixedActionColumn ?? true
     tableColumns.push(
-      createActionColumn(actionButtons, actionWidth, fixedActionColumn, handleEdit, handleDelete, handleView, customActionHandlers),
+      createActionColumn(
+        actionButtons,
+        actionOrder,
+        actionWidth,
+        fixedActionColumn,
+        handleEdit,
+        handleDelete,
+        handleView,
+        customActionHandlers,
+      ),
     )
   }
 
@@ -358,7 +380,13 @@ export function useCrud<
     })
   }
   const columns = computed(() =>
-    createTableColumns(tableConfig, handleEdit, handleDeleteForTable, detailConfig ? handleView : undefined, customActionHandlers),
+    createTableColumns(
+      tableConfig,
+      handleEdit,
+      handleDeleteForTable,
+      detailConfig ? handleView : undefined,
+      customActionHandlers,
+    ),
   )
   const tableScrollWidth = computed(() => calculateTableScrollWidth(columns.value))
 

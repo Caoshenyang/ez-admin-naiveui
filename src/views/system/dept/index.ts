@@ -73,6 +73,8 @@ export const deptTableConfig: TableConfigOptions<DeptListVO> = {
     edit: true,
     delete: true,
   },
+  // 自定义按钮显示顺序：添加子节点 -> 编辑 -> 删除
+  actionOrder: ['custom', 'edit', 'delete'],
   // 调整操作列宽度以容纳所有按钮
   actionWidth: 220,
 }

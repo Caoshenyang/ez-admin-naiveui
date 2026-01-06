@@ -42,6 +42,8 @@ export interface TableConfigOptions<T extends RowData = RowData> {
       actionKey: string  // 引用 customActionHandlers 中的函数名
     }>
   }
+  /** 操作按钮显示顺序，默认 ['custom', 'view', 'edit', 'delete'] */
+  actionOrder?: Array<'custom' | 'view' | 'edit' | 'delete'>
   /** 操作列宽度 */
   actionWidth?: number
   /** 是否固定操作列 */
