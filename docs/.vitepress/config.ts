@@ -49,6 +49,8 @@ export default defineConfig({
       {
         text: '开发指南',
         items: [
+          { text: '图片使用指南', link: '/image-usage-guide' },
+          { text: '类型命名规范', link: '/types-naming-convention' },
           { text: 'CRUD 组件', link: '/development/crud' },
           { text: '表单配置', link: '/development/form' },
           { text: '表格配置', link: '/development/table' },

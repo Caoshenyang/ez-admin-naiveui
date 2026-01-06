@@ -247,6 +247,7 @@ function createActionButtons<T extends RowData>(
 function createActionColumn<T extends RowData>(
   actionButtons: NonNullable<TableConfigOptions<T>['actionButtons']>,
   actionWidth: number,
+  fixedActionColumn: boolean = true,
   handleEdit?: (row: T) => void,
   handleDelete?: (row: T) => void,
   handleView?: (row: T) => void,
@@ -255,7 +256,7 @@ function createActionColumn<T extends RowData>(
     title: '操作',
     key: 'action',
     width: actionWidth,
-    fixed: 'right' as const,
+    fixed: fixedActionColumn ? ('right' as const) : undefined,
     render(row: T) {
       const buttons = createActionButtons(actionButtons, handleEdit, handleDelete, handleView, row)
       return createButtonGroup(buttons)
@@ -289,7 +290,8 @@ function createTableColumns<T extends RowData>(
   tableColumns.push(...createDataColumns(columns))
 
   if (showActions) {
-    tableColumns.push(createActionColumn(actionButtons, actionWidth, handleEdit, handleDelete, handleView))
+    const fixedActionColumn = options.fixedActionColumn ?? true
+    tableColumns.push(createActionColumn(actionButtons, actionWidth, fixedActionColumn, handleEdit, handleDelete, handleView))
   }
 
   return tableColumns

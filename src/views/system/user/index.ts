@@ -50,6 +50,7 @@ const formRules: FormRules = {
 export const userFormConfig: FormConfig<UserCreateDTO | UserUpdateDTO> = {
   title: '用户表单',
   gridCols: 24,
+  size: 'medium',
   fields: [
     { key: 'username', label: '用户名', type: 'input', required: true, placeholder: '请输入用户名', span: 12 },
     { key: 'password', label: '密码', type: 'password', placeholder: '请输入密码', span: 12 },

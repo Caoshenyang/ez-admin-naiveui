@@ -10,7 +10,7 @@
     :bordered="false"
     :segmented="false"
     :loading="loading"
-    style="width: 720px; max-width: 90vw"
+    :style="modalStyle"
     @after-leave="handleAfterLeave"
   >
     <n-form
@@ -33,6 +33,7 @@
               :clearable="field.clearable !== false"
               :type="(field.inputType || 'text') as any"
               :maxlength="field.maxlength"
+              style="width: 100%;"
               @update:value="(value) => updateFormData(field.key, value)"
             />
 
@@ -45,6 +46,7 @@
               :disabled="field.disabled"
               :clearable="field.clearable !== false"
               :maxlength="field.maxlength"
+              style="width: 100%;"
               @update:value="(value) => updateFormData(field.key, value)"
             />
 
@@ -58,6 +60,7 @@
               :clearable="field.clearable !== false"
               :maxlength="field.maxlength"
               :autosize="{ minRows: field.minRows || 3, maxRows: field.maxRows || 6 }"
+              style="width: 100%;"
               @update:value="(value) => updateFormData(field.key, value)"
             />
 
@@ -71,6 +74,7 @@
               :max="field.max"
               :precision="field.precision"
               :step="field.step"
+              style="width: 100%;"
               @update:value="(value) => updateFormData(field.key, value)"
             />
 
@@ -84,6 +88,7 @@
               :options="field.options as any"
               :multiple="field.multiple"
               :filterable="field.filterable !== false"
+              style="width: 100%;"
               @update:value="(value) => updateFormData(field.key, value)"
             />
 
@@ -154,12 +159,7 @@
             />
 
             <!-- 自定义插槽 -->
-            <slot
-              v-else-if="field.type === 'custom'"
-              :name="field.key"
-              :field="field"
-              :form-data="formData"
-            />
+            <slot v-else-if="field.type === 'custom'" :name="field.key" :field="field" :form-data="formData" />
 
             <!-- 默认输入框 -->
             <n-input
@@ -208,6 +208,7 @@ export interface FormField<T = Record<string, unknown>, K extends keyof T = keyo
     | 'textarea'
     | 'number'
     | 'select'
+    | 'tree-select'
     | 'radio'
     | 'checkbox'
     | 'switch'
@@ -246,6 +247,7 @@ export interface FormConfig<T = Record<string, unknown>> {
   submitText?: string
   cancelText?: string
   gridCols?: number
+  size?: 'small' | 'medium' | 'large'
   fields: FormField<T>[]
   rules?: FormRules
 }
@@ -281,6 +283,17 @@ const title = computed(() => props.config.title)
 const submitText = computed(() => props.config.submitText || '确定')
 const gridCols = computed(() => props.config.gridCols || 24)
 const formRules = computed(() => props.config.rules || {})
+
+// 弹窗尺寸样式
+const modalStyle = computed(() => {
+  const size = props.config.size || 'medium'
+  const sizeMap = {
+    small: 'width: 480px; max-width: 90vw',
+    medium: 'width: 720px; max-width: 90vw',
+    large: 'width: 960px; max-width: 95vw'
+  }
+  return sizeMap[size]
+})
 
 // 可见字段（支持条件显示）
 const visibleFields = computed(() =>

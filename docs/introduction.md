@@ -1,8 +1,21 @@
+<div style="display: flex; justify-content: center; align-items: center; gap: 8px; flex-wrap: wrap;">
+  <img src="https://img.shields.io/badge/version-1.0.0-brightgreen" alt="Version" />
+  <img src="https://img.shields.io/badge/Vue-3.5.25-brightgreen" alt="Vue" />
+  <img src="https://img.shields.io/badge/TypeScript-5.9.0-blue" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Vite-7.2.4-yellow" alt="Vite" />
+  <img src="https://img.shields.io/badge/Naive_UI-2.43.2-orange" alt="Naive UI" />
+  <img src="https://img.shields.io/badge/license-MIT-blue" alt="License" />
+</div>
+
+<div style="display: flex; justify-content: center; align-items: center;">
+  <img width="256" height="256" alt="EZ简洁后台logo" src="https://github.com/user-attachments/assets/36051ed0-02e6-4ee0-b47b-1627e727299d" />
+</div>
+
 # 项目概述
 
 **一款基于 Naive UI 的简单易用的后台管理系统**
 
-EZ Admin NaiveUI 是一个基于 Vue 3 + Naive UI + TypeScript 的现代化后台管理系统模板。
+EZ Admin NaiveUI 是一个专为个人开发者打造的现代化后台管理系统模板，基于 Vue 3 + Naive UI + TypeScript 技术栈，让你可以快速搭建自己的管理后台。
 
 ## 💡 项目理念
 
@@ -28,8 +41,8 @@ EZ-ADMIN-NAIVEUI 就是这样诞生的一个项目。EZ 取自 "easy" 谐音，�
 
 ### 🔐 用户认证
 
-- 基于 Token 的用户认证
-- 登录状态持久化
+- 基于 Cookie Session 的用户认证
+- 服务端 Session 状态管理
 - 自动登录过期处理
 
 ### 🛡️ 权限管理
