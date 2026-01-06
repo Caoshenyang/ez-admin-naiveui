@@ -39,13 +39,13 @@ export interface CrudConfig<
   /** 树形查询API（树形模式使用，替代pageApi） */
   treeApi?: (params?: TQuery) => Promise<TListVO[]>
   /** 获取详情API */
-  detailApi: (id: string | number) => Promise<TDetailVO>
+  detailApi?: (id: string | number) => Promise<TDetailVO>
   /** 新增API */
-  createApi: (data: TCreateDTO) => Promise<void>
+  createApi?: (data: TCreateDTO) => Promise<void>
   /** 更新API */
-  updateApi: (data: TUpdateDTO) => Promise<void>
+  updateApi?: (data: TUpdateDTO) => Promise<void>
   /** 删除API */
-  removeApi: (id: string | number) => Promise<void>
+  removeApi?: (id: string | number) => Promise<void>
   /** 批量删除API */
   batchRemoveApi?: (ids: (string | number)[]) => Promise<void>
   /** 表格配置 */
@@ -456,6 +456,11 @@ export function useCrud<
     try {
       formLoading.value = true
       const id = getRowId(row)
+
+      if (!detailApi) {
+        throw new Error('编辑功能需要配置detailApi')
+      }
+
       const detail = await detailApi(id)
 
       formMode.value = 'update'
@@ -479,6 +484,11 @@ export function useCrud<
     try {
       detailLoading.value = true
       const id = getRowId(row)
+
+      if (!detailApi) {
+        throw new Error('查看详情功能需要配置detailApi')
+      }
+
       const detail = await detailApi(id)
 
       Object.assign(detailData, detail)
@@ -503,10 +513,16 @@ export function useCrud<
       }
 
       if (formMode.value === 'create') {
+        if (!createApi) {
+          throw new Error('新增功能需要配置createApi')
+        }
         await createApi(submitData as TCreateDTO)
         const msg = typeof successMessage?.create === 'function' ? successMessage.create() : successMessage?.create
         message.success(msg || '新增成功')
       } else {
+        if (!updateApi) {
+          throw new Error('更新功能需要配置updateApi')
+        }
         await updateApi(submitData as TUpdateDTO)
         const msg = typeof successMessage?.update === 'function' ? successMessage.update() : successMessage?.update
         message.success(msg || '更新成功')
@@ -536,6 +552,9 @@ export function useCrud<
         negativeText: deleteConfirm?.negativeText || '取消',
         onPositiveClick: async () => {
           try {
+            if (!removeApi) {
+              throw new Error('删除功能需要配置removeApi')
+            }
             await removeApi(id)
             const msg =
               typeof successMessage?.delete === 'function' ? successMessage.delete(name) : successMessage?.delete

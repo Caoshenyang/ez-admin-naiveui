@@ -10,10 +10,9 @@ import type { DeptCreateDTO, DeptUpdateDTO, DeptListVO } from '@/types'
 import { type TableConfigOptions } from '@/hooks/types/table'
 import type { ActionButton } from '@/components/common/EzButtonGroup.vue'
 import { deptApi } from '@/api/dept'
-import { renderStatusTag, renderTag } from '@/utils/renderers'
+import { renderStatusTag } from '@/utils/renderers'
 import { SyncOutline, TrashOutline } from '@vicons/ionicons5'
 import { PlusOutlined } from '@vicons/antd'
-import type { DetailModalConfig } from '@/hooks/types/table'
 
 // === 基础选项配置 ===
 const statusOptions = [
@@ -86,26 +85,6 @@ export const deptActionButtons: ActionButton[] = [
   { key: 'refresh', text: '刷新', icon: SyncOutline, permission: '' },
 ]
 
-// === 详情配置 ===
-export const deptDetailConfig: DetailModalConfig = {
-  title: (data) => `部门详情 - ${data.deptName || ''}`,
-  column: 2,
-  fields: [
-    { key: 'deptName', label: '部门名称' },
-    {
-      key: 'status',
-      label: '状态',
-      render: (value) => {
-        const option = statusOptions.find((opt) => opt.value === value)
-        return option ? renderTag(option.label, { type: option.type })() : '-'
-      },
-    },
-    { key: 'deptSort', label: '排序' },
-    { key: 'description', label: '描述' },
-    { key: 'createTime', label: '创建时间' },
-  ],
-}
-
 // === CRUD 配置 ===
 export const deptCrudConfig: DeptCrudConfig = {
   // 树形模式配置
@@ -113,11 +92,9 @@ export const deptCrudConfig: DeptCrudConfig = {
   paginationOptions: false,
   // 表格配置
   tableConfig: deptTableConfig,
-  // 详情配置
-  detailConfig: deptDetailConfig,
   // API配置（根据接口文档调整）
   treeApi: deptApi.tree,
-  detailApi: deptApi.detail,
+  detailApi: deptApi.detail, // 编辑功能需要
   createApi: deptApi.create,
   updateApi: deptApi.update,
   removeApi: deptApi.remove,

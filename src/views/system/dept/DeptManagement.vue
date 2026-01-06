@@ -24,13 +24,6 @@
     @cancel="handleCancel"
   />
 
-  <!-- 部门详情模态框 -->
-  <EzDetailModal
-    v-model:show="detailVisible"
-    :data="detailData"
-    :config="deptCrudConfig.detailConfig"
-    :loading="detailLoading"
-  />
 </template>
 
 <script setup lang="ts">
@@ -39,7 +32,6 @@ import { useCrud } from '@/hooks/useCrud'
 import { handleButtonActions } from '@/utils/actionHandler'
 // 移除了不再需要的导入
 import EzTable from '@/components/common/EzTable.vue'
-import EzDetailModal from '@/components/common/EzDetailModal.vue'
 import { deptFormConfig, deptActionButtons, deptCrudConfig } from './'
 import type { DeptListVO, DeptQuery, DeptCreateDTO, DeptUpdateDTO, DeptCrudConfig } from '@/types'
 import type { EzTableConfig } from '@/hooks/types/table'
@@ -88,9 +80,6 @@ const { loading, dataList: deptList, columns, tableScrollWidth, checkedRowKeys }
 
 // 表单相关状态
 const { formVisible, formLoading, formMode, formData, handleCancel, handleFormDataUpdate } = crud
-
-// 详情相关状态
-const { detailVisible, detailLoading, detailData } = crud
 
 // 查询相关方法
 const { handleSearch, setLoadData } = crud
