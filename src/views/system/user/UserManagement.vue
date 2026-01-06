@@ -56,7 +56,7 @@ const crud = useCrud(userCrudConfig)
 // === 解构响应式数据和方法（按功能分组） ===
 
 // 表格相关状态
-const { loading, dataList: userList, pagination, columns, tableScrollWidth, checkedRowKeys } = crud
+const { loading, dataList: userList,   columns, tableScrollWidth, checkedRowKeys } = crud
 
 // 表单相关状态
 const { formVisible, formLoading, formMode, formData, handleCancel, handleFormDataUpdate } = crud
@@ -75,11 +75,10 @@ const tableConfig = computed<EzTableConfig<UserListVO>>(() => ({
   columns: columns.value,
   data: userList.value,
   loading: loading.value,
-  pagination: pagination,
   rowKey: (row: UserListVO) => row.userId,
   scrollX: tableScrollWidth.value,
   maxHeight: 'calc(100vh - 320px)',
-  bordered:true,
+  bordered: true,
   striped: true,
   remote: true,
 }))
@@ -105,8 +104,6 @@ const formConfig = computed(() => ({
 // === 数据加载（集成表格分页和查询参数） ===
 const loadUserList = async () => {
   // 同步分页参数到查询参数
-  queryParams.value.pageNum = pagination.page
-  queryParams.value.pageSize = pagination.pageSize || 10
   await crud.loadData(queryParams.value)
 }
 

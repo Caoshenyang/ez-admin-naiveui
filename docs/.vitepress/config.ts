@@ -4,6 +4,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: "EZ Admin NaiveUI",
   description: "基于 Vue 3 + Naive UI 的后台管理系统",
+  base: '/',
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [

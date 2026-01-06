@@ -6,24 +6,7 @@
 
 ## 图片存放位置
 
-### 方法1：Public 目录（推荐）
-
-将图片放在 `docs/.vitepress/public/` 目录下：
-
-```
-docs/.vitepress/public/
-├── images/
-│   ├── screenshots/
-│   │   ├── login-page.png
-│   │   └── dashboard.png
-│   ├── diagrams/
-│   │   ├── architecture.png
-│   │   └── data-flow.png
-│   └── icons/
-│       └── logo.png
-```
-
-### 方法2：Assets 目录
+### 方法1：Assets 目录（推荐）
 
 将图片放在 `docs/assets/` 目录下（如果不存在，需要创建）：
 
@@ -31,37 +14,70 @@ docs/.vitepress/public/
 docs/assets/
 ├── images/
 │   ├── screenshots/
+│   │   ├── login-page.png
+│   │   └── dashboard.png
+│   ├── diagrams/
+│   │   ├── architecture.png
+│   │   └── data-flow.png
+│   ├── icons/
+│   │   ├── logo.png
+│   │   ├── vue-logo.svg
+│   │   └── naive-ui-logo.png
+│   └── examples/
+│       └── example-diagram.png
+```
+
+### 方法2：Public 目录
+
+将图片放在 `docs/.vitepress/public/` 目录下：
+
+```
+docs/.vitepress/public/
+├── images/
+│   ├── screenshots/
 │   └── diagrams/
 ```
 
 ## 引用方式
 
-### 方式1：绝对路径（推荐用于 public 目录）
+### 方式1：相对路径（推荐用于 assets 目录）
+
+```markdown
+<!-- 引用 assets 目录下的图片（推荐方式） -->
+
+![登录页面](./assets/images/screenshots/login-page.png)
+
+<!-- 引用子目录中的图片 -->
+
+![架构图](./assets/images/diagrams/architecture.png)
+
+<!-- 引用图标 -->
+
+![Logo](./assets/images/icons/logo.png)
+
+<!-- 首页配置中的图片引用 -->
+
+hero:
+image:
+src: ./assets/images/icons/logo.png
+alt: 项目Logo
+```
+
+### 方式2：绝对路径（用于 public 目录）
 
 ```markdown
 <!-- 引用 public 目录下的图片 -->
+
 ![登录页面](/images/screenshots/login-page.png)
 
 <!-- 引用子目录中的图片 -->
+
 ![架构图](/images/diagrams/architecture.png)
-
-<!-- 引用图标 -->
-![Logo](/images/icons/logo.png)
 ```
 
-### 方式2：相对路径
+### 方式3：Assets 目录在组件中导入
 
-```markdown
-<!-- 在同一目录下的图片 -->
-![示例图片](./images/example.png)
-
-<!-- 在上级目录下的图片 -->
-![架构图](../images/architecture.png)
-```
-
-### 方式3：Assets 目录（需要导入）
-
-如果图片放在 assets 目录，需要在组件中导入：
+如果需要在 Vue 组件中使用 assets 目录的图片：
 
 ```vue
 <script setup>
@@ -75,7 +91,13 @@ import architectureImg from '../assets/images/architecture.png'
 
 ## 最佳实践
 
-### 1. 目录结构
+### 1. 推荐使用 Assets 目录
+
+- **优先选择**：`docs/assets/` 目录存放图片
+- **优势**：Vite 会优化处理，包括更好的缓存策略和路径解析
+- **兼容性**：在开发和生产环境中都能正常工作
+
+### 2. 目录结构
 
 建议按照功能分类存放图片：
 
@@ -104,64 +126,98 @@ import architectureImg from '../assets/images/architecture.png'
 
 ## 示例
 
+### 项目Logo（首页展示）
+
+将logo放在 `docs/assets/images/icons/`，在首页配置中使用：
+
+```yaml
+# docs/index.md
+hero:
+  name: 'EZ Admin NaiveUI'
+  image:
+    src: ./assets/images/icons/logo.png
+    alt: EZ简洁后台logo
+```
+
 ### 页面截图
 
-将截图放在 `docs/.vitepress/public/images/screenshots/`：
+将截图放在 `docs/assets/images/screenshots/`：
 
 ```markdown
 ## 用户管理页面
 
-![用户管理页面](/images/screenshots/user-management.png)
+![用户管理页面](./assets/images/screenshots/user-management.png)
 
-*图1：用户管理页面的界面截图*
+_图1：用户管理页面的界面截图_
 ```
 
 ### 架构图
 
-将架构图放在 `docs/.vitepress/public/images/diagrams/`：
+将架构图放在 `docs/assets/images/diagrams/`：
 
 ```markdown
 ## 系统架构
 
-![系统架构图](/images/diagrams/system-architecture.png)
+![系统架构图](./assets/images/diagrams/system-architecture.png)
 
-*图2：系统整体架构设计*
+_图2：系统整体架构设计_
 ```
 
 ### 图标
 
-将图标放在 `docs/.vitepress/public/images/icons/`：
+将图标放在 `docs/assets/images/icons/`：
 
 ```markdown
 ## 技术栈
 
-![Vue Logo](/images/icons/vue-logo.svg)
-![Naive UI Logo](/images/icons/naive-ui-logo.png)
+![Vue Logo](./assets/images/icons/vue-logo.svg)
+![Naive UI Logo](./assets/images/icons/naive-ui-logo.png)
 
-*图3：项目使用的核心技术栈*
+_图3：项目使用的核心技术栈_
+```
+
+### 内联图片
+
+在文章中直接使用图片：
+
+```markdown
+<div style="display: flex; justify-content: center;">
+  <img width="256" height="256" alt="EZ简洁后台logo" src="./assets/images/icons/logo.png" />
+</div>
 ```
 
 ## 注意事项
 
-1. **路径问题**：确保图片路径正确，区分大小写
-2. **构建问题**：Public 目录下的文件会直接复制到根目录
-3. **版本控制**：图片文件通常较大，考虑是否需要纳入版本控制
-4. **性能优化**：对于大图片，考虑懒加载或压缩
+1. **推荐Assets目录**：优先使用 `docs/assets/` 目录存放图片，Vite会进行优化处理
+2. **路径问题**：确保相对路径正确，区分大小写
+3. **构建优化**：Assets目录下的图片会被Vite优化，Public目录的文件直接复制
+4. **版本控制**：图片文件通常较大，考虑是否需要纳入版本控制
+5. **性能优化**：对于大图片，考虑懒加载或压缩
 
 ## 故障排除
 
 ### 图片不显示
 
-1. 检查图片文件是否存在
-2. 确认路径是否正确
-3. 检查文件权限
-4. 尝试清除缓存后重新构建
+1. 检查图片文件是否存在于 `docs/assets/images/` 目录
+2. 确认相对路径是否正确（以 `./assets/images/` 开头）
+3. 检查文件权限和文件名大小写
+4. 尝试清除缓存后重新构建：`npm run docs:dev`
+
+### Vite导入错误
+
+如果遇到 "Failed to resolve import" 错误：
+
+1. 确认使用的是相对路径 `./assets/images/xxx.png`
+2. 检查 `docs/assets/` 目录是否存在
+3. 确保 VitePress 配置中没有错误的 base 路径设置
+4. 尝试重启开发服务器
 
 ### 路径错误
 
 1. 使用浏览器的开发者工具查看控制台错误
-2. 确认图片路径是否以 `/` 开头（public 目录）
-3. 检查文件名大小写是否正确
+2. **Assets目录**：使用 `./assets/images/xxx.png` 相对路径
+3. **Public目录**：使用 `/images/xxx.png` 绝对路径
+4. 检查文件名大小写是否正确
 
 ## 相关链接
 

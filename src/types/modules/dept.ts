@@ -2,25 +2,27 @@
 import type { PageQuery } from './api'
 import type { CrudConfig } from '@/hooks/useCrud'
 
-// 部门列表VO
+// 部门列表VO（匹配接口文档字段）
 export interface DeptListVO {
-  id: number
+  deptId: number
   deptName: string
   parentId?: number
-  sort?: number
+  deptSort?: number
   status?: number
   children?: DeptListVO[]
-  createdTime?: string
+  createTime?: string
+  updateTime?: string
 }
 
-// 部门详情VO
+// 部门详情VO（匹配接口文档字段）
 export interface DeptDetailVO {
-  id: number
+  deptId: number
   deptName: string
   parentId?: number
-  sort?: number
+  deptSort?: number
   status?: number
-  createdTime?: string
+  description?: string
+  createTime?: string
   updateTime?: string
 }
 
@@ -35,17 +37,18 @@ export interface DeptSearchCriteria {
 // 部门分页查询参数
 export type DeptQuery = PageQuery<DeptSearchCriteria>
 
-// 部门创建DTO
+// 部门创建DTO（匹配接口文档）
 export interface DeptCreateDTO {
   deptName: string
   parentId?: number
-  sort?: number
+  deptSort?: number
   status?: number
+  description?: string
 }
 
-// 部门更新DTO
+// 部门更新DTO（匹配接口文档）
 export interface DeptUpdateDTO extends DeptCreateDTO {
-  id: number
+  deptId: number
 }
 
 // 部门CRUD配置类型

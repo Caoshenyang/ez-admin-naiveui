@@ -11,9 +11,7 @@ import type { RowData } from 'naive-ui/es/data-table/src/interface'
  * 创建默认的查询参数
  * 用于减少组件中的样板代码
  */
-export function createDefaultQueryParams<T extends PageQuery>(
-  searchDefaults: T['search'] = {} as T['search']
-): T {
+export function createDefaultQueryParams<T extends PageQuery>(searchDefaults: T['search'] = {} as T['search']): T {
   return {
     pageNum: 1,
     pageSize: 10,
@@ -33,8 +31,13 @@ export interface CrudConfig<
 > {
   /** 查询参数初始值 */
   queryParams?: TQuery
-  /** 分页查询API */
-  pageApi: (params: TQuery) => Promise<PageResult<TListVO>>
+  /** 是否启用树形模式 */
+  treeMode?: boolean
+  /** 分页查询API（普通列表模式使用） */
+  pageApi?: (params: TQuery) => Promise<PageResult<TListVO>>
+  /** 树形查询API（树形模式使用，替代pageApi） */
+
+  treeApi?: () => Promise<TListVO[]>
   /** 获取详情API */
   detailApi: (id: string | number) => Promise<TDetailVO>
   /** 新增API */
@@ -47,8 +50,8 @@ export interface CrudConfig<
   batchRemoveApi?: (ids: (string | number)[]) => Promise<void>
   /** 表格配置 */
   tableConfig: TableConfigOptions<TListVO>
-  /** 分页配置选项 */
-  paginationOptions?: PaginationConfigOptions
+  /** 分页配置选项（树形模式下可设置为false禁用分页） */
+  paginationOptions?: PaginationConfigOptions | false
   /** 详情模态框配置 */
   detailConfig?: DetailModalConfig
   /** 主键字段名（用于获取ID） */
@@ -89,6 +92,8 @@ export interface CrudConfig<
     delete?: string
     detail?: string
   }
+  /** 自定义按钮处理函数 */
+  customActionHandlers?: Record<string, (row: TListVO) => void>
 }
 
 /**
@@ -180,6 +185,7 @@ function createActionButtons<T extends RowData>(
   handleEdit?: (row: T) => void,
   handleDelete?: (row: T) => void,
   handleView?: (row: T) => void,
+  customActionHandlers?: Record<string, (row: T) => void>,
   row?: T,
 ) {
   const buttons = []
@@ -198,42 +204,18 @@ function createActionButtons<T extends RowData>(
   }
 
   if (actionButtons.edit && row) {
-    buttons.push(
-      createButton(
-        {
-          type: 'primary',
-          tertiary: true,
-          onClick: () => handleEdit?.(row),
-        },
-        CreateOutline,
-      ),
-    )
+    buttons.push(createButton({ type: 'primary', tertiary: true, onClick: () => handleEdit?.(row) }, CreateOutline))
   }
 
   if (actionButtons.delete && row) {
-    buttons.push(
-      createButton(
-        {
-          type: 'error',
-          tertiary: true,
-          onClick: () => handleDelete?.(row),
-        },
-        TrashOutline,
-      ),
-    )
+    buttons.push(createButton({ type: 'error', tertiary: true, onClick: () => handleDelete?.(row) }, TrashOutline))
   }
 
   if (actionButtons.custom && row) {
     actionButtons.custom.forEach((btn) => {
+      const handler = customActionHandlers?.[btn.actionKey]
       buttons.push(
-        createButton(
-          {
-            type: btn.type,
-            tertiary: btn.tertiary ?? true,
-            onClick: () => btn.onClick(row),
-          },
-          btn.icon,
-        ),
+        createButton({ type: btn.type, tertiary: btn.tertiary ?? true, onClick: () => handler?.(row) }, btn.icon),
       )
     })
   }
@@ -251,6 +233,7 @@ function createActionColumn<T extends RowData>(
   handleEdit?: (row: T) => void,
   handleDelete?: (row: T) => void,
   handleView?: (row: T) => void,
+  customActionHandlers?: Record<string, (row: T) => void>,
 ) {
   return {
     title: '操作',
@@ -258,7 +241,7 @@ function createActionColumn<T extends RowData>(
     width: actionWidth,
     fixed: fixedActionColumn ? ('right' as const) : undefined,
     render(row: T) {
-      const buttons = createActionButtons(actionButtons, handleEdit, handleDelete, handleView, row)
+      const buttons = createActionButtons(actionButtons, handleEdit, handleDelete, handleView, customActionHandlers, row)
       return createButtonGroup(buttons)
     },
   }
@@ -272,6 +255,7 @@ function createTableColumns<T extends RowData>(
   handleEdit?: (row: T) => void,
   handleDelete?: (row: T) => void,
   handleView?: (row: T) => void,
+  customActionHandlers?: Record<string, (row: T) => void>,
 ): DataTableColumns<T> {
   const {
     columns,
@@ -291,7 +275,9 @@ function createTableColumns<T extends RowData>(
 
   if (showActions) {
     const fixedActionColumn = options.fixedActionColumn ?? true
-    tableColumns.push(createActionColumn(actionButtons, actionWidth, fixedActionColumn, handleEdit, handleDelete, handleView))
+    tableColumns.push(
+      createActionColumn(actionButtons, actionWidth, fixedActionColumn, handleEdit, handleDelete, handleView, customActionHandlers),
+    )
   }
 
   return tableColumns
@@ -316,7 +302,9 @@ export function useCrud<
   TDetailVO = Record<string, unknown>,
 >(config: CrudConfig<TListVO, TQuery, TCreateDTO, TUpdateDTO, TDetailVO>) {
   const {
+    treeMode = false,
     pageApi,
+    treeApi,
     detailApi,
     createApi,
     updateApi,
@@ -334,6 +322,7 @@ export function useCrud<
     batchDeleteConfirm = {},
     successMessage = {},
     errorMessage = {},
+    customActionHandlers,
   } = config
 
   // === 响应式状态 ===
@@ -358,7 +347,8 @@ export function useCrud<
     throw new Error('loadData function must be implemented')
   }
 
-  const pagination = createPagination(() => loadDataFn(), paginationOptions)
+  // 树形模式下可以禁用分页
+  const pagination = paginationOptions === false ? null : createPagination(() => loadDataFn(), paginationOptions || {})
 
   // === 计算属性 ===
   // 表格列中使用的删除函数（自动刷新列表）
@@ -367,7 +357,9 @@ export function useCrud<
       loadDataFn()
     })
   }
-  const columns = computed(() => createTableColumns(tableConfig, handleEdit, handleDeleteForTable, detailConfig ? handleView : undefined))
+  const columns = computed(() =>
+    createTableColumns(tableConfig, handleEdit, handleDeleteForTable, detailConfig ? handleView : undefined, customActionHandlers),
+  )
   const tableScrollWidth = computed(() => calculateTableScrollWidth(columns.value))
 
   // === 工具函数 ===
@@ -390,11 +382,29 @@ export function useCrud<
   const loadData = async (queryParams: TQuery) => {
     try {
       loading.value = true
-      const res = await pageApi(queryParams)
-      dataList.value = res.records
-      total.value = Number(res.total)
-      pagination.itemCount = Number(res.total)
-      return res
+
+      if (treeMode) {
+        // 树形模式：使用treeApi获取完整树形数据
+        if (!treeApi) {
+          throw new Error('树形模式下必须提供treeApi')
+        }
+        const treeData = await treeApi()
+        dataList.value = treeData
+        total.value = treeData.length
+        // 树形模式下不设置分页总数
+      } else {
+        // 普通列表模式：使用pageApi进行分页查询
+        if (!pageApi) {
+          throw new Error('普通列表模式下必须提供pageApi')
+        }
+        const res = await pageApi(queryParams)
+        dataList.value = res.records
+        total.value = Number(res.total)
+        if (pagination) {
+          pagination.itemCount = Number(res.total)
+        }
+        return res
+      }
     } catch (error) {
       logger.error('加载数据列表失败:', error)
       throw error
@@ -405,6 +415,10 @@ export function useCrud<
 
   const handleAdd = () => {
     formMode.value = 'create'
+    // 清空表单数据，避免残留编辑时的旧数据
+    Object.keys(formData).forEach((key) => {
+      delete formData[key as keyof typeof formData]
+    })
     const defaults = typeof createDefaultValues === 'function' ? createDefaultValues() : createDefaultValues
     Object.assign(formData, defaults)
     formVisible.value = true
@@ -561,26 +575,32 @@ export function useCrud<
   }
 
   const handleSearch = () => {
-    pagination.page = 1
+    if (pagination) {
+      pagination.page = 1
+    }
     loadDataFn()
   }
 
   const handleReset = () => {
-    pagination.page = 1
+    if (pagination) {
+      pagination.page = 1
+    }
     loadDataFn()
   }
 
   // === 设置加载数据函数 ===
   const setLoadData = (fn: () => Promise<void> | void) => {
     loadDataFn = fn
-    pagination.onChange = (page: number) => {
-      pagination.page = page
-      loadDataFn()
-    }
-    pagination.onUpdatePageSize = (pageSize: number) => {
-      pagination.pageSize = pageSize
-      pagination.page = 1
-      loadDataFn()
+    if (pagination) {
+      pagination.onChange = (page: number) => {
+        pagination.page = page
+        loadDataFn()
+      }
+      pagination.onUpdatePageSize = (pageSize: number) => {
+        pagination.pageSize = pageSize
+        pagination.page = 1
+        loadDataFn()
+      }
     }
   }
 
@@ -601,6 +621,8 @@ export function useCrud<
     pagination,
     columns,
     tableScrollWidth,
+    // 模式标识
+    treeMode,
 
     // 方法
     loadData,

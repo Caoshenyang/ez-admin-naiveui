@@ -8,7 +8,7 @@
 </div>
 
 <div style="display: flex; justify-content: center; align-items: center;">
-  <img width="256" height="256" alt="EZ简洁后台logo" src="https://github.com/user-attachments/assets/36051ed0-02e6-4ee0-b47b-1627e727299d" />
+  <img width="256" height="256" alt="EZ简洁后台logo" src="./assets/images/logo.png" />
 </div>
 
 # 项目概述
@@ -24,6 +24,15 @@ EZ Admin NaiveUI 是一个专为个人开发者打造的现代化后台管理系
 为什么不取其精华，打造一款自己的产品？无论是学习，还是便于后面工作中提高自己的工作效率，都是一个不错的选择。我一直认为，"造轮子"是对于自己掌握知识的一个全面汇总，他可以很好的体现我们的项目落地能力。
 
 EZ-ADMIN-NAIVEUI 就是这样诞生的一个项目。EZ 取自 "easy" 谐音，体现系统简单易用的特点，这也是开发这个项目的目标之一。没有复杂的过度封装，代码整洁，逻辑清晰，可轻松上手，易于二次开发，没有任何技术负担。
+
+## 🙏 特别鸣谢
+
+本项目在开发过程中参考和借鉴了以下优秀开源项目的设计理念和技术实现，在此特别感谢：
+
+- [**eladmin**](https://github.com/elunez/eladmin) - 基于 Spring Boot 的后台管理系统
+- [**RuoYi**](https://gitee.com/y_project/RuoYi) - 一款基于 Spring Boot 的后台管理系统
+- [**vben admin**](https://github.com/vbenjs/vue-vben-admin) - 基于 Vue3 + TypeScript 的后台管理系统
+- [**Art Design Pro**](https://github.com/Daymychen/art-design-pro) - 企业级后台管理系统解决方案
 
 ## ✨ 核心特性
 

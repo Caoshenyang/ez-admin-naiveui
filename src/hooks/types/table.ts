@@ -39,7 +39,7 @@ export interface TableConfigOptions<T extends RowData = RowData> {
       type: 'primary' | 'success' | 'warning' | 'error' | 'info'
       tertiary?: boolean
       icon: Record<string, unknown>
-      onClick: (row: T) => void
+      actionKey: string  // 引用 customActionHandlers 中的函数名
     }>
   }
   /** 操作列宽度 */

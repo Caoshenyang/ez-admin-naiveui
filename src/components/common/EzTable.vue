@@ -21,6 +21,8 @@
     :bordered="bordered"
     :bottom-bordered="bottomBordered"
     :single-column="singleColumn"
+    :tree-structure="treeStructure"
+    :children-key="childrenKey"
     @update:checked-row-keys="handleCheckedChange"
     @update:sorter="handleSorterChange"
     @update:filters="handleFiltersChange"
@@ -83,6 +85,10 @@ export interface EzTableConfig<T extends RowData> {
   bottomBordered?: boolean
   /** 是否单列模式 */
   singleColumn?: boolean
+  /** 是否启用树形结构 */
+  treeStructure?: boolean
+  /** 子节点字段名 */
+  childrenKey?: string
 }
 
 /**
@@ -208,6 +214,16 @@ const bottomBordered = computed(() => props.config.bottomBordered ?? true)
  * 计算属性：单列模式
  */
 const singleColumn = computed(() => props.config.singleColumn ?? false)
+
+/**
+ * 计算属性：树形结构
+ */
+const treeStructure = computed(() => props.config.treeStructure ?? false)
+
+/**
+ * 计算属性：子节点字段名
+ */
+const childrenKey = computed(() => props.config.childrenKey ?? 'children')
 
 /**
  * 处理行选择改变事件
