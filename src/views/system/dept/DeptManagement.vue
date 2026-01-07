@@ -63,8 +63,6 @@ const handleAddChild = (row: DeptListVO) => {
   }
   Object.assign(formData, defaults)
   formVisible.value = true
-  // 加载父节点树数据（排除当前行ID）
-  loadParentTree(row.deptId)
 }
 
 // 自定义CRUD配置（添加动态的自定义按钮处理函数）
@@ -203,12 +201,11 @@ watch(
     if (visible) {
       // 表单打开时，根据模式决定排除的ID
       if (mode === 'update') {
-        // 编辑模式：排除当前编辑的部门ID
+        // 编辑模式：排除当前编辑的部门ID及其子节点
         const updateData = formData as Partial<DeptUpdateDTO>
-        const deptId = updateData.deptId
-        loadParentTree(deptId)
+        loadParentTree(updateData.deptId)
       } else {
-        // 新增模式：不排除任何ID
+        // 新增模式：不排除任何ID，允许选择所有部门作为父节点
         loadParentTree()
       }
     }
