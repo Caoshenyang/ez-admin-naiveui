@@ -86,7 +86,12 @@ const { loading, dataList: deptList, columns, checkedRowKeys } = crud
 const { formVisible, formLoading, formMode, formData, handleCancel, handleFormDataUpdate } = crud
 
 // 查询相关方法
-const { handleSearch, setLoadData } = crud
+const { resetPaginationAndLoad, loadDataList } = crud
+
+// 搜索处理
+const handleSearch = () => {
+  resetPaginationAndLoad()
+}
 
 // CRUD操作方法
 const { handleAdd: crudHandleAdd, handleSubmit, handleBatchDelete } = crud
@@ -99,8 +104,6 @@ const tableConfig = computed<EzTableConfig<DeptListVO>>(() => ({
   data: deptList.value,
   loading: loading.value,
   rowKey: (row: DeptListVO) => row.deptId, // 行主键
-  // scrollX 默认：自动按列宽计算总宽度
-  // maxHeight 默认：'calc(100vh - 320px)'
   remote: false, // 不使用远程分页（默认值：true，树形模式需要禁用远程分页）
   treeStructure: true, // 启用树形结构（默认值：false）
 }))
@@ -122,12 +125,6 @@ const formConfig = computed(() => ({
 }))
 
 // ==================== 数据加载方法 ====================
-
-// 加载部门列表
-const loadDeptList = async () => {
-  // 树形模式：直接调用treeApi
-  await crud.loadData(queryParams.value)
-}
 
 // 部门树数据转换函数
 const convertDeptToTreeOption = (dept: DeptListVO): TreeOption => ({
@@ -152,7 +149,7 @@ const loadParentTree = async (excludeId?: number) => {
 // 重置搜索
 const handleResetSearch = () => {
   queryParams.value.keywords = ''
-  loadDeptList() // 重新加载数据
+  resetPaginationAndLoad() // 重置分页并重新加载数据
 }
 
 // 新增（重写以加载父节点树）
@@ -163,7 +160,7 @@ const handleAdd = () => {
 // 表单提交（成功后刷新列表）
 const handleFormSubmit = async (data: Partial<DeptCreateDTO | DeptUpdateDTO>) => {
   await handleSubmit(data)
-  await loadDeptList() // 刷新列表
+  await loadDataList() // 刷新列表
 }
 
 // 表格行选择处理
@@ -176,7 +173,7 @@ const handleBatchDeleteClick = async () => {
   const ids = checkedRowKeys.value.map((id) => String(id))
   await handleBatchDelete(ids, async () => {
     checkedRowKeys.value = []
-    await loadDeptList()
+    await loadDataList()
   })
 }
 
@@ -185,7 +182,7 @@ const handleAction = handleButtonActions({
   add: handleAdd, // 新增按钮 -> 打开新增表单
   'batch-delete': handleBatchDeleteClick, // 批量删除按钮 -> 执行批量删除
   refresh: async () => {
-    await loadDeptList() // 刷新数据列表
+    await loadDataList() // 刷新数据列表
   }, // 刷新按钮 -> 刷新数据列表
 })
 
@@ -212,11 +209,8 @@ watch(
 
 // ==================== 生命周期 ====================
 
-// 设置加载数据函数（约定：通过配置驱动）
-setLoadData(loadDeptList)
-
 // 组件挂载时加载数据
 onMounted(async () => {
-  await loadDeptList()
+  await loadDataList()
 })
 </script>

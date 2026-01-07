@@ -65,7 +65,12 @@ const { formVisible, formLoading, formMode, formData, handleCancel, handleFormDa
 const { detailVisible, detailLoading, detailData } = crud
 
 // 查询相关方法
-const { handleSearch, handleReset, setLoadData } = crud
+const { resetPaginationAndLoad, loadDataList } = crud
+
+// 搜索处理
+const handleSearch = () => {
+  resetPaginationAndLoad()
+}
 
 // CRUD操作方法
 const { handleAdd, handleSubmit, handleBatchDelete } = crud
@@ -76,9 +81,6 @@ const tableConfig = computed<EzTableConfig<UserListVO>>(() => ({
   data: userList.value,
   loading: loading.value,
   rowKey: (row: UserListVO) => row.userId,
-  // scrollX 默认：自动按列宽计算总宽度
-  // maxHeight 默认：'calc(100vh - 320px)'
-  // bordered/striped/remote 均使用默认值，不需要显式设置
 }))
 
 // === 计算属性 ===
@@ -100,23 +102,16 @@ const formConfig = computed(() => ({
 }))
 
 // === 数据加载（集成表格分页和查询参数） ===
-const loadUserList = async () => {
-  // 同步分页参数到查询参数
-  await crud.loadData(queryParams.value)
-}
-
-// === 设置加载数据函数（约定：通过配置驱动） ===
-setLoadData(loadUserList)
 
 const handleResetSearch = () => {
   queryParams.value.search.keywords = ''
-  handleReset()
+  resetPaginationAndLoad()
 }
 
 // === 表单提交（成功后刷新列表） ===
 const handleFormSubmit = async (data: Partial<UserCreateDTO | UserUpdateDTO>) => {
   await handleSubmit(data)
-  await loadUserList() // 刷新列表
+  await loadDataList() // 刷新列表
 }
 
 // === 表格行选择处理 ===
@@ -129,13 +124,13 @@ const handleBatchDeleteClick = async () => {
   const ids = checkedRowKeys.value.map((id) => String(id))
   await handleBatchDelete(ids, async () => {
     checkedRowKeys.value = []
-    await loadUserList()
+    await loadDataList()
   })
 }
 
 // === 刷新功能 ===
 const handleRefresh = () => {
-  loadUserList()
+  loadDataList()
 }
 
 // === 按钮action处理器 ===
@@ -147,6 +142,6 @@ const handleAction = handleButtonActions({
 
 // === 组件挂载时加载数据 ===
 onMounted(() => {
-  loadUserList()
+  loadDataList()
 })
 </script>

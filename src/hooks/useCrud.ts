@@ -94,6 +94,8 @@ export interface CrudConfig<
   }
   /** 自定义按钮处理函数 */
   customActionHandlers?: Record<string, (row: TListVO) => void>
+  /** 自定义数据加载函数（可选，默认使用内置逻辑） */
+  customLoadData?: (queryParams: TQuery) => Promise<void>
 }
 
 /**
@@ -324,6 +326,7 @@ export function useCrud<
   TDetailVO = Record<string, unknown>,
 >(config: CrudConfig<TListVO, TQuery, TCreateDTO, TUpdateDTO, TDetailVO>) {
   const {
+    queryParams: configQueryParams,
     treeMode = false,
     pageApi,
     treeApi,
@@ -345,6 +348,7 @@ export function useCrud<
     successMessage = {},
     errorMessage = {},
     customActionHandlers,
+    customLoadData,
   } = config
 
   // === 响应式状态 ===
@@ -352,6 +356,9 @@ export function useCrud<
   const dataList = ref<TListVO[]>([])
   const total = ref(0)
   const checkedRowKeys = ref<Array<string | number>>([])
+
+  // 查询参数
+  const queryParams = ref<TQuery>(configQueryParams || {} as TQuery)
 
   // 表单状态
   const formVisible = ref(false)
@@ -365,18 +372,17 @@ export function useCrud<
   const detailData = reactive<Partial<TDetailVO>>({})
 
   // === 表格和分页配置 ===
-  let loadDataFn: () => Promise<void> | void = () => {
-    throw new Error('loadData function must be implemented')
-  }
+  // 预定义 loadDataList 引用（用于分页回调）
+  let loadDataListRef: () => Promise<void> = () => Promise.resolve()
 
   // 树形模式下可以禁用分页
-  const pagination = paginationOptions === false ? null : createPagination(() => loadDataFn(), paginationOptions || {})
+  const pagination = paginationOptions === false ? null : createPagination(() => loadDataListRef(), paginationOptions || {})
 
   // === 计算属性 ===
   // 表格列中使用的删除函数（自动刷新列表）
   const handleDeleteForTable = (row: TListVO) => {
     handleDelete(row, () => {
-      loadDataFn()
+      loadDataListRef()
     })
   }
   const columns = computed(() =>
@@ -440,6 +446,19 @@ export function useCrud<
       loading.value = false
     }
   }
+
+  // === 默认数据加载方法 ===
+  const loadDataList = async () => {
+    // 如果有自定义加载函数，使用自定义的；否则使用默认逻辑
+    if (customLoadData) {
+      await customLoadData(queryParams.value)
+    } else {
+      await loadData(queryParams.value)
+    }
+  }
+
+  // 设置分页回调引用
+  loadDataListRef = loadDataList
 
   const handleAdd = () => {
     formMode.value = 'create'
@@ -621,35 +640,14 @@ export function useCrud<
     checkedRowKeys.value = keys
   }
 
-  const handleSearch = () => {
+  // === 通用工具函数 ===
+  const resetPaginationAndLoad = () => {
     if (pagination) {
       pagination.page = 1
     }
-    loadDataFn()
+    loadDataList()
   }
 
-  const handleReset = () => {
-    if (pagination) {
-      pagination.page = 1
-    }
-    loadDataFn()
-  }
-
-  // === 设置加载数据函数 ===
-  const setLoadData = (fn: () => Promise<void> | void) => {
-    loadDataFn = fn
-    if (pagination) {
-      pagination.onChange = (page: number) => {
-        pagination.page = page
-        loadDataFn()
-      }
-      pagination.onUpdatePageSize = (pageSize: number) => {
-        pagination.pageSize = pageSize
-        pagination.page = 1
-        loadDataFn()
-      }
-    }
-  }
 
   // === 返回值 ===
   return {
@@ -673,7 +671,7 @@ export function useCrud<
 
     // 方法
     loadData,
-    setLoadData,
+    loadDataList,
     handleAdd,
     handleEdit,
     handleView,
@@ -683,8 +681,7 @@ export function useCrud<
     handleCancel,
     handleFormDataUpdate,
     handleCheck,
-    handleSearch,
-    handleReset,
+    resetPaginationAndLoad,
 
     // 工具方法
     getRowId,
