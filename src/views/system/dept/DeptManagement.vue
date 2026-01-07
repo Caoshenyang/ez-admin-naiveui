@@ -93,20 +93,18 @@ const { handleAdd: crudHandleAdd, handleSubmit, handleBatchDelete } = crud
 
 // ==================== 计算属性 ====================
 
-// 表格配置
+// 表格配置（树形结构模式）
 const tableConfig = computed<EzTableConfig<DeptListVO>>(() => ({
   columns: columns.value, // 直接使用useCrud生成的columns（包含操作列）
   data: deptList.value,
   loading: loading.value,
-  rowKey: (row: DeptListVO) => row.deptId,
-  scrollX: tableScrollWidth.value,
-  maxHeight: 'calc(100vh - 320px)',
-  bordered: true,
-  striped: true,
-  remote: false, // 树形模式不使用远程分页
-  treeStructure: true, // 启用树形结构
-  childrenKey: 'children', // 子节点字段名
-}))
+  rowKey: (row: DeptListVO) => row.deptId, // 行主键
+  scrollX: tableScrollWidth.value, // 横向滚动宽度
+  maxHeight: 'calc(100vh - 320px)', // 最大高度
+  bordered: true, // 显示边框（默认值：false）
+  remote: false, // 不使用远程分页（默认值：true，树形模式需要禁用远程分页）
+  treeStructure: true, // 启用树形结构（默认值：false）
+ }))
 
 // 表单配置
 const formConfig = computed(() => ({

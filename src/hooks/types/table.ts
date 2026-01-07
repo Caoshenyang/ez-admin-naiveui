@@ -66,20 +66,24 @@ export interface EzTableConfig<T extends RowData = RowData> {
   scrollX?: string | number
   /** 最大高度 */
   maxHeight?: string | number
-  /** 是否显示斑马纹 */
+  /** 是否显示斑马纹，默认值：true */
   striped?: boolean
-  /** 是否远程分页 */
+  /** 是否远程分页，默认值：true */
   remote?: boolean
-  /** 是否单行显示 */
+  /** 是否单行显示，默认值：true */
   singleLine?: boolean
-  /** 表格尺寸 */
+  /** 表格尺寸，默认值：'small' */
   size?: 'small' | 'medium' | 'large'
-  /** 是否显示边框 */
+  /** 是否显示边框，默认值：false */
   bordered?: boolean
   /** 是否显示底部边框 */
   bottomBordered?: boolean
   /** 是否单列模式 */
   singleColumn?: boolean
+  /** 是否启用树形结构，默认值：false */
+  treeStructure?: boolean
+  /** 子节点字段名，默认值：'children' */
+  childrenKey?: string
 }
 
 /** 分页配置选项接口 */

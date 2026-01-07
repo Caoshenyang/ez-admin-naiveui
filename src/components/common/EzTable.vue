@@ -38,8 +38,8 @@
 -->
 <script setup lang="ts" generic="T extends RowData">
 import { ref, computed, watch } from 'vue'
-import type { DataTableColumns, PaginationProps } from 'naive-ui'
 import type { RowData, InternalRowData } from 'naive-ui/es/data-table/src/interface'
+import type { EzTableConfig } from '@/hooks/types/table'
 
 /**
  * 🎯 EzTable 泛型组件设计说明：
@@ -52,44 +52,6 @@ import type { RowData, InternalRowData } from 'naive-ui/es/data-table/src/interf
  * 使用示例：
  * <EzTable<UserListVO> :config="tableConfig" />
  */
-
-/**
- * EzTable 组件配置接口
- */
-export interface EzTableConfig<T extends RowData> {
-  /** 表格列配置 */
-  columns: DataTableColumns<T>
-  /** 表格数据源 */
-  data: T[]
-  /** 是否显示加载状态 */
-  loading?: boolean
-  /** 分页配置 */
-  pagination?: PaginationProps
-  /** 行主键字段 */
-  rowKey?: (row: T) => string | number
-  /** 横向滚动宽度 */
-  scrollX?: string | number
-  /** 最大高度 */
-  maxHeight?: string | number
-  /** 是否显示斑马纹 */
-  striped?: boolean
-  /** 是否远程分页 */
-  remote?: boolean
-  /** 是否单行显示 */
-  singleLine?: boolean
-  /** 表格尺寸 */
-  size?: 'small' | 'medium' | 'large'
-  /** 是否显示边框 */
-  bordered?: boolean
-  /** 是否显示底部边框 */
-  bottomBordered?: boolean
-  /** 是否单列模式 */
-  singleColumn?: boolean
-  /** 是否启用树形结构 */
-  treeStructure?: boolean
-  /** 子节点字段名 */
-  childrenKey?: string
-}
 
 /**
  * 表格事件接口
