@@ -16,4 +16,7 @@ export const deptApi = {
 
   // 获取详情
   detail: (id: string | number) => http.get<DeptDetailVO>(`/system/dept/${id}`),
+
+  // 获取父节点树形结构（用于表单上级部门选择）
+  parentTree: (excludeId?: number) => http.post<DeptListVO[]>('/system/dept/parent-tree', { excludeId }),
 }

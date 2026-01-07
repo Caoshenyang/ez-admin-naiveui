@@ -23,29 +23,32 @@
     @submit="handleFormSubmit"
     @cancel="handleCancel"
   />
-
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useCrud } from '@/hooks/useCrud'
 import { handleButtonActions } from '@/utils/actionHandler'
-// 移除了不再需要的导入
 import EzTable from '@/components/common/EzTable.vue'
 import { deptFormConfig, deptActionButtons, deptCrudConfig } from './'
+import { deptApi } from '@/api/dept'
 import type { DeptListVO, DeptQuery, DeptCreateDTO, DeptUpdateDTO, DeptCrudConfig } from '@/types'
 import type { EzTableConfig } from '@/hooks/types/table'
 import type { TreeOption } from '@/components/common/EzForm.vue'
 
-// === 查询参数管理 ===
+// ==================== 响应式变量 ====================
+
+// 查询参数
 const queryParams = ref<DeptQuery>({
   keywords: '',
 })
 
-// === 部门树数据管理 ===
-const deptTreeOptions = ref<TreeOption[]>([])
+// 父节点树数据（用于表单上级部门选择）
+const parentTreeOptions = ref<TreeOption[]>([])
 
-// === 添加子节点处理函数 ===
+// ==================== CRUD 配置 ====================
+
+// 添加子节点处理函数
 const handleAddChild = (row: DeptListVO) => {
   formMode.value = 'create'
   // 清空表单数据
@@ -60,9 +63,11 @@ const handleAddChild = (row: DeptListVO) => {
   }
   Object.assign(formData, defaults)
   formVisible.value = true
+  // 加载父节点树数据（排除当前行ID）
+  loadParentTree(row.deptId)
 }
 
-// === 自定义CRUD配置（添加动态的自定义按钮处理函数） ===
+// 自定义CRUD配置（添加动态的自定义按钮处理函数）
 const customCrudConfig = computed<DeptCrudConfig>(() => ({
   ...deptCrudConfig,
   customActionHandlers: {
@@ -70,11 +75,12 @@ const customCrudConfig = computed<DeptCrudConfig>(() => ({
   },
 }))
 
-// === 使用CRUD Hook（约定：自动处理所有CRUD逻辑，包含表格） ===
+// ==================== CRUD Hook ====================
+
+// 使用CRUD Hook（约定：自动处理所有CRUD逻辑，包含表格）
 const crud = useCrud(customCrudConfig.value)
 
-// === 解构响应式数据和方法（按功能分组） ===
-
+// 解构响应式数据和方法
 // 表格相关状态
 const { loading, dataList: deptList, columns, tableScrollWidth, checkedRowKeys } = crud
 
@@ -85,9 +91,11 @@ const { formVisible, formLoading, formMode, formData, handleCancel, handleFormDa
 const { handleSearch, setLoadData } = crud
 
 // CRUD操作方法
-const { handleAdd, handleSubmit, handleBatchDelete } = crud
+const { handleAdd: crudHandleAdd, handleSubmit, handleBatchDelete } = crud
 
-// 表格配置 - 使用useCrud自动生成的操作列
+// ==================== 计算属性 ====================
+
+// 表格配置
 const tableConfig = computed<EzTableConfig<DeptListVO>>(() => ({
   columns: columns.value, // 直接使用useCrud生成的columns（包含操作列）
   data: deptList.value,
@@ -102,7 +110,7 @@ const tableConfig = computed<EzTableConfig<DeptListVO>>(() => ({
   childrenKey: 'children', // 子节点字段名
 }))
 
-// === 计算属性 ===
+// 表单配置
 const formConfig = computed(() => ({
   ...deptFormConfig,
   title: formMode.value === 'create' ? '新增部门' : '编辑部门',
@@ -111,58 +119,64 @@ const formConfig = computed(() => ({
       // 为上级部门字段设置树形选项
       return {
         ...field,
-        treeOptions: deptTreeOptions.value,
+        treeOptions: parentTreeOptions.value,
       }
     }
     return field
   }),
 }))
 
-// === 数据加载 ===
+// ==================== 数据加载方法 ====================
+
+// 加载部门列表
 const loadDeptList = async () => {
   // 树形模式：直接调用treeApi
   await crud.loadData(queryParams.value)
 }
 
-// === 部门树数据转换函数 ===
+// 部门树数据转换函数
 const convertDeptToTreeOption = (dept: DeptListVO): TreeOption => ({
   key: dept.deptId,
   label: dept.deptName,
   children: dept.children?.map(convertDeptToTreeOption),
 })
 
-// === 加载部门树数据 ===
-const loadDeptTree = async () => {
+// 加载父节点树数据（用于表单上级部门选择）
+const loadParentTree = async (excludeId?: number) => {
   try {
-    // 直接调用treeApi获取树形数据
-    const treeData = await deptCrudConfig.treeApi!()
-    deptTreeOptions.value = treeData.map(convertDeptToTreeOption)
+    const treeData = await deptApi.parentTree(excludeId)
+    parentTreeOptions.value = treeData.map(convertDeptToTreeOption)
   } catch (error) {
-    console.error('加载部门树数据失败:', error)
+    console.error('加载父节点树数据失败:', error)
+    parentTreeOptions.value = []
   }
 }
 
-// === 设置加载数据函数（约定：通过配置驱动） ===
-setLoadData(loadDeptList)
+// ==================== 事件处理方法 ====================
 
+// 重置搜索
 const handleResetSearch = () => {
   queryParams.value.keywords = ''
   loadDeptList() // 重新加载数据
 }
 
-// === 表单提交（成功后刷新列表和树） ===
+// 新增（重写以加载父节点树）
+const handleAdd = () => {
+  crudHandleAdd()
+}
+
+// 表单提交（成功后刷新列表）
 const handleFormSubmit = async (data: Partial<DeptCreateDTO | DeptUpdateDTO>) => {
   await handleSubmit(data)
   await loadDeptList() // 刷新列表
-  await loadDeptTree() // 刷新部门树
 }
 
-// === 表格行选择处理 ===
+// 表格行选择处理
 const handleCheck = (keys: (string | number)[]) => {
   checkedRowKeys.value = keys
 }
 
-// === 批量删除（集成表格选中状态） ===
+// 批量删除（集成表格选中状态）
 const handleBatchDeleteClick = async () => {
   const ids = checkedRowKeys.value.map((id) => String(id))
   await handleBatchDelete(ids, async () => {
@@ -171,19 +185,44 @@ const handleBatchDeleteClick = async () => {
   })
 }
 
-// === 按钮action处理器 ===
+// 按钮action处理器
 const handleAction = handleButtonActions({
   add: handleAdd, // 新增按钮 -> 打开新增表单
   'batch-delete': handleBatchDeleteClick, // 批量删除按钮 -> 执行批量删除
   refresh: async () => {
     await loadDeptList() // 刷新数据列表
-    await loadDeptTree() // 刷新部门树
-  }, // 刷新按钮 -> 刷新数据列表和部门树
+  }, // 刷新按钮 -> 刷新数据列表
 })
 
-// === 组件挂载时加载数据 ===
+// ==================== 监听器 ====================
+
+// 监听表单打开，加载父节点树数据
+watch(
+  [formVisible, formMode],
+  ([visible, mode]) => {
+    if (visible) {
+      // 表单打开时，根据模式决定排除的ID
+      if (mode === 'update') {
+        // 编辑模式：排除当前编辑的部门ID
+        const updateData = formData as Partial<DeptUpdateDTO>
+        const deptId = updateData.deptId
+        loadParentTree(deptId)
+      } else {
+        // 新增模式：不排除任何ID
+        loadParentTree()
+      }
+    }
+  },
+  { immediate: false },
+)
+
+// ==================== 生命周期 ====================
+
+// 设置加载数据函数（约定：通过配置驱动）
+setLoadData(loadDeptList)
+
+// 组件挂载时加载数据
 onMounted(async () => {
   await loadDeptList()
-  await loadDeptTree()
 })
 </script>
