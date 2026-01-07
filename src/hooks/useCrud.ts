@@ -30,40 +30,20 @@
  */
 
 import { ref, reactive, computed } from 'vue'
-import type { PageQuery, PageResult } from '@/types/modules/api'
-import type { DataTableColumns } from 'naive-ui'
-import { TrashOutline, CreateOutline, EyeOutline } from '@vicons/ionicons5'
+import type { PageResult } from '@/types/modules/api'
 import { message, dialog, logger } from '@/hooks/useMessage'
-import { createButton, createButtonGroup } from '@/utils/renderers'
-import type { TableConfigOptions, PaginationConfigOptions, TableColumnConfig, DetailModalConfig } from './types/table'
+import { createPagination } from '@/utils/pagination'
+import { createTableColumns, calculateTableScrollWidth } from '@/utils/table'
+import type { TableConfigOptions, PaginationConfigOptions, DetailModalConfig } from './types/table'
 import type { RowData } from 'naive-ui/es/data-table/src/interface'
-import type { VNode } from 'vue'
 
-// ==================== 工具函数 ====================
+// ==================== 导出工具函数 ====================
 
 /**
- * 创建默认的查询参数
- * 用于分页查询场景，自动设置初始页码和每页大小
- *
- * @param searchDefaults - 搜索条件的默认值
- * @returns 包含分页信息和搜索条件的查询参数对象
- *
- * 示例：
- * ```ts
- * const queryParams = createDefaultQueryParams<UserQuery>({
- *   keywords: '',
- *   status: 1
- * })
- * // 结果：{ pageNum: 1, pageSize: 10, search: { keywords: '', status: 1 } }
- * ```
+ * 创建默认的查询参数（导出以供外部使用）
+ * @deprecated 请使用 @/utils/query 中的 createDefaultQueryParams
  */
-export function createDefaultQueryParams<T extends PageQuery>(searchDefaults: T['search'] = {} as T['search']): T {
-  return {
-    pageNum: 1,
-    pageSize: 10,
-    search: searchDefaults,
-  } as T
-}
+export { createDefaultQueryParams } from '@/utils/query'
 
 /**
  * CRUD 配置接口
@@ -154,262 +134,6 @@ export interface CrudConfig<
   customLoadData?: (queryParams: TQuery) => Promise<void>
 }
 
-/**
- * 创建分页配置
- * 根据选项生成分页组件的配置对象
- *
- * @param reloadCallback - 页码或每页大小改变时的回调函数
- * @param options - 分页选项（每页大小选项、是否显示快速跳转等）
- * @returns 响应式的分页配置对象
- */
-function createPagination(reloadCallback?: () => void, options: PaginationConfigOptions = {}) {
-  const {
-    pageSizes = [10, 15, 30],
-    showSizePicker = true,
-    showQuickJumper = true,
-    prefix = (info: { itemCount: number | undefined }) => {
-      return info.itemCount ? `共 ${info.itemCount} 条` : ''
-    },
-  } = options
-
-  const paginationConfig = reactive({
-    page: 1,
-    pageSize: pageSizes[0],
-    showSizePicker,
-    showQuickJumper,
-    pageSizes,
-    itemCount: 0,
-    prefix,
-    onChange: (page: number) => {
-      paginationConfig.page = page
-      reloadCallback?.()
-    },
-    onUpdatePageSize: (pageSize: number) => {
-      paginationConfig.pageSize = pageSize
-      paginationConfig.page = 1
-      reloadCallback?.()
-    },
-  })
-
-  return paginationConfig
-}
-
-/**
- * 计算表格总宽度
- * 遍历所有列，累加每列的宽度，用于设置表格的横向滚动宽度
- *
- * @param columns - 表格列配置数组
- * @returns 所有列的总宽度
- */
-function calculateTableScrollWidth<T extends RowData>(columns: DataTableColumns<T>): number {
-  return columns.reduce((total, col) => {
-    if (col.type === 'selection') {
-      return total + 50 // 选择列的固定宽度
-    }
-    return total + Number(col.width || 0)
-  }, 0)
-}
-
-/**
- * 创建选择列
- * 生成表格的多选列配置
- *
- * @returns 选择列配置对象
- */
-function createSelectionColumn() {
-  return {
-    type: 'selection' as const,
-  }
-}
-
-/**
- * 创建数据列
- * 将配置中的列定义转换为 Naive UI 表格需要的列格式
- *
- * @param columnsConfig - 列配置数组
- * @returns Naive UI 格式的列配置数组
- */
-function createDataColumns<T>(columnsConfig: TableColumnConfig<T>[]): DataTableColumns<T> {
-  return columnsConfig.map((col) => {
-    const column: Record<string, unknown> = {
-      title: col.title,
-      key: col.key,
-      width: col.width,
-      ellipsis: col.ellipsis ?? false,
-      fixed: col.fixed,
-    }
-
-    if (col.render) {
-      column.render = col.render
-    }
-
-    if (col.cellProps) {
-      column.cellProps = col.cellProps
-    }
-
-    return column as unknown as DataTableColumns<T>[0]
-  })
-}
-
-/**
- * 创建操作按钮
- * 根据配置生成表格操作列中的按钮（查看、编辑、删除、自定义按钮）
- *
- * @param actionButtons - 操作按钮配置（哪些按钮需要显示）
- * @param actionOrder - 按钮显示顺序
- * @param handleEdit - 编辑按钮的处理函数
- * @param handleDelete - 删除按钮的处理函数
- * @param handleView - 查看按钮的处理函数
- * @param customActionHandlers - 自定义按钮的处理函数映射
- * @param row - 当前行数据
- * @returns 按钮节点数组
- */
-function createActionButtons<T extends RowData>(
-  actionButtons: NonNullable<TableConfigOptions<T>['actionButtons']>,
-  actionOrder: Array<'custom' | 'view' | 'edit' | 'delete'>,
-  handleEdit?: (row: T) => void,
-  handleDelete?: (row: T) => void,
-  handleView?: (row: T) => void,
-  customActionHandlers?: Record<string, (row: T) => void>,
-  row?: T,
-) {
-  const buttons: VNode[] = []
-  const buttonGenerators = {
-    view: () => {
-      if (actionButtons.view && row) {
-        buttons.push(createButton({ type: 'info', tertiary: true, onClick: () => handleView?.(row) }, EyeOutline))
-      }
-    },
-    edit: () => {
-      if (actionButtons.edit && row) {
-        buttons.push(createButton({ type: 'primary', tertiary: true, onClick: () => handleEdit?.(row) }, CreateOutline))
-      }
-    },
-    delete: () => {
-      if (actionButtons.delete && row) {
-        buttons.push(createButton({ type: 'error', tertiary: true, onClick: () => handleDelete?.(row) }, TrashOutline))
-      }
-    },
-    custom: () => {
-      if (actionButtons.custom && row) {
-        actionButtons.custom.forEach((btn) => {
-          const handler = customActionHandlers?.[btn.actionKey]
-          buttons.push(
-            createButton({ type: btn.type, tertiary: btn.tertiary ?? true, onClick: () => handler?.(row) }, btn.icon),
-          )
-        })
-      }
-    },
-  }
-  // 按照指定的顺序生成按钮
-  actionOrder.forEach((actionType) => {
-    buttonGenerators[actionType]?.()
-  })
-
-  return buttons
-}
-
-/**
- * 创建操作列
- * 生成表格的操作列配置（包含多个操作按钮）
- *
- * @param actionButtons - 操作按钮配置
- * @param actionOrder - 按钮顺序
- * @param actionWidth - 操作列宽度
- * @param fixedActionColumn - 是否固定操作列（固定在右侧）
- * @param handleEdit - 编辑处理函数
- * @param handleDelete - 删除处理函数
- * @param handleView - 查看处理函数
- * @param customActionHandlers - 自定义按钮处理函数
- * @returns 操作列配置对象
- */
-function createActionColumn<T extends RowData>(
-  actionButtons: NonNullable<TableConfigOptions<T>['actionButtons']>,
-  actionOrder: Array<'custom' | 'view' | 'edit' | 'delete'>,
-  actionWidth: number,
-  fixedActionColumn: boolean = true,
-  handleEdit?: (row: T) => void,
-  handleDelete?: (row: T) => void,
-  handleView?: (row: T) => void,
-  customActionHandlers?: Record<string, (row: T) => void>,
-) {
-  return {
-    title: '操作',
-    key: 'action',
-    width: actionWidth,
-    align: 'center' as const, // 操作栏表头默认居中
-    fixed: fixedActionColumn ? ('right' as const) : undefined,
-    render(row: T) {
-      const buttons = createActionButtons(
-        actionButtons,
-        actionOrder,
-        handleEdit,
-        handleDelete,
-        handleView,
-        customActionHandlers,
-        row,
-      )
-      return createButtonGroup(buttons, { justify: 'center' })
-    },
-  }
-}
-
-/**
- * 创建通用表格列配置
- * 根据配置自动生成完整的表格列（包括选择列、数据列、操作列）
- *
- * @param options - 表格配置选项
- * @param handleEdit - 编辑处理函数
- * @param handleDelete - 删除处理函数
- * @param handleView - 查看处理函数
- * @param customActionHandlers - 自定义按钮处理函数
- * @returns 完整的表格列配置数组
- */
-function createTableColumns<T extends RowData>(
-  options: TableConfigOptions<T>,
-  handleEdit?: (row: T) => void,
-  handleDelete?: (row: T) => void,
-  handleView?: (row: T) => void,
-  customActionHandlers?: Record<string, (row: T) => void>,
-): DataTableColumns<T> {
-  const {
-    columns,
-    showSelection = true,
-    showActions = true,
-    actionButtons = { edit: true, delete: true, view: false },
-    actionOrder = ['custom', 'view', 'edit', 'delete'],
-    actionWidth = 140,
-  } = options
-
-  const tableColumns: DataTableColumns<T> = []
-
-  // 添加选择列（如果需要）
-  if (showSelection) {
-    tableColumns.push(createSelectionColumn())
-  }
-
-  // 添加数据列
-  tableColumns.push(...createDataColumns(columns))
-
-  // 添加操作列（如果需要）
-  if (showActions) {
-    const fixedActionColumn = options.fixedActionColumn ?? true
-    tableColumns.push(
-      createActionColumn(
-        actionButtons,
-        actionOrder,
-        actionWidth,
-        fixedActionColumn,
-        handleEdit,
-        handleDelete,
-        handleView,
-        customActionHandlers,
-      ),
-    )
-  }
-
-  return tableColumns
-}
 
 // ==================== 核心 Hook ====================
 
@@ -897,10 +621,9 @@ export function useCrud<
     pagination, // 分页配置（可能为 null，如果禁用了分页）
     columns, // 表格列配置
     tableScrollWidth, // 表格横向滚动宽度
-    treeMode, // 是否为树形模式
+    queryParams, // 查询参数（用于外部访问和修改）
 
     // ========== 核心方法 ==========
-    loadData, // 内部加载数据方法（直接调用 API）
     loadDataList, // 对外暴露的加载数据方法（推荐使用这个）
 
     // ========== CRUD 操作方法 ==========
@@ -916,9 +639,5 @@ export function useCrud<
     handleFormDataUpdate, // 更新表单数据
     handleCheck, // 处理表格行选择
     resetPaginationAndLoad, // 重置分页并加载
-
-    // ========== 工具方法 ==========
-    getRowId, // 获取行的 ID
-    getRowName, // 获取行的显示名称
   }
 }
