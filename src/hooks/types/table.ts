@@ -62,9 +62,9 @@ export interface EzTableConfig<T extends RowData = RowData> {
   pagination?: import('naive-ui').PaginationProps
   /** 行主键字段 */
   rowKey?: (row: T) => string | number
-  /** 横向滚动宽度 */
+  /** 横向滚动宽度，默认：自动按列宽计算总宽度 */
   scrollX?: string | number
-  /** 最大高度 */
+  /** 最大高度，默认值：'calc(100vh - 320px)' */
   maxHeight?: string | number
   /** 是否显示斑马纹，默认值：true */
   striped?: boolean
@@ -74,7 +74,7 @@ export interface EzTableConfig<T extends RowData = RowData> {
   singleLine?: boolean
   /** 表格尺寸，默认值：'small' */
   size?: 'small' | 'medium' | 'large'
-  /** 是否显示边框，默认值：false */
+  /** 是否显示边框，默认值：true */
   bordered?: boolean
   /** 是否显示底部边框 */
   bottomBordered?: boolean

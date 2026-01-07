@@ -135,12 +135,26 @@ const rowKey = computed(() => props.config.rowKey)
 /**
  * 计算属性：横向滚动
  */
-const scrollX = computed(() => props.config.scrollX)
+function calculateTableScrollWidth(columns: EzTableConfig<T>['columns']): number {
+  return columns.reduce((total, col) => {
+    if (col.type === 'selection') {
+      return total + 50
+    }
+    return total + Number(col.width || 0)
+  }, 0)
+}
+
+/**
+ * 计算属性：横向滚动
+ * - 默认：自动按列宽计算总宽度（与 useCrud 的计算逻辑保持一致）
+ * - 可通过 config.scrollX 覆盖
+ */
+const scrollX = computed(() => props.config.scrollX ?? calculateTableScrollWidth(columns.value))
 
 /**
  * 计算属性：最大高度
  */
-const maxHeight = computed(() => props.config.maxHeight)
+const maxHeight = computed(() => props.config.maxHeight ?? 'calc(100vh - 320px)')
 
 /**
  * 计算属性：斑马纹
@@ -165,7 +179,7 @@ const size = computed(() => props.config.size ?? 'small')
 /**
  * 计算属性：边框
  */
-const bordered = computed(() => props.config.bordered ?? false)
+const bordered = computed(() => props.config.bordered ?? true)
 
 /**
  * 计算属性：底部边框

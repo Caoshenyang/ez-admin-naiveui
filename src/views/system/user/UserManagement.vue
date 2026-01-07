@@ -56,7 +56,7 @@ const crud = useCrud(userCrudConfig)
 // === 解构响应式数据和方法（按功能分组） ===
 
 // 表格相关状态
-const { loading, dataList: userList,   columns, tableScrollWidth, checkedRowKeys } = crud
+const { loading, dataList: userList, columns, checkedRowKeys } = crud
 
 // 表单相关状态
 const { formVisible, formLoading, formMode, formData, handleCancel, handleFormDataUpdate } = crud
@@ -76,11 +76,9 @@ const tableConfig = computed<EzTableConfig<UserListVO>>(() => ({
   data: userList.value,
   loading: loading.value,
   rowKey: (row: UserListVO) => row.userId,
-  scrollX: tableScrollWidth.value,
-  maxHeight: 'calc(100vh - 320px)',
-  bordered: true,
-  striped: true,
-  remote: true,
+  // scrollX 默认：自动按列宽计算总宽度
+  // maxHeight 默认：'calc(100vh - 320px)'
+  // bordered/striped/remote 均使用默认值，不需要显式设置
 }))
 
 // === 计算属性 ===

@@ -80,7 +80,7 @@ const crud = useCrud(customCrudConfig.value)
 
 // 解构响应式数据和方法
 // 表格相关状态
-const { loading, dataList: deptList, columns, tableScrollWidth, checkedRowKeys } = crud
+const { loading, dataList: deptList, columns, checkedRowKeys } = crud
 
 // 表单相关状态
 const { formVisible, formLoading, formMode, formData, handleCancel, handleFormDataUpdate } = crud
@@ -99,12 +99,11 @@ const tableConfig = computed<EzTableConfig<DeptListVO>>(() => ({
   data: deptList.value,
   loading: loading.value,
   rowKey: (row: DeptListVO) => row.deptId, // 行主键
-  scrollX: tableScrollWidth.value, // 横向滚动宽度
-  maxHeight: 'calc(100vh - 320px)', // 最大高度
-  bordered: true, // 显示边框（默认值：false）
+  // scrollX 默认：自动按列宽计算总宽度
+  // maxHeight 默认：'calc(100vh - 320px)'
   remote: false, // 不使用远程分页（默认值：true，树形模式需要禁用远程分页）
   treeStructure: true, // 启用树形结构（默认值：false）
- }))
+}))
 
 // 表单配置
 const formConfig = computed(() => ({
