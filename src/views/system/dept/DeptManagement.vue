@@ -8,10 +8,16 @@
   />
 
   <!-- 操作按钮组 -->
-  <EzButtonGroup :buttons="deptActionButtons" @action="handleAction" />
+  <EzButtonGroup :buttons="dynamicActionButtons" @action="handleAction" />
 
   <!-- 部门列表表格 -->
-  <EzTable :config="tableConfig" :checked-keys="checkedRowKeys" @check-change="handleCheck" />
+  <EzTable
+    :config="tableConfig"
+    :checked-keys="checkedRowKeys"
+    :expanded-keys="expandedRowKeys"
+    @check-change="handleCheck"
+    @expand-change="handleExpandChange"
+  />
 
   <!-- 部门表单 -->
   <EzForm
@@ -32,6 +38,7 @@ import { handleButtonActions } from '@/utils/actionHandler'
 import EzTable from '@/components/common/EzTable.vue'
 import { deptFormConfig, deptActionButtons, deptCrudConfig } from './'
 import { deptApi } from '@/api/dept'
+import { ChevronDownOutline, ChevronUpOutline } from '@vicons/ionicons5'
 import type { DeptListVO, DeptQuery, DeptCreateDTO, DeptUpdateDTO, DeptCrudConfig } from '@/types'
 import type { EzTableConfig } from '@/hooks/types/table'
 import type { TreeOption } from '@/components/common/EzForm.vue'
@@ -42,6 +49,9 @@ import type { TreeOption } from '@/components/common/EzForm.vue'
 const queryParams = ref<DeptQuery>({
   keywords: '',
 })
+
+// 展开的行keys
+const expandedRowKeys = ref<(string | number)[]>([])
 
 // 父节点树数据（用于表单上级部门选择）
 const parentTreeOptions = ref<TreeOption[]>([])
@@ -63,6 +73,27 @@ const handleAddChild = (row: DeptListVO) => {
   }
   Object.assign(formData, defaults)
   formVisible.value = true
+}
+
+// 展开所有处理函数
+const handleExpandAll = () => {
+  // 获取所有有子节点的行ID
+  const allExpandableKeys: (string | number)[] = []
+  const collectExpandableKeys = (data: DeptListVO[]) => {
+    data.forEach((item) => {
+      if (item.children && item.children.length > 0) {
+        allExpandableKeys.push(item.deptId)
+        collectExpandableKeys(item.children)
+      }
+    })
+  }
+  collectExpandableKeys(deptList.value)
+  expandedRowKeys.value = allExpandableKeys
+}
+
+// 收起所有处理函数
+const handleCollapseAll = () => {
+  expandedRowKeys.value = []
 }
 
 // 自定义CRUD配置（添加动态的自定义按钮处理函数）
@@ -106,6 +137,7 @@ const tableConfig = computed<EzTableConfig<DeptListVO>>(() => ({
   rowKey: (row: DeptListVO) => row.deptId, // 行主键
   remote: false, // 不使用远程分页（默认值：true，树形模式需要禁用远程分页）
   treeStructure: true, // 启用树形结构（默认值：false）
+  defaultExpandAll: false, // 不默认展开所有行，由用户手动控制
 }))
 
 // 表单配置
@@ -123,6 +155,22 @@ const formConfig = computed(() => ({
     return field
   }),
 }))
+
+// 动态按钮配置（根据展开状态显示不同的图标和文字）
+const dynamicActionButtons = computed(() => {
+  const isExpanded = expandedRowKeys.value.length > 0
+
+  return deptActionButtons.map((button) => {
+    if (button.key === 'toggle-expand') {
+      return {
+        ...button,
+        text: isExpanded ? '收起所有' : '展开所有',
+        icon: isExpanded ? ChevronUpOutline : ChevronDownOutline,
+      }
+    }
+    return button
+  })
+})
 
 // ==================== 数据加载方法 ====================
 
@@ -168,6 +216,11 @@ const handleCheck = (keys: (string | number)[]) => {
   checkedRowKeys.value = keys
 }
 
+// 表格行展开处理
+const handleExpandChange = (keys: (string | number)[]) => {
+  expandedRowKeys.value = keys
+}
+
 // 批量删除（集成表格选中状态）
 const handleBatchDeleteClick = async () => {
   const ids = checkedRowKeys.value.map((id) => String(id))
@@ -180,6 +233,14 @@ const handleBatchDeleteClick = async () => {
 // 按钮action处理器
 const handleAction = handleButtonActions({
   add: handleAdd, // 新增按钮 -> 打开新增表单
+  'toggle-expand': () => {
+    // 根据当前展开状态切换展开/收起
+    if (expandedRowKeys.value.length > 0) {
+      handleCollapseAll() // 有展开的节点，执行收起所有
+    } else {
+      handleExpandAll() // 没有展开的节点，执行展开所有
+    }
+  },
   'batch-delete': handleBatchDeleteClick, // 批量删除按钮 -> 执行批量删除
   refresh: async () => {
     await loadDataList() // 刷新数据列表

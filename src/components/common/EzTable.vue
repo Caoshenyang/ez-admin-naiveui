@@ -7,6 +7,7 @@
   <n-data-table
     ref="tableRef"
     v-model:checked-row-keys="internalCheckedKeys"
+    v-model:expanded-row-keys="internalExpandedKeys"
     :columns="columns"
     :data="data"
     :loading="loading"
@@ -23,7 +24,9 @@
     :single-column="singleColumn"
     :tree-structure="treeStructure"
     :children-key="childrenKey"
+    :default-expand-all="defaultExpandAll"
     @update:checked-row-keys="handleCheckedChange"
+    @update:expanded-row-keys="handleExpandedChange"
     @update:sorter="handleSorterChange"
     @update:filters="handleFiltersChange"
   >
@@ -59,6 +62,8 @@ import type { EzTableConfig } from '@/hooks/types/table'
 export interface EzTableEmits<T extends RowData> {
   /** 行选择改变事件 */
   (e: 'check-change', keys: (string | number)[], rows: T[]): void
+  /** 行展开改变事件 */
+  (e: 'expand-change', keys: (string | number)[]): void
   /** 排序改变事件 */
   (e: 'sort-change', sorter: Record<string, unknown>): void
   /** 筛选改变事件 */
@@ -73,6 +78,8 @@ export interface EzTableProps<T extends RowData> {
   config: EzTableConfig<T>
   /** 选中的行keys */
   checkedKeys?: (string | number)[]
+  /** 展开的行keys */
+  expandedKeys?: (string | number)[]
 }
 
 /**
@@ -80,6 +87,7 @@ export interface EzTableProps<T extends RowData> {
  */
 const props = withDefaults(defineProps<EzTableProps<T>>(), {
   checkedKeys: () => [],
+  expandedKeys: () => [],
 })
 
 /**
@@ -98,12 +106,27 @@ const tableRef = ref()
 const internalCheckedKeys = ref<(string | number)[]>(props.checkedKeys)
 
 /**
+ * 内部展开的行keys（双向绑定）
+ */
+const internalExpandedKeys = ref<(string | number)[]>(props.expandedKeys)
+
+/**
  * 监听外部checkedKeys变化，同步到内部状态
  */
 watch(
   () => props.checkedKeys,
   (newKeys) => {
     internalCheckedKeys.value = newKeys
+  },
+)
+
+/**
+ * 监听外部expandedKeys变化，同步到内部状态
+ */
+watch(
+  () => props.expandedKeys,
+  (newKeys) => {
+    internalExpandedKeys.value = newKeys
   },
 )
 
@@ -202,6 +225,11 @@ const treeStructure = computed(() => props.config.treeStructure ?? false)
 const childrenKey = computed(() => props.config.childrenKey ?? 'children')
 
 /**
+ * 计算属性：是否默认展开所有行
+ */
+const defaultExpandAll = computed(() => props.config.defaultExpandAll ?? false)
+
+/**
  * 处理行选择改变事件
  */
 const handleCheckedChange = (keys: (string | number)[], rows: InternalRowData[]) => {
@@ -221,6 +249,14 @@ const handleSorterChange = (sorter: Record<string, unknown>) => {
  */
 const handleFiltersChange = (filters: Record<string, unknown>) => {
   emit('filter-change', filters)
+}
+
+/**
+ * 处理行展开改变事件
+ */
+const handleExpandedChange = (keys: (string | number)[]) => {
+  internalExpandedKeys.value = keys
+  emit('expand-change', keys)
 }
 </script>
 

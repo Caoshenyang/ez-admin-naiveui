@@ -39,7 +39,7 @@ export interface TableConfigOptions<T extends RowData = RowData> {
       type: 'primary' | 'success' | 'warning' | 'error' | 'info'
       tertiary?: boolean
       icon: Record<string, unknown>
-      actionKey: string  // 引用 customActionHandlers 中的函数名
+      actionKey: string // 引用 customActionHandlers 中的函数名
     }>
   }
   /** 操作按钮显示顺序，默认 ['custom', 'view', 'edit', 'delete'] */
@@ -84,6 +84,8 @@ export interface EzTableConfig<T extends RowData = RowData> {
   treeStructure?: boolean
   /** 子节点字段名，默认值：'children' */
   childrenKey?: string
+  /** 是否默认展开所有行，默认值：false */
+  defaultExpandAll?: boolean
 }
 
 /** 分页配置选项接口 */
@@ -114,4 +116,3 @@ export interface DetailModalConfig {
   column?: number
   fields: DetailField[]
 }
-

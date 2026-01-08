@@ -11,7 +11,7 @@ import { type TableConfigOptions } from '@/hooks/types/table'
 import type { ActionButton } from '@/components/common/EzButtonGroup.vue'
 import { deptApi } from '@/api/dept'
 import { renderStatusTag } from '@/utils/renderers'
-import { SyncOutline, TrashOutline } from '@vicons/ionicons5'
+import { SyncOutline, TrashOutline, ChevronDownOutline } from '@vicons/ionicons5'
 import { PlusOutlined } from '@vicons/antd'
 
 // === 基础选项配置 ===
@@ -80,6 +80,7 @@ export const deptTableConfig: TableConfigOptions<DeptListVO> = {
 
 // === 操作按钮配置 ===
 export const deptActionButtons: ActionButton[] = [
+  { key: 'toggle-expand', text: '展开所有', type: 'info', icon: ChevronDownOutline, permission: '' },
   { key: 'add', text: '新增', type: 'primary', icon: PlusOutlined, permission: 'sys:dept:add' },
   { key: 'batch-delete', text: '批量删除', type: 'warning', icon: TrashOutline, permission: 'sys:dept:delete' },
   { key: 'refresh', text: '刷新', icon: SyncOutline, permission: '' },
