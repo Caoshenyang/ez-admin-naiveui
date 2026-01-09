@@ -56,7 +56,7 @@ const crud = useCrud(userCrudConfig)
 // === 解构响应式数据和方法（按功能分组） ===
 
 // 表格相关状态
-const { loading, dataList: userList, columns, checkedRowKeys } = crud
+const { loading, dataList: userList, columns, checkedRowKeys, pagination } = crud
 
 // 表单相关状态
 const { formVisible, formLoading, formMode, formData, handleCancel, handleFormDataUpdate } = crud
@@ -81,6 +81,7 @@ const tableConfig = computed<EzTableConfig<UserListVO>>(() => ({
   data: userList.value,
   loading: loading.value,
   rowKey: (row: UserListVO) => row.userId,
+  pagination: pagination!,
 }))
 
 // === 计算属性 ===
