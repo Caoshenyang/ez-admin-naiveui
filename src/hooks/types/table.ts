@@ -39,9 +39,11 @@ export interface TableConfigOptions<T extends RowData = RowData> {
       type: 'primary' | 'success' | 'warning' | 'error' | 'info'
       tertiary?: boolean
       icon: Record<string, unknown>
-      onClick: (row: T) => void
+      actionKey: string // 引用 customActionHandlers 中的函数名
     }>
   }
+  /** 操作按钮显示顺序，默认 ['custom', 'view', 'edit', 'delete'] */
+  actionOrder?: Array<'custom' | 'view' | 'edit' | 'delete'>
   /** 操作列宽度 */
   actionWidth?: number
   /** 是否固定操作列 */
@@ -60,24 +62,30 @@ export interface EzTableConfig<T extends RowData = RowData> {
   pagination?: import('naive-ui').PaginationProps
   /** 行主键字段 */
   rowKey?: (row: T) => string | number
-  /** 横向滚动宽度 */
+  /** 横向滚动宽度，默认：自动按列宽计算总宽度 */
   scrollX?: string | number
-  /** 最大高度 */
+  /** 最大高度，默认值：'calc(100vh - 320px)' */
   maxHeight?: string | number
-  /** 是否显示斑马纹 */
+  /** 是否显示斑马纹，默认值：true */
   striped?: boolean
-  /** 是否远程分页 */
+  /** 是否远程分页，默认值：true */
   remote?: boolean
-  /** 是否单行显示 */
+  /** 是否单行显示，默认值：true */
   singleLine?: boolean
-  /** 表格尺寸 */
+  /** 表格尺寸，默认值：'small' */
   size?: 'small' | 'medium' | 'large'
-  /** 是否显示边框 */
+  /** 是否显示边框，默认值：true */
   bordered?: boolean
   /** 是否显示底部边框 */
   bottomBordered?: boolean
   /** 是否单列模式 */
   singleColumn?: boolean
+  /** 是否启用树形结构，默认值：false */
+  treeStructure?: boolean
+  /** 子节点字段名，默认值：'children' */
+  childrenKey?: string
+  /** 是否默认展开所有行，默认值：false */
+  defaultExpandAll?: boolean
 }
 
 /** 分页配置选项接口 */
@@ -108,4 +116,3 @@ export interface DetailModalConfig {
   column?: number
   fields: DetailField[]
 }
-

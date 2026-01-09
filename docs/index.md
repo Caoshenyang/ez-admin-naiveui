@@ -7,7 +7,7 @@ hero:
   text: '简单易用的后台管理系统'
   tagline: 基于 Vue 3 + Naive UI + TypeScript 的现代化后台管理系统模板
   image:
-    src: https://github.com/user-attachments/assets/36051ed0-02e6-4ee0-b47b-1627e727299d
+    src: ./assets/images/logo.png
     alt: EZ简洁后台logo
   actions:
     - theme: brand

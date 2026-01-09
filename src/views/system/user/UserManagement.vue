@@ -1,17 +1,57 @@
 <template>
-  <!-- 搜索表单 -->
-  <EzSearch
-    v-model="queryParams.search.keywords"
-    placeholder="请输入用户名、昵称或邮箱进行搜索"
-    @search="handleSearch"
-    @reset="handleResetSearch"
-  />
+  <n-split direction="horizontal" style="height: calc(100vh - 118px)" max="300px" min="100px" default-size="200px">
+    <template #1>
+      <div class="pr-4">
+        <div class="mb-2">
+          <n-input
+            v-model:value="deptSearchValue"
+            placeholder="搜索部门"
+            clearable
+            @input="handleDeptSearch"
+            @clear="handleDeptSearchClear"
+          >
+            <template #prefix>
+              <n-icon size="16">
+                <SearchOutline />
+              </n-icon>
+            </template>
+          </n-input>
+        </div>
 
-  <!-- 操作按钮组 -->
-  <EzButtonGroup :buttons="userActionButtons" @action="handleAction" />
+        <n-tree
+          :data="deptTreeData"
+          :pattern="deptSearchValue"
+          :render-option="renderTreeOption"
+          :node-props="nodeProps"
+          :expanded-keys="expandedKeys"
+          :selected-keys="selectedKeys"
+          :show-irrelevant-nodes="false"
+          block-line
+          selectable
+          filterable
+          @update:expanded-keys="handleExpandedKeysChange"
+          @update:selected-keys="handleSelectedKeysChange"
+        />
+      </div>
+    </template>
+    <template #2>
+      <div class="pl-6">
+        <!-- 搜索表单 -->
+        <EzSearch
+          v-model="queryParams.search.keywords"
+          placeholder="请输入用户名、昵称或邮箱进行搜索"
+          @search="handleSearch"
+          @reset="handleResetSearch"
+        />
 
-  <!-- 用户列表表格 -->
-  <EzTable :config="tableConfig" :checked-keys="checkedRowKeys" @check-change="handleCheck" />
+        <!-- 操作按钮组 -->
+        <EzButtonGroup :buttons="userActionButtons" @action="handleAction" />
+
+        <!-- 用户列表表格 -->
+        <EzTable :config="tableConfig" :checked-keys="checkedRowKeys" @check-change="handleCheck" />
+      </div>
+    </template>
+  </n-split>
 
   <!-- 用户表单 -->
   <EzForm
@@ -37,11 +77,14 @@
 import { ref, computed, onMounted } from 'vue'
 import { useCrud, createDefaultQueryParams } from '@/hooks/useCrud'
 import { handleButtonActions } from '@/utils/actionHandler'
+import { SearchOutline } from '@vicons/ionicons5'
+import { deptApi } from '@/api/dept'
 import EzTable from '@/components/common/EzTable.vue'
 import EzDetailModal from '@/components/common/EzDetailModal.vue'
 import { userFormConfig, userActionButtons, userCrudConfig } from './'
-import type { UserListVO, UserQuery, UserCreateDTO, UserUpdateDTO } from '@/types'
+import type { UserListVO, UserQuery, UserCreateDTO, UserUpdateDTO, DeptListVO } from '@/types'
 import type { EzTableConfig } from '@/hooks/types/table'
+import type { TreeOption } from 'naive-ui'
 
 // === 查询参数管理 ===
 const queryParams = ref<UserQuery>(
@@ -50,13 +93,21 @@ const queryParams = ref<UserQuery>(
   }),
 )
 
+// === 部门树相关状态 ===
+const deptTreeData = ref<TreeOption[]>([])
+const deptSearchValue = ref('')
+const expandedKeys = ref<(string | number)[]>([])
+const selectedKeys = ref<(string | number)[]>([])
+const deptList = ref<DeptListVO[]>([])
+const defaultExpandedKeys = ref<(string | number)[]>([])
+
 // === 使用CRUD Hook（约定：自动处理所有CRUD逻辑，包含表格） ===
 const crud = useCrud(userCrudConfig)
 
 // === 解构响应式数据和方法（按功能分组） ===
 
 // 表格相关状态
-const { loading, dataList: userList, pagination, columns, tableScrollWidth, checkedRowKeys } = crud
+const { loading, dataList: userList, columns, checkedRowKeys, pagination } = crud
 
 // 表单相关状态
 const { formVisible, formLoading, formMode, formData, handleCancel, handleFormDataUpdate } = crud
@@ -65,7 +116,12 @@ const { formVisible, formLoading, formMode, formData, handleCancel, handleFormDa
 const { detailVisible, detailLoading, detailData } = crud
 
 // 查询相关方法
-const { handleSearch, handleReset, setLoadData } = crud
+const { resetPaginationAndLoad, loadDataList } = crud
+
+// 搜索处理
+const handleSearch = () => {
+  resetPaginationAndLoad()
+}
 
 // CRUD操作方法
 const { handleAdd, handleSubmit, handleBatchDelete } = crud
@@ -75,13 +131,8 @@ const tableConfig = computed<EzTableConfig<UserListVO>>(() => ({
   columns: columns.value,
   data: userList.value,
   loading: loading.value,
-  pagination: pagination,
   rowKey: (row: UserListVO) => row.userId,
-  scrollX: tableScrollWidth.value,
-  maxHeight: 'calc(100vh - 320px)',
-  bordered:true,
-  striped: true,
-  remote: true,
+  pagination: pagination!,
 }))
 
 // === 计算属性 ===
@@ -103,25 +154,16 @@ const formConfig = computed(() => ({
 }))
 
 // === 数据加载（集成表格分页和查询参数） ===
-const loadUserList = async () => {
-  // 同步分页参数到查询参数
-  queryParams.value.pageNum = pagination.page
-  queryParams.value.pageSize = pagination.pageSize || 10
-  await crud.loadData(queryParams.value)
-}
-
-// === 设置加载数据函数（约定：通过配置驱动） ===
-setLoadData(loadUserList)
 
 const handleResetSearch = () => {
   queryParams.value.search.keywords = ''
-  handleReset()
+  resetPaginationAndLoad()
 }
 
 // === 表单提交（成功后刷新列表） ===
 const handleFormSubmit = async (data: Partial<UserCreateDTO | UserUpdateDTO>) => {
   await handleSubmit(data)
-  await loadUserList() // 刷新列表
+  await loadDataList() // 刷新列表
 }
 
 // === 表格行选择处理 ===
@@ -134,13 +176,13 @@ const handleBatchDeleteClick = async () => {
   const ids = checkedRowKeys.value.map((id) => String(id))
   await handleBatchDelete(ids, async () => {
     checkedRowKeys.value = []
-    await loadUserList()
+    await loadDataList()
   })
 }
 
 // === 刷新功能 ===
 const handleRefresh = () => {
-  loadUserList()
+  loadDataList()
 }
 
 // === 按钮action处理器 ===
@@ -150,8 +192,99 @@ const handleAction = handleButtonActions({
   refresh: handleRefresh, // 刷新按钮 -> 刷新数据列表
 })
 
+// === 部门树相关方法 ===
+
+// 转换部门数据为树形结构
+const convertDeptToTreeOption = (dept: DeptListVO): TreeOption => ({
+  key: dept.deptId,
+  label: dept.deptName,
+  children: dept.children?.map(convertDeptToTreeOption),
+})
+
+// 加载部门树数据
+const loadDeptTree = async () => {
+  try {
+    const data = await deptApi.tree()
+    deptList.value = data
+    deptTreeData.value = data.map(convertDeptToTreeOption)
+
+    // 默认展开第一级节点
+    const defaultKeys = data.map((dept) => dept.deptId)
+    expandedKeys.value = defaultKeys
+    defaultExpandedKeys.value = defaultKeys
+  } catch (error) {
+    console.error('加载部门树失败:', error)
+    deptTreeData.value = []
+  }
+}
+
+// 部门搜索处理
+const handleDeptSearch = () => {
+  if (deptSearchValue.value.trim()) {
+    // 有搜索关键词时，展开所有节点以显示搜索结果
+    const allKeys: (string | number)[] = []
+    const collectAllKeys = (nodes: TreeOption[]) => {
+      nodes.forEach((node) => {
+        if (node.key != null) {
+          allKeys.push(node.key as string | number)
+        }
+        if (node.children) {
+          collectAllKeys(node.children)
+        }
+      })
+    }
+    collectAllKeys(deptTreeData.value)
+    expandedKeys.value = allKeys
+  } else {
+    // 没有搜索关键词时，恢复默认展开状态
+    expandedKeys.value = [...defaultExpandedKeys.value]
+  }
+}
+
+// 部门搜索清除
+const handleDeptSearchClear = () => {
+  deptSearchValue.value = ''
+  // 恢复默认展开状态
+  expandedKeys.value = [...defaultExpandedKeys.value]
+}
+
+// 树节点展开处理
+const handleExpandedKeysChange = (keys: (string | number)[]) => {
+  expandedKeys.value = keys
+}
+
+// 树节点选择处理
+const handleSelectedKeysChange = (keys: (string | number)[]) => {
+  selectedKeys.value = keys
+
+  // 更新查询参数中的部门ID
+  if (keys.length > 0 && keys[0] != null) {
+    queryParams.value.search.deptId = String(keys[0])
+  } else {
+    queryParams.value.search.deptId = undefined
+  }
+
+  // 重新加载用户列表
+  resetPaginationAndLoad()
+}
+
+// 树节点渲染
+const renderTreeOption = ({ option }: { option: TreeOption }) => {
+  return option.label
+}
+
+// 树节点属性
+const nodeProps = ({ option }: { option: TreeOption }) => ({
+  onClick() {
+    const key = option.key as string | number
+    selectedKeys.value = [key]
+    handleSelectedKeysChange([key])
+  },
+})
+
 // === 组件挂载时加载数据 ===
-onMounted(() => {
-  loadUserList()
+onMounted(async () => {
+  await loadDeptTree()
+  loadDataList()
 })
 </script>

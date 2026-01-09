@@ -7,6 +7,7 @@
   <n-data-table
     ref="tableRef"
     v-model:checked-row-keys="internalCheckedKeys"
+    v-model:expanded-row-keys="internalExpandedKeys"
     :columns="columns"
     :data="data"
     :loading="loading"
@@ -21,7 +22,11 @@
     :bordered="bordered"
     :bottom-bordered="bottomBordered"
     :single-column="singleColumn"
+    :tree-structure="treeStructure"
+    :children-key="childrenKey"
+    :default-expand-all="defaultExpandAll"
     @update:checked-row-keys="handleCheckedChange"
+    @update:expanded-row-keys="handleExpandedChange"
     @update:sorter="handleSorterChange"
     @update:filters="handleFiltersChange"
   >
@@ -36,8 +41,8 @@
 -->
 <script setup lang="ts" generic="T extends RowData">
 import { ref, computed, watch } from 'vue'
-import type { DataTableColumns, PaginationProps } from 'naive-ui'
 import type { RowData, InternalRowData } from 'naive-ui/es/data-table/src/interface'
+import type { EzTableConfig } from '@/hooks/types/table'
 
 /**
  * 🎯 EzTable 泛型组件设计说明：
@@ -52,45 +57,13 @@ import type { RowData, InternalRowData } from 'naive-ui/es/data-table/src/interf
  */
 
 /**
- * EzTable 组件配置接口
- */
-export interface EzTableConfig<T extends RowData> {
-  /** 表格列配置 */
-  columns: DataTableColumns<T>
-  /** 表格数据源 */
-  data: T[]
-  /** 是否显示加载状态 */
-  loading?: boolean
-  /** 分页配置 */
-  pagination?: PaginationProps
-  /** 行主键字段 */
-  rowKey?: (row: T) => string | number
-  /** 横向滚动宽度 */
-  scrollX?: string | number
-  /** 最大高度 */
-  maxHeight?: string | number
-  /** 是否显示斑马纹 */
-  striped?: boolean
-  /** 是否远程分页 */
-  remote?: boolean
-  /** 是否单行显示 */
-  singleLine?: boolean
-  /** 表格尺寸 */
-  size?: 'small' | 'medium' | 'large'
-  /** 是否显示边框 */
-  bordered?: boolean
-  /** 是否显示底部边框 */
-  bottomBordered?: boolean
-  /** 是否单列模式 */
-  singleColumn?: boolean
-}
-
-/**
  * 表格事件接口
  */
 export interface EzTableEmits<T extends RowData> {
   /** 行选择改变事件 */
   (e: 'check-change', keys: (string | number)[], rows: T[]): void
+  /** 行展开改变事件 */
+  (e: 'expand-change', keys: (string | number)[]): void
   /** 排序改变事件 */
   (e: 'sort-change', sorter: Record<string, unknown>): void
   /** 筛选改变事件 */
@@ -105,6 +78,8 @@ export interface EzTableProps<T extends RowData> {
   config: EzTableConfig<T>
   /** 选中的行keys */
   checkedKeys?: (string | number)[]
+  /** 展开的行keys */
+  expandedKeys?: (string | number)[]
 }
 
 /**
@@ -112,6 +87,7 @@ export interface EzTableProps<T extends RowData> {
  */
 const props = withDefaults(defineProps<EzTableProps<T>>(), {
   checkedKeys: () => [],
+  expandedKeys: () => [],
 })
 
 /**
@@ -130,12 +106,27 @@ const tableRef = ref()
 const internalCheckedKeys = ref<(string | number)[]>(props.checkedKeys)
 
 /**
+ * 内部展开的行keys（双向绑定）
+ */
+const internalExpandedKeys = ref<(string | number)[]>(props.expandedKeys)
+
+/**
  * 监听外部checkedKeys变化，同步到内部状态
  */
 watch(
   () => props.checkedKeys,
   (newKeys) => {
     internalCheckedKeys.value = newKeys
+  },
+)
+
+/**
+ * 监听外部expandedKeys变化，同步到内部状态
+ */
+watch(
+  () => props.expandedKeys,
+  (newKeys) => {
+    internalExpandedKeys.value = newKeys
   },
 )
 
@@ -167,12 +158,26 @@ const rowKey = computed(() => props.config.rowKey)
 /**
  * 计算属性：横向滚动
  */
-const scrollX = computed(() => props.config.scrollX)
+function calculateTableScrollWidth(columns: EzTableConfig<T>['columns']): number {
+  return columns.reduce((total, col) => {
+    if (col.type === 'selection') {
+      return total + 50
+    }
+    return total + Number(col.width || 0)
+  }, 0)
+}
+
+/**
+ * 计算属性：横向滚动
+ * - 默认：自动按列宽计算总宽度（与 useCrud 的计算逻辑保持一致）
+ * - 可通过 config.scrollX 覆盖
+ */
+const scrollX = computed(() => props.config.scrollX ?? calculateTableScrollWidth(columns.value))
 
 /**
  * 计算属性：最大高度
  */
-const maxHeight = computed(() => props.config.maxHeight)
+const maxHeight = computed(() => props.config.maxHeight ?? 'calc(100vh - 320px)')
 
 /**
  * 计算属性：斑马纹
@@ -197,7 +202,7 @@ const size = computed(() => props.config.size ?? 'small')
 /**
  * 计算属性：边框
  */
-const bordered = computed(() => props.config.bordered ?? false)
+const bordered = computed(() => props.config.bordered ?? true)
 
 /**
  * 计算属性：底部边框
@@ -208,6 +213,21 @@ const bottomBordered = computed(() => props.config.bottomBordered ?? true)
  * 计算属性：单列模式
  */
 const singleColumn = computed(() => props.config.singleColumn ?? false)
+
+/**
+ * 计算属性：树形结构
+ */
+const treeStructure = computed(() => props.config.treeStructure ?? false)
+
+/**
+ * 计算属性：子节点字段名
+ */
+const childrenKey = computed(() => props.config.childrenKey ?? 'children')
+
+/**
+ * 计算属性：是否默认展开所有行
+ */
+const defaultExpandAll = computed(() => props.config.defaultExpandAll ?? false)
 
 /**
  * 处理行选择改变事件
@@ -229,6 +249,14 @@ const handleSorterChange = (sorter: Record<string, unknown>) => {
  */
 const handleFiltersChange = (filters: Record<string, unknown>) => {
   emit('filter-change', filters)
+}
+
+/**
+ * 处理行展开改变事件
+ */
+const handleExpandedChange = (keys: (string | number)[]) => {
+  internalExpandedKeys.value = keys
+  emit('expand-change', keys)
 }
 </script>
 

@@ -74,7 +74,7 @@ export const userTableConfig: TableConfigOptions<UserListVO> = {
     { title: '邮箱', key: 'email', width: 180 },
     { title: '手机号', key: 'phoneNumber', width: 130 },
     { title: '状态', key: 'status', width: 80, render: renderStatusTag(statusOptions) },
-    { title: '创建时间', key: 'createTime', width: 200 },
+    { title: '创建时间', key: 'createTime', width: 180 },
   ],
   // 操作按钮配置
   actionButtons: {

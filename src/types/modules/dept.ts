@@ -1,51 +1,50 @@
 // 部门相关类型定义
-import type { PageQuery } from './api'
 import type { CrudConfig } from '@/hooks/useCrud'
 
-// 部门列表VO
+// 部门列表VO（匹配接口文档字段）
 export interface DeptListVO {
-  id: number
+  deptId: number
   deptName: string
   parentId?: number
-  sort?: number
+  deptSort?: number
   status?: number
   children?: DeptListVO[]
-  createdTime?: string
+  createTime?: string
+  updateTime?: string
 }
 
-// 部门详情VO
+// 部门详情VO（匹配接口文档字段）
 export interface DeptDetailVO {
-  id: number
+  deptId: number
   deptName: string
   parentId?: number
-  sort?: number
+  deptSort?: number
   status?: number
-  createdTime?: string
+  description?: string
+  createTime?: string
   updateTime?: string
 }
 
 // 部门搜索条件
 export interface DeptSearchCriteria {
-  deptName?: string
-  status?: number
-  parentId?: number
   keywords?: string
 }
 
-// 部门分页查询参数
-export type DeptQuery = PageQuery<DeptSearchCriteria>
+// 部门查询参数（树形模式，无分页）
+export type DeptQuery = DeptSearchCriteria
 
-// 部门创建DTO
+// 部门创建DTO（匹配接口文档）
 export interface DeptCreateDTO {
   deptName: string
   parentId?: number
-  sort?: number
+  deptSort?: number
   status?: number
+  description?: string
 }
 
-// 部门更新DTO
+// 部门更新DTO（匹配接口文档）
 export interface DeptUpdateDTO extends DeptCreateDTO {
-  id: number
+  deptId: number
 }
 
 // 部门CRUD配置类型
