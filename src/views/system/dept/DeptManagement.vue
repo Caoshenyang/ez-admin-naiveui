@@ -39,16 +39,11 @@ import EzTable from '@/components/common/EzTable.vue'
 import { deptFormConfig, deptActionButtons, deptCrudConfig } from './'
 import { deptApi } from '@/api/dept'
 import { ChevronDownOutline, ChevronUpOutline } from '@vicons/ionicons5'
-import type { DeptListVO, DeptQuery, DeptCreateDTO, DeptUpdateDTO, DeptCrudConfig } from '@/types'
+import type { DeptListVO, DeptCreateDTO, DeptUpdateDTO, DeptCrudConfig } from '@/types'
 import type { EzTableConfig } from '@/hooks/types/table'
 import type { TreeOption } from '@/components/common/EzForm.vue'
 
 // ==================== 响应式变量 ====================
-
-// 查询参数
-const queryParams = ref<DeptQuery>({
-  keywords: '',
-})
 
 // 展开的行keys
 const expandedRowKeys = ref<(string | number)[]>([])
@@ -111,7 +106,7 @@ const crud = useCrud(customCrudConfig.value)
 
 // 解构响应式数据和方法
 // 表格相关状态
-const { loading, dataList: deptList, columns, checkedRowKeys } = crud
+const { loading, dataList: deptList, columns, checkedRowKeys, queryParams } = crud
 
 // 表单相关状态
 const { formVisible, formLoading, formMode, formData, handleCancel, handleFormDataUpdate } = crud
