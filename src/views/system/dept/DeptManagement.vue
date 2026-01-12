@@ -1,23 +1,30 @@
 <template>
-  <!-- 搜索表单 -->
-  <EzSearch
-    v-model="queryParams.keywords"
-    placeholder="请输入部门名称进行搜索"
-    @search="handleSearch"
-    @reset="handleResetSearch"
-  />
+  <!-- 主要内容容器 -->
+  <n-card title="部门管理">
+    <template #header-extra>
+       <!-- 操作按钮组 -->
+      <EzButtonGroup :buttons="dynamicActionButtons" @action="handleAction" />
+    </template>
 
-  <!-- 操作按钮组 -->
-  <EzButtonGroup :buttons="dynamicActionButtons" @action="handleAction" />
+    <div class="flex items-center justify-between">
+      <!-- 搜索表单 - 左对齐 -->
+      <EzSearch
+        v-model="queryParams.keywords"
+        placeholder="请输入部门名称进行搜索"
+        @search="handleSearch"
+        @reset="handleResetSearch"
+      />
+    </div>
 
-  <!-- 部门列表表格 -->
-  <EzTable
-    :config="tableConfig"
-    :checked-keys="checkedRowKeys"
-    :expanded-keys="expandedRowKeys"
-    @check-change="handleCheck"
-    @expand-change="handleExpandChange"
-  />
+    <!-- 部门列表表格 -->
+    <EzTable
+      :config="tableConfig"
+      :checked-keys="checkedRowKeys"
+      :expanded-keys="expandedRowKeys"
+      @check-change="handleCheck"
+      @expand-change="handleExpandChange"
+    />
+  </n-card>
 
   <!-- 部门表单 -->
   <EzForm

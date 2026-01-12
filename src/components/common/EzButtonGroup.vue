@@ -3,7 +3,7 @@
 -->
 <template>
   <!-- 按钮组容器，右对齐布局 -->
-  <div class="flex justify-end mb-4">
+  <div class="flex items-center justify-center">
     <n-space size="small">
       <!-- 遍历可见按钮列表，渲染按钮 -->
       <n-button
@@ -39,22 +39,22 @@ import { useUserInfoStore } from '@/stores/modules/user'
  * 通过emit事件触发，父组件根据key处理具体业务逻辑
  */
 export interface ActionButton {
-  key: string                    // 按钮唯一标识，用于事件分发
-  text: string                   // 按钮显示文本
+  key: string // 按钮唯一标识，用于事件分发
+  text: string // 按钮显示文本
   type?: 'primary' | 'info' | 'success' | 'warning' | 'error' | 'default' // 按钮类型
-  size?: 'tiny' | 'small' | 'medium' | 'large'                          // 按钮尺寸
-  icon?: Component              // 按钮图标组件
-  iconSize?: number             // 图标尺寸，默认18px
-  disabled?: boolean            // 是否禁用
-  loading?: boolean             // 是否显示加载状态
-  permission?: string           // 权限标识，如果为空则始终显示
+  size?: 'tiny' | 'small' | 'medium' | 'large' // 按钮尺寸
+  icon?: Component // 按钮图标组件
+  iconSize?: number // 图标尺寸，默认18px
+  disabled?: boolean // 是否禁用
+  loading?: boolean // 是否显示加载状态
+  permission?: string // 权限标识，如果为空则始终显示
 }
 
 /**
  * 组件属性接口
  */
 interface Props {
-  buttons: ActionButton[]        // 按钮配置数组
+  buttons: ActionButton[] // 按钮配置数组
 }
 
 /**
@@ -77,7 +77,7 @@ const userStore = useUserInfoStore()
  */
 const visibleButtons = computed(() => {
   const userPermissions = userStore.userInfo.permissions || []
-  return props.buttons.filter(button => {
+  return props.buttons.filter((button) => {
     // 如果没有设置权限标识，则始终显示
     if (!button.permission) return true
     // 检查用户是否有该权限
