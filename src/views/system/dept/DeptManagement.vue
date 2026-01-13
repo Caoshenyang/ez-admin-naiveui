@@ -6,23 +6,19 @@
       <EzButtonGroup :buttons="dynamicActionButtons" @action="handleAction" />
     </template>
 
-    <div class="flex items-center justify-between">
-      <!-- 搜索表单 - 左对齐 -->
-      <EzSearch
-        v-model="queryParams.keywords"
-        placeholder="请输入部门名称进行搜索"
-        @search="handleSearch"
-        @reset="handleResetSearch"
-      />
-    </div>
-
     <!-- 部门列表表格 -->
     <EzTable
       :config="tableConfig"
       :checked-keys="checkedRowKeys"
       :expanded-keys="expandedRowKeys"
+      :search-value="queryParams.keywords"
+      search-placeholder="部门名称"
       @check-change="handleCheck"
       @expand-change="handleExpandChange"
+      @search="handleSearch"
+      @search-input="handleSearchInput"
+      @refresh="handleRefresh"
+      @advanced-filter="handleAdvancedFilter"
     />
   </n-card>
 
@@ -122,8 +118,16 @@ const { formVisible, formLoading, formMode, formData, handleCancel, handleFormDa
 const { resetPaginationAndLoad, loadDataList } = crud
 
 // 搜索处理
-const handleSearch = () => {
+const handleSearch = (value?: string) => {
+  if (value !== undefined) {
+    queryParams.value.keywords = value
+  }
   resetPaginationAndLoad()
+}
+
+// 搜索输入处理
+const handleSearchInput = (value: string) => {
+  queryParams.value.keywords = value
 }
 
 // CRUD操作方法
@@ -166,7 +170,7 @@ const dynamicActionButtons = computed(() => {
     if (button.key === 'toggle-expand') {
       return {
         ...button,
-        text: isExpanded ? '收起所有' : '展开所有',
+        text: isExpanded ? '收起' : '展开',
         icon: isExpanded ? ChevronUpOutline : ChevronDownOutline,
       }
     }
@@ -196,10 +200,15 @@ const loadParentTree = async (excludeId?: number) => {
 
 // ==================== 事件处理方法 ====================
 
-// 重置搜索
-const handleResetSearch = () => {
-  queryParams.value.keywords = ''
-  resetPaginationAndLoad() // 重置分页并重新加载数据
+// 刷新处理
+const handleRefresh = () => {
+  loadDataList()
+}
+
+// 高级筛选处理
+const handleAdvancedFilter = () => {
+  // TODO: 实现高级筛选功能
+  console.log('高级筛选')
 }
 
 // 新增（重写以加载父节点树）

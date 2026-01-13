@@ -3,6 +3,53 @@
   基于CommonTable重命名，二次封装n-data-table
 -->
 <template>
+  <!-- 头部工具栏 -->
+  <div v-if="showToolbar" class="flex items-center justify-between mb-4">
+    <!-- 左侧：简易查询 -->
+    <div class="flex gap-3 items-center">
+      <EzSearch
+        v-if="showSearch"
+        :model-value="searchValue"
+        :placeholder="searchPlaceholder"
+        :width="searchWidth"
+        @update:model-value="handleSearchInput"
+        @search="handleSearch"
+      />
+    </div>
+
+    <!-- 右侧：列表操作栏 -->
+    <div class="flex gap-2 items-center">
+      <!-- 高级筛选按钮 -->
+      <n-button v-if="showAdvancedFilter" @click="handleAdvancedFilter">
+        <template #icon>
+          <n-icon size="18">
+            <filter />
+          </n-icon>
+        </template>
+      </n-button>
+
+      <!-- 表头字段显示隐藏按钮 -->
+      <n-dropdown v-if="showColumnSelector" :options="columnOptions" @select="handleColumnToggle">
+        <n-button>
+          <template #icon>
+            <n-icon size="18">
+              <eye />
+            </n-icon>
+          </template>
+        </n-button>
+      </n-dropdown>
+
+      <!-- 刷新按钮 -->
+      <n-button v-if="showRefresh" @click="handleRefresh">
+        <template #icon>
+          <n-icon size="18">
+            <refresh />
+          </n-icon>
+        </template>
+      </n-button>
+    </div>
+  </div>
+
   <!-- 表格容器 -->
   <n-data-table
     ref="tableRef"
@@ -41,8 +88,11 @@
 -->
 <script setup lang="ts" generic="T extends RowData">
 import { ref, computed, watch } from 'vue'
+import { Refresh, Eye } from '@vicons/ionicons5'
 import type { RowData, InternalRowData } from 'naive-ui/es/data-table/src/interface'
+import type { DropdownOption } from 'naive-ui'
 import type { EzTableConfig } from '@/hooks/types/table'
+import EzSearch from '@/components/common/EzSearch.vue'
 
 /**
  * 🎯 EzTable 泛型组件设计说明：
@@ -68,6 +118,16 @@ export interface EzTableEmits<T extends RowData> {
   (e: 'sort-change', sorter: Record<string, unknown>): void
   /** 筛选改变事件 */
   (e: 'filter-change', filters: Record<string, unknown>): void
+  /** 搜索事件 */
+  (e: 'search', value: string): void
+  /** 搜索输入事件 */
+  (e: 'search-input', value: string): void
+  /** 刷新事件 */
+  (e: 'refresh'): void
+  /** 高级筛选事件 */
+  (e: 'advanced-filter'): void
+  /** 字段显示切换事件 */
+  (e: 'column-toggle', key: string, visible: boolean): void
 }
 
 /**
@@ -80,6 +140,24 @@ export interface EzTableProps<T extends RowData> {
   checkedKeys?: (string | number)[]
   /** 展开的行keys */
   expandedKeys?: (string | number)[]
+
+  /** 是否显示工具栏 */
+  showToolbar?: boolean
+  /** 是否显示搜索 */
+  showSearch?: boolean
+  /** 搜索占位符 */
+  searchPlaceholder?: string
+  /** 搜索框宽度 */
+  searchWidth?: string
+  /** 搜索值 */
+  searchValue?: string
+
+  /** 是否显示刷新按钮 */
+  showRefresh?: boolean
+  /** 是否显示表头字段选择器 */
+  showColumnSelector?: boolean
+  /** 是否显示高级筛选按钮 */
+  showAdvancedFilter?: boolean
 }
 
 /**
@@ -88,12 +166,26 @@ export interface EzTableProps<T extends RowData> {
 const props = withDefaults(defineProps<EzTableProps<T>>(), {
   checkedKeys: () => [],
   expandedKeys: () => [],
+  showToolbar: true,
+  showSearch: true,
+  searchPlaceholder: '请输入搜索关键词',
+  searchWidth: '220px',
+  searchValue: '',
+  showRefresh: true,
+  showColumnSelector: true,
+  showAdvancedFilter: true,
 })
 
 /**
  * 组件事件定义
  */
 const emit = defineEmits<EzTableEmits<T>>()
+
+/**
+ * 图标组件引用
+ */
+const refresh = Refresh
+const eye = Eye
 
 /**
  * 表格引用
@@ -230,6 +322,59 @@ const childrenKey = computed(() => props.config.childrenKey ?? 'children')
 const defaultExpandAll = computed(() => props.config.defaultExpandAll ?? false)
 
 /**
+ * 计算属性：是否显示工具栏
+ */
+const showToolbar = computed(() => props.showToolbar)
+
+/**
+ * 计算属性：是否显示搜索
+ */
+const showSearch = computed(() => props.showSearch)
+
+/**
+ * 计算属性：搜索占位符
+ */
+const searchPlaceholder = computed(() => props.searchPlaceholder)
+
+/**
+ * 计算属性：搜索框宽度
+ */
+const searchWidth = computed(() => props.searchWidth)
+
+/**
+ * 计算属性：搜索值
+ */
+const searchValue = computed(() => props.searchValue)
+
+/**
+ * 计算属性：是否显示刷新按钮
+ */
+const showRefresh = computed(() => props.showRefresh)
+
+/**
+ * 计算属性：是否显示字段选择器
+ */
+const showColumnSelector = computed(() => props.showColumnSelector)
+
+/**
+ * 计算属性：是否显示高级筛选
+ */
+const showAdvancedFilter = computed(() => props.showAdvancedFilter)
+
+/**
+ * 计算属性：字段选项（用于字段选择器）
+ */
+const columnOptions = computed((): DropdownOption[] => {
+  return columns.value
+    .filter((col) => col.type !== 'selection' && 'key' in col)
+    .map((col) => ({
+      key: String((col as unknown as Record<string, unknown>).key || ''),
+      label: String((col as unknown as Record<string, unknown>).title || ''),
+    }))
+    .filter((option) => option.key && option.key !== 'actions')
+})
+
+/**
  * 处理行选择改变事件
  */
 const handleCheckedChange = (keys: (string | number)[], rows: InternalRowData[]) => {
@@ -257,6 +402,43 @@ const handleFiltersChange = (filters: Record<string, unknown>) => {
 const handleExpandedChange = (keys: (string | number)[]) => {
   internalExpandedKeys.value = keys
   emit('expand-change', keys)
+}
+
+/**
+ * 处理搜索输入事件
+ */
+const handleSearchInput = (value: string) => {
+  emit('search-input', value)
+}
+
+/**
+ * 处理搜索事件
+ */
+const handleSearch = () => {
+  emit('search', searchValue.value)
+}
+
+/**
+ * 处理刷新事件
+ */
+const handleRefresh = () => {
+  emit('refresh')
+}
+
+/**
+ * 处理高级筛选事件
+ */
+const handleAdvancedFilter = () => {
+  emit('advanced-filter')
+}
+
+/**
+ * 处理字段显示切换事件
+ */
+const handleColumnToggle = (key: string) => {
+  // 这里可以实现字段显示隐藏的逻辑
+  // 暂时先发出事件，让父组件处理
+  emit('column-toggle', key, true)
 }
 </script>
 
