@@ -11,7 +11,7 @@ export default defineConfig({
       { text: '首页', link: '/' },
       { text: '快速开始', link: '/quick-start' },
       { text: '开发指南', link: '/development' },
-      { text: '开发日志', link: '/logs/' },
+      { text: '开发日志', link: '/development-log/' },
     ],
 
     // 页面目录配置
@@ -73,33 +73,33 @@ export default defineConfig({
           ],
         },
       ],
-      '/logs/': [
+      '/development-log/': [
         {
           text: '开发日志',
           items: [
-            { text: '日志概览', link: '/logs/' },
+            { text: '日志概览', link: '/development-log/' },
             {
               text: '开发时间线',
               items: [
-                { text: '2025年1月9日 - 项目起步', link: '/logs/timeline/2025-01-09' },
-                { text: '2025年1月10日 - 组件开发深入', link: '/logs/timeline/2025-01-10' },
-                { text: '2025年1月11日 - API 接口设计', link: '/logs/timeline/2025-01-11' },
+                { text: '2025年1月9日 - 项目起步', link: '/development-log/timeline/2025-01-09' },
+                { text: '2025年1月10日 - 组件开发深入', link: '/development-log/timeline/2025-01-10' },
+                { text: '2025年1月11日 - API 接口设计', link: '/development-log/timeline/2025-01-11' },
               ],
             },
-            { text: '架构设计思考', link: '/logs/architecture' },
-            { text: '项目进度追踪', link: '/logs/progress' },
-            { text: '心得体会', link: '/logs/reflections' },
+            { text: '架构设计思考', link: '/development-log/architecture' },
+            { text: '项目进度追踪', link: '/development-log/progress' },
+            { text: '心得体会', link: '/development-log/reflections' },
             {
               text: '开发随笔',
               items: [
-                { text: '随笔集', link: '/logs/essays/' },
-                { text: '组件化架构的演进', link: '/logs/essays/component-architecture' },
-                { text: '状态管理的权衡', link: '/logs/essays/state-management' },
-                { text: 'TypeScript 类型编程的实践', link: '/logs/essays/typescript-practice' },
-                { text: '文档驱动开发', link: '/logs/essays/documentation-driven' },
+                { text: '随笔集', link: '/development-log/essays/' },
+                { text: '组件化架构的演进', link: '/development-log/essays/component-architecture' },
+                { text: '状态管理的权衡', link: '/development-log/essays/state-management' },
+                { text: 'TypeScript 类型编程的实践', link: '/development-log/essays/typescript-practice' },
+                { text: '文档驱动开发', link: '/development-log/essays/documentation-driven' },
               ],
             },
-            { text: '未来展望', link: '/logs/future' },
+            { text: '未来展望', link: '/development-log/future' },
           ],
         },
       ],
