@@ -20,7 +20,7 @@
     <!-- 右侧：列表操作栏 -->
     <div class="flex gap-2 items-center">
       <!-- 高级筛选按钮 -->
-      <n-button v-if="showAdvancedFilter" @click="handleAdvancedFilter">
+      <n-button v-if="showAdvancedFilter" ghost circle @click="handleAdvancedFilter">
         <template #icon>
           <n-icon size="18">
             <Filter />
@@ -30,7 +30,7 @@
 
       <!-- 表头字段显示隐藏按钮 -->
       <n-dropdown :options="columnOptions" @select="handleColumnToggle">
-        <n-button>
+        <n-button ghost circle>
           <template #icon>
             <n-icon size="18">
               <SettingsOutline />
@@ -40,7 +40,7 @@
       </n-dropdown>
 
       <!-- 刷新按钮 -->
-      <n-button @click="handleRefresh">
+      <n-button @click="handleRefresh" ghost circle>
         <template #icon>
           <n-icon size="18">
             <Refresh />
@@ -167,7 +167,6 @@ const props = withDefaults(defineProps<EzTableProps<T>>(), {
   searchPlaceholder: '请输入搜索关键词',
   searchWidth: '220px',
   searchValue: '',
-
   showAdvancedFilter: true,
 })
 

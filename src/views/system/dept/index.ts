@@ -80,7 +80,7 @@ export const deptTableConfig: TableConfigOptions<DeptListVO> = {
 
 // === 操作按钮配置 ===
 export const deptActionButtons: ActionButton[] = [
-  { key: 'add', text: '新增', type: 'primary', icon: PlusOutlined, permission: 'sys:dept:add' },
+  { key: 'add', text: '新建部门', type: 'primary', icon: PlusOutlined, permission: 'sys:dept:add' },
   { key: 'toggle-expand', text: '展开', icon: ChevronDownOutline, permission: '' },
 ]
 

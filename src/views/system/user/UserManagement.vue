@@ -1,57 +1,52 @@
 <template>
-  <n-split direction="horizontal" style="height: calc(100vh - 118px)" max="300px" min="100px" default-size="200px">
-    <template #1>
-      <div class="pr-4">
-        <div class="mb-2">
-          <n-input
-            v-model:value="deptSearchValue"
-            placeholder="搜索部门"
-            clearable
-            @input="handleDeptSearch"
-            @clear="handleDeptSearchClear"
-          >
-            <template #prefix>
-              <n-icon size="16">
-                <SearchOutline />
-              </n-icon>
-            </template>
-          </n-input>
+  <n-card title="用户管理">
+    <template #header-extra>
+      <!-- 操作按钮组 -->
+      <EzButtonGroup :buttons="userActionButtons" @action="handleAction" />
+    </template>
+    <n-split direction="horizontal" style="height: calc(100vh - 118px)" max="300px" min="100px" default-size="200px">
+      <template #1>
+        <div class="pr-4">
+          <div class="mb-2">
+            <n-input
+              v-model:value="deptSearchValue"
+              placeholder="搜索部门"
+              clearable
+              @input="handleDeptSearch"
+              @clear="handleDeptSearchClear"
+            >
+              <template #prefix>
+                <n-icon size="16">
+                  <SearchOutline />
+                </n-icon>
+              </template>
+            </n-input>
+          </div>
+
+          <n-tree
+            :data="deptTreeData"
+            :pattern="deptSearchValue"
+            :render-option="renderTreeOption"
+            :node-props="nodeProps"
+            :expanded-keys="expandedKeys"
+            :selected-keys="selectedKeys"
+            :show-irrelevant-nodes="false"
+            block-line
+            selectable
+            filterable
+            @update:expanded-keys="handleExpandedKeysChange"
+            @update:selected-keys="handleSelectedKeysChange"
+          />
         </div>
-
-        <n-tree
-          :data="deptTreeData"
-          :pattern="deptSearchValue"
-          :render-option="renderTreeOption"
-          :node-props="nodeProps"
-          :expanded-keys="expandedKeys"
-          :selected-keys="selectedKeys"
-          :show-irrelevant-nodes="false"
-          block-line
-          selectable
-          filterable
-          @update:expanded-keys="handleExpandedKeysChange"
-          @update:selected-keys="handleSelectedKeysChange"
-        />
-      </div>
-    </template>
-    <template #2>
-      <div class="pl-6">
-        <!-- 搜索表单 -->
-        <EzSearch
-          v-model="queryParams.search.keywords"
-          placeholder="请输入用户名、昵称或邮箱进行搜索"
-          @search="handleSearch"
-          @reset="handleResetSearch"
-        />
-
-        <!-- 操作按钮组 -->
-        <EzButtonGroup :buttons="userActionButtons" @action="handleAction" />
-
-        <!-- 用户列表表格 -->
-        <EzTable :config="tableConfig" :checked-keys="checkedRowKeys" @check-change="handleCheck" />
-      </div>
-    </template>
-  </n-split>
+      </template>
+      <template #2>
+        <div class="pl-6">
+          <!-- 用户列表表格 -->
+          <EzTable :config="tableConfig" :checked-keys="checkedRowKeys" @check-change="handleCheck" />
+        </div>
+      </template>
+    </n-split>
+  </n-card>
 
   <!-- 用户表单 -->
   <EzForm
@@ -118,11 +113,6 @@ const { detailVisible, detailLoading, detailData } = crud
 // 查询相关方法
 const { resetPaginationAndLoad, loadDataList } = crud
 
-// 搜索处理
-const handleSearch = () => {
-  resetPaginationAndLoad()
-}
-
 // CRUD操作方法
 const { handleAdd, handleSubmit, handleBatchDelete } = crud
 
@@ -154,11 +144,6 @@ const formConfig = computed(() => ({
 }))
 
 // === 数据加载（集成表格分页和查询参数） ===
-
-const handleResetSearch = () => {
-  queryParams.value.search.keywords = ''
-  resetPaginationAndLoad()
-}
 
 // === 表单提交（成功后刷新列表） ===
 const handleFormSubmit = async (data: Partial<UserCreateDTO | UserUpdateDTO>) => {
