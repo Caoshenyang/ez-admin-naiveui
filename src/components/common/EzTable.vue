@@ -23,27 +23,27 @@
       <n-button v-if="showAdvancedFilter" @click="handleAdvancedFilter">
         <template #icon>
           <n-icon size="18">
-            <filter />
+            <Filter />
           </n-icon>
         </template>
       </n-button>
 
       <!-- 表头字段显示隐藏按钮 -->
-      <n-dropdown v-if="showColumnSelector" :options="columnOptions" @select="handleColumnToggle">
+      <n-dropdown :options="columnOptions" @select="handleColumnToggle">
         <n-button>
           <template #icon>
             <n-icon size="18">
-              <eye />
+              <SettingsOutline />
             </n-icon>
           </template>
         </n-button>
       </n-dropdown>
 
       <!-- 刷新按钮 -->
-      <n-button v-if="showRefresh" @click="handleRefresh">
+      <n-button @click="handleRefresh">
         <template #icon>
           <n-icon size="18">
-            <refresh />
+            <Refresh />
           </n-icon>
         </template>
       </n-button>
@@ -88,7 +88,7 @@
 -->
 <script setup lang="ts" generic="T extends RowData">
 import { ref, computed, watch } from 'vue'
-import { Refresh, Eye } from '@vicons/ionicons5'
+import { Refresh, SettingsOutline, Filter } from '@vicons/ionicons5'
 import type { RowData, InternalRowData } from 'naive-ui/es/data-table/src/interface'
 import type { DropdownOption } from 'naive-ui'
 import type { EzTableConfig } from '@/hooks/types/table'
@@ -152,10 +152,6 @@ export interface EzTableProps<T extends RowData> {
   /** 搜索值 */
   searchValue?: string
 
-  /** 是否显示刷新按钮 */
-  showRefresh?: boolean
-  /** 是否显示表头字段选择器 */
-  showColumnSelector?: boolean
   /** 是否显示高级筛选按钮 */
   showAdvancedFilter?: boolean
 }
@@ -171,8 +167,7 @@ const props = withDefaults(defineProps<EzTableProps<T>>(), {
   searchPlaceholder: '请输入搜索关键词',
   searchWidth: '220px',
   searchValue: '',
-  showRefresh: true,
-  showColumnSelector: true,
+
   showAdvancedFilter: true,
 })
 
@@ -180,12 +175,6 @@ const props = withDefaults(defineProps<EzTableProps<T>>(), {
  * 组件事件定义
  */
 const emit = defineEmits<EzTableEmits<T>>()
-
-/**
- * 图标组件引用
- */
-const refresh = Refresh
-const eye = Eye
 
 /**
  * 表格引用
@@ -345,16 +334,6 @@ const searchWidth = computed(() => props.searchWidth)
  * 计算属性：搜索值
  */
 const searchValue = computed(() => props.searchValue)
-
-/**
- * 计算属性：是否显示刷新按钮
- */
-const showRefresh = computed(() => props.showRefresh)
-
-/**
- * 计算属性：是否显示字段选择器
- */
-const showColumnSelector = computed(() => props.showColumnSelector)
 
 /**
  * 计算属性：是否显示高级筛选
