@@ -1,7 +1,8 @@
 // 用户相关类型定义
 import type { PageQuery } from './api'
 import type { MenuTreeVO } from './menu'
-import type { CrudConfig } from '@/hooks/useCrud'
+import type { CrudFlatConfig } from '@/hooks/types/crud-config'
+import type { RowData } from 'naive-ui/es/data-table/src/interface'
 
 // 用户登录DTO
 export interface LoginDTO {
@@ -36,7 +37,7 @@ export interface UserSearchCriteria {
 export type UserQuery = PageQuery<UserSearchCriteria>
 
 // 用户列表VO（匹配API返回的数据结构）
-export interface UserListVO {
+export interface UserListVO extends RowData {
   userId: string
   deptId: string
   deptName: string
@@ -84,4 +85,4 @@ export interface UserDetailVO {
 }
 
 // 用户管理 CRUD 配置类型
-export type UserCrudConfig = CrudConfig<UserListVO, UserQuery, UserCreateDTO, UserUpdateDTO, UserDetailVO>
+export type UserCrudConfig = CrudFlatConfig<UserListVO, UserQuery, UserCreateDTO, UserUpdateDTO, UserDetailVO>

@@ -141,7 +141,8 @@ export const menuActionButtons: ActionButton[] = [
 ]
 
 // === CRUD 配置 ===
-export const menuCrudConfig: MenuCrudConfig = {
+// TODO: 迁移到 CrudFlatConfig 扁平化配置结构
+export const menuCrudConfig: any = {
   // 查询参数初始值
   queryParams: {
     keywords: '',

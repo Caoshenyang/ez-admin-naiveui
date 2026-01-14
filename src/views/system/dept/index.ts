@@ -1,19 +1,13 @@
 /**
- * 部门管理配置
+ * 部门管理配置 - 扁平化配置（严格泛型版本）
  *
- * 统一导出所有部门相关的配置项
+ * 所有配置集中在一个对象中，类型安全，无 any
  */
-import type { DeptCrudConfig } from '@/types'
-import type { FormConfig } from '@/components/common/EzForm.vue'
-import type { FormRules } from 'naive-ui'
-import type { DeptCreateDTO, DeptUpdateDTO, DeptListVO } from '@/types'
-import type { TreeOption } from '@/components/common/EzForm.vue'
-import { type TableConfigOptions } from '@/hooks/types/table'
-import type { ActionButton } from '@/components/common/EzButtonGroup.vue'
 import { deptApi } from '@/api/dept'
-import { renderStatusTag } from '@/utils/renderers'
-import { ChevronDownOutline } from '@vicons/ionicons5'
 import { PlusOutlined } from '@vicons/antd'
+import { ChevronDownOutline } from '@vicons/ionicons5'
+import type { DeptListVO, DeptQuery, DeptCreateDTO, DeptUpdateDTO, DeptDetailVO } from '@/types'
+import type { CrudFlatConfig } from '@/hooks/types/crud-config'
 
 // === 基础选项配置 ===
 const statusOptions = [
@@ -21,156 +15,105 @@ const statusOptions = [
   { label: '禁用', value: 0, type: 'error' as const },
 ]
 
-// === 表单验证规则配置 ===
-const formRules: FormRules = {
-  deptName: [
-    { required: true, message: '请输入部门名称', trigger: 'blur' },
-    { min: 1, max: 50, message: '部门名称长度应在1-50个字符之间', trigger: 'blur' },
-  ],
+// === 工具函数：部门树数据转换为表单树形选项 ===
+interface TreeOption {
+  key: number
+  label: string
+  children?: TreeOption[]
 }
 
-// === 表单配置 ===
-export const deptFormConfig: FormConfig<DeptCreateDTO | DeptUpdateDTO> = {
-  title: '部门表单',
-  gridCols: 24,
-  size: 'medium',
-  fields: [
-    { key: 'deptName', label: '部门名称', type: 'input', required: true, placeholder: '请输入部门名称', span: 12 },
-    {
-      key: 'parentId',
-      label: '上级部门',
-      type: 'tree-select',
-      placeholder: '请选择上级部门',
-      span: 12,
-      dynamicOptions: 'parentId', // 使用动态选项（配置驱动）
-    },
-    {
-      key: 'deptSort',
-      label: '排序',
-      type: 'number',
-      placeholder: '请输入排序号',
-      validator: (value: number) => value >= 0,
-      span: 12,
-    },
-    { key: 'status', label: '状态', type: 'radio', options: statusOptions, required: true, span: 12 },
-    { key: 'description', label: '描述', type: 'textarea', placeholder: '请输入部门描述', span: 24 },
-  ],
-  // 表单验证规则
-  rules: formRules,
-}
-
-// === 表格配置 ===
-export const deptTableConfig: TableConfigOptions<DeptListVO> = {
-  columns: [
-    { title: '部门名称', key: 'deptName', width: 250 },
-    { title: '状态', key: 'status', width: 120, render: renderStatusTag(statusOptions) },
-    { title: '排序', key: 'deptSort', width: 120 },
-    { title: '创建时间', key: 'createTime', width: 200 },
-  ],
-  // 操作按钮配置
-  actionButtons: {
-    custom: [
-      {
-        type: 'primary' as const,
-        tertiary: true,
-        icon: PlusOutlined,
-        actionKey: 'addChild', // 引用 customActionHandlers 中的函数名
-      },
-    ],
-    edit: true,
-    delete: true,
-  },
-  // 自定义按钮显示顺序：添加子节点 -> 编辑 -> 删除
-  actionOrder: ['custom', 'edit', 'delete'],
-  // 调整操作列宽度以容纳所有按钮
-  actionWidth: 220,
-}
-
-// === 工具函数 ===
-
-/**
- * 部门树数据转换为表单树形选项
- */
-export const convertDeptToTreeOption = (dept: DeptListVO): TreeOption => ({
+const convertDeptToTreeOption = (dept: DeptListVO): TreeOption => ({
   key: dept.deptId,
   label: dept.deptName,
   children: dept.children?.map(convertDeptToTreeOption),
 })
 
-// === 操作按钮配置 ===
-export const deptActionButtons: ActionButton[] = [
-  { key: 'add', text: '新建部门', type: 'primary', icon: PlusOutlined, permission: 'sys:dept:add' },
-  { key: 'toggle-expand', text: '展开', icon: ChevronDownOutline, permission: '' },
-]
+// === 部门管理配置（严格泛型）===
+export const deptConfig: CrudFlatConfig<DeptListVO, DeptQuery, DeptCreateDTO, DeptUpdateDTO, DeptDetailVO> = {
+  // ========== 基础信息 ==========
+  title: '部门管理',
+  mode: 'tree',
+  idKey: 'deptId',
+  nameKey: 'deptName',
 
-// === CRUD 配置 ===
-export const deptCrudConfig: DeptCrudConfig = {
-  // 查询参数初始值
-  queryParams: {
-    keywords: '',
-  },
-  // 树形模式配置
-  treeMode: true,
-  paginationOptions: false,
-  // 树形结构选项
-  treeOptions: {
-    childrenKey: 'children', // 子节点字段名
-    defaultExpandAll: false, // 不默认展开所有
-    toggleActionKey: 'toggle-expand', // 展开/收起按钮的 key
-  },
-  // 表格配置
-  tableConfig: deptTableConfig,
-  // API配置（根据接口文档调整）
-  treeApi: deptApi.tree,
-  detailApi: deptApi.detail, // 编辑功能需要
-  createApi: deptApi.create,
-  updateApi: deptApi.update,
-  removeApi: deptApi.remove,
-
-  // 主键字段（匹配接口文档）
-  idKey: 'deptId' as const,
-
-  // 显示名称字段（用于删除确认等）
-  nameKey: 'deptName' as const,
-
-  // 新增表单默认值
-  createDefaultValues: {
-    status: 1, // 默认启用
-    deptSort: 0, // 默认排序
+  // ========== API 配置 ==========
+  api: {
+    list: deptApi.tree,
+    detail: deptApi.detail,
+    create: deptApi.create,
+    update: deptApi.update,
+    delete: deptApi.remove,
   },
 
-  // 字段级联加载配置（用于上级部门选择）
-  fieldCascadeLoad: [
-    {
-      fieldKey: 'parentId',
-      loader: async (mode, formData) => {
-        const excludeId = mode === 'update' ? (formData as DeptUpdateDTO)?.deptId : undefined
-        const treeData = await deptApi.parentTree(excludeId)
-        return treeData.map(convertDeptToTreeOption)
-      },
-      transformer: (data) => data,
-    },
+  // ========== 表格列配置 ==========
+  columns: [
+    { key: 'deptName', title: '部门名称', width: 250 },
+    { key: 'status', title: '状态', width: 120, render: 'status', options: statusOptions },
+    { key: 'deptSort', title: '排序', width: 120 },
+    { key: 'createTime', title: '创建时间', width: 200 },
   ],
 
-  // 页面按钮处理函数映射（配置驱动开发）
-  // 注意：这里使用函数形式，可以访问 crud 的所有状态和方法
-  actionHandlers: (crud) => ({
-    // 新增按钮
-    add: () => crud.handleAdd(),
+  showSelection: true,
+  showPagination: false,
 
-    // 刷新按钮
-    refresh: () => crud.loadDataList(),
+  // ========== 页面操作按钮 ==========
+  actions: [
+    { key: 'add', type: 'primary', text: '新建部门', icon: PlusOutlined },
+    { key: 'toggle-expand', text: '展开', icon: ChevronDownOutline },
+  ],
 
-    // 展开/收起按钮（使用 crud 内置的树形方法）
-    'toggle-expand': () => crud.toggleExpand(),
+  // ========== 行操作按钮 ==========
+  rowActions: [
+    { key: 'addChild', type: 'primary', icon: PlusOutlined },
+    'edit',
+    'delete',
+  ],
+  actionWidth: 220,
 
-    // 批量删除按钮（需要访问 checkedRowKeys 和 handleBatchDelete）
-    'batch-delete': async () => {
-      const ids = crud.checkedRowKeys.value.map((id) => String(id))
-      await crud.handleBatchDelete(ids, async () => {
-        crud.checkedRowKeys.value = []
-        await crud.loadDataList()
-      })
+  // ========== 表单配置 ==========
+  form: {
+    title: '部门',
+    gridCols: 24,
+    size: 'medium',
+    fields: [
+      { key: 'deptName', label: '部门名称', type: 'input', required: true, placeholder: '请输入部门名称', span: 12 },
+      {
+        key: 'parentId',
+        label: '上级部门',
+        type: 'tree-select',
+        placeholder: '请选择上级部门',
+        span: 12,
+        // 字段级联加载：根据编辑/新增模式动态加载上级部门树
+        load: async (mode, formData) => {
+          const updateFormData = formData as Partial<DeptUpdateDTO> | undefined
+          const excludeId = mode === 'update' ? updateFormData?.deptId : undefined
+          const treeData = await deptApi.parentTree(excludeId)
+          return treeData.map(convertDeptToTreeOption)
+        },
+      },
+      { key: 'deptSort', label: '排序', type: 'number', placeholder: '请输入排序号', span: 12 },
+      { key: 'status', label: '状态', type: 'radio', options: statusOptions, required: true, span: 12 },
+      { key: 'description', label: '描述', type: 'textarea', placeholder: '请输入部门描述', span: 24 },
+    ],
+    rules: {
+      deptName: [
+        { required: true, message: '请输入部门名称', trigger: 'blur' },
+        { min: 1, max: 50, message: '部门名称长度应在1-50个字符之间', trigger: 'blur' },
+      ],
     },
-  }),
+  },
+
+  // ========== 默认值配置 ==========
+  defaults: {
+    create: {
+      status: 1,
+      deptSort: 0,
+    },
+  },
+
+  // ========== 树形配置 ==========
+  tree: {
+    childrenKey: 'children',
+    defaultExpandAll: false,
+  },
 }

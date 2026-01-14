@@ -1,5 +1,6 @@
 // 菜单相关类型定义
-import type { CrudConfig } from '@/hooks/useCrud'
+import type { CrudFlatConfig } from '@/hooks/types/crud-config'
+import type { RowData } from 'naive-ui/es/data-table/src/interface'
 
 // 菜单实体
 export interface Menu {
@@ -20,7 +21,7 @@ export interface Menu {
 }
 
 // 菜单树形结构VO
-export interface MenuTreeVO {
+export interface MenuTreeVO extends RowData {
   // 菜单ID
   menuId: string
   // 父菜单ID，0表示根菜单
@@ -95,4 +96,4 @@ export interface SaveMenuDTO {
 }
 
 // 菜单CRUD配置类型
-export type MenuCrudConfig = CrudConfig<MenuTreeVO, MenuQuery, SaveMenuDTO, SaveMenuDTO, Menu>
+export type MenuCrudConfig = CrudFlatConfig<MenuTreeVO, MenuQuery, SaveMenuDTO, SaveMenuDTO, Menu>

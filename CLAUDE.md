@@ -4,8 +4,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Development Commands
 
-### Core Commands
-
 - `pnpm dev` - Start development server (runs on http://127.0.0.1:3000)
 - `pnpm build` - Type check and build for production
 - `pnpm build-only` - Build without type checking
@@ -13,140 +11,125 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `pnpm lint` - Run ESLint with auto-fix and caching
 - `pnpm format` - Format code with Prettier
 
-### Documentation
-
-- `pnpm docs:dev` - Start VitePress documentation server
-- `pnpm docs:build` - Build documentation for production
-- `pnpm docs:preview` - Preview built documentation
-
-### Node Version Requirement
-
-- Node.js ^20.19.0 || >=22.12.0 (check `package.json` engines field)
+**Node version requirement**: ^20.19.0 || >=22.12.0
 
 ## Architecture Overview
 
-This is a Vue 3 admin template built with Naive UI, featuring a dynamic permission-based routing system and a configuration-driven CRUD component architecture.
+Vue 3 admin template with Naive UI, featuring dynamic permission-based routing and configuration-driven CRUD components.
 
 ### Dynamic Routing System
 
-The application uses a hybrid routing approach:
+Hybrid routing with static routes (login, home, error pages) in `src/router/index.ts` and dynamic routes loaded from backend after authentication.
 
-- **Static routes** (login, home, error pages) are defined in `src/router/routes.ts`
-- **Dynamic routes** are loaded from the backend after user authentication
+**Route loading flow:**
+1. User logs in → User store fetches user info and routes
+2. `RouteManager.loadRoutes()` converts backend data to Vue Router format
+3. Routes dynamically added to "Main" layout
+4. Menu generated from loaded routes
 
-Key files:
-
-- `src/router/index.ts` - Router setup with hash history and guards
-- `src/router/routeManager.ts` - `RouteManager` class singleton that handles dynamic route loading
-- `src/stores/modules/user.ts` - User store that triggers route loading after login
-
-Route loading flow:
-
-1. User logs in via `src/api/user.ts:login()`
-2. User store fetches user info and routes from backend
-3. `RouteManager.loadRoutes()` converts backend data to Vue Router format
-4. Routes are dynamically added to the router's "Main" layout
-5. Menu is generated from the loaded routes
+**Key files:**
+- `src/router/index.ts` - Router setup with hash history
+- `src/router/permission.ts` - Route guards and permission checks
+- `src/utils/routeManager.ts` - `RouteManager` singleton for dynamic route loading
+- `src/utils/routes.ts` - Route conversion utilities
 
 ### State Management
 
-Pinia stores with persistence via `pinia-plugin-persistedstate`:
+Pinia stores with `pinia-plugin-persistedstate` for localStorage persistence:
 
-- `src/stores/modules/user.ts` - Authentication state, user info, work tabs
+- `src/stores/modules/user.ts` - Authentication, user info, work tabs
 - `src/stores/modules/system.ts` - UI state (sidebar collapse, dark mode)
-
-Both stores persist to localStorage automatically.
 
 ### CRUD Component Architecture
 
-The project uses a configuration-driven approach for CRUD operations:
+Configuration-driven CRUD with "Ez"-prefixed components:
 
-**Core Custom Components** (prefixed with "Ez"):
-
-- `EzTable` - Data table with built-in CRUD actions, pagination, search
-- `EzForm` - Dynamic form generator based on configuration
-- `EzSearch` - Debounced search input component
+**Components:**
+- `EzTable` - Data table with CRUD actions, pagination, search (generic `<T extends RowData>`)
+- `EzForm` - Dynamic form generator with modal wrapper
+- `EzSearch` - Debounced search input
 - `EzButtonGroup` - Unified action button handling
-- `EzDetailModal` - Modal for viewing item details
+- `EzDetailModal` - Read-only detail view modal
 
-**Key Hook:**
+**Core hooks:**
+- `src/hooks/useCrud.ts` - Standardized CRUD operations with full type safety (generic over 5 type params)
+- `src/hooks/useTreeCrud.ts` - Tree-specific operations (expand/collapse all, toggle)
 
-- `src/hooks/useCrud.ts` - Composable that provides standardized CRUD operations
+```ts
+// Usage pattern
+const crud = useCrud({
+  pageApi: async (params) => { ... },
+  createApi: async (data) => { ... },
+  updateApi: async (data) => { ... },
+  removeApi: async (id) => { ... },
+  tableConfig: { columns: [...], showActions: true },
+  paginationOptions: { pageSizes: [10, 20, 50] }
+})
+```
 
-Pattern: Define a configuration object (table columns, form fields, API mapping) and pass it to `EzTable` which handles all CRUD operations automatically.
+Supports both paginated lists and tree structures via `treeMode` option.
 
 ### API Layer
 
-Located in `src/api/` - one file per module (user.ts, role.ts, dept.ts, menu.ts, dict.ts, etc.)
+One file per module in `src/api/` using centralized HTTP client (`src/utils/request.ts`):
 
-All APIs use a centralized HTTP client (`src/utils/request.ts`) that:
+- Expects `{code, data, message}` response format
+- 180s timeout, auto-logout on 401
+- Optional `noErrorToast` config to suppress error messages
+- Dev proxy: `/dev-api` → `http://127.0.0.1:8080`
 
-- Wraps Axios with 180s timeout
-- Expects standard response format: `{code, data, message}`
-- Auto-logs out on 401 errors
-- Shows user-friendly error messages (toast)
-- Supports `noErrorToast` option to suppress error messages
-- Integrates with Naive UI's loading bar
+### Component & File Organization
 
-API proxy in development: `/dev-api` → `http://127.0.0.1:8080`
-
-### Component Organization
+**Auto-imports** via `unplugin-vue-components`:
+- All components in `src/components/` auto-imported
+- Naive UI components auto-imported
+- Vue APIs (`ref`, `reactive`, etc.) auto-imported
 
 ```
-src/components/
-├── common/       # Reusable UI components (EzTable, EzForm, EzSearch, etc.)
-└── layout/       # Layout components (AppLayout, AppMenu, AppTopBar, AppWorkTab)
+src/
+├── components/
+│   ├── common/     # EzTable, EzForm, EzSearch, EzButtonGroup, EzDetailModal
+│   └── layout/     # AppLayout, AppMenu, AppTopBar, AppWorkTab, AppBreadcrumb
+├── api/            # One file per module (user.ts, role.ts, dept.ts, menu.ts, etc.)
+├── hooks/          # useCrud.ts, useTreeCrud.ts, useMessage.ts, types/
+├── types/modules/  # TypeScript types matching API structure
+└── views/          # Pages organized by feature (system/, tool/, etc.)
 ```
-
-**Important:** Components are auto-imported via `unplugin-vue-components` - no manual imports needed for components in `src/components/` or Naive UI components.
-
-### Type Definitions
-
-Located in `src/types/modules/` - TypeScript types organized by feature matching the API structure.
-
-### Views Organization
-
-Located in `src/views/` - Page components organized by feature (system/, tool/, etc.)
 
 ### Build Configuration
 
 **Vite** (`vite.config.ts`):
-
-- Vue 3 + TypeScript with Vue DevTools plugin
-- Auto-import for Vue APIs and Naive UI components
+- Vue 3 + TypeScript, Vue DevTools plugin
+- Auto-imports for Vue APIs and Naive UI components
 - Tailwind CSS v4 via `@tailwindcss/vite`
 - Path alias: `@` → `src/`
-- Dev server: port 3000, proxy to backend at port 8080
+- Dev server: port 3000
 
 **ESLint** (`eslint.config.ts`):
-
-- Vue + TypeScript recommended configs
+- Flat config with Vue + TypeScript recommended
 - Prettier integration (formatting skipped in linting)
-- Flat config format
 
 **TypeScript**:
+- Project references for build performance
+- Strict mode enabled
 
-- Project references setup for better build performance
-- Strict type checking enabled
+## Conventions
 
-## Important Conventions
+1. **"Ez" prefix** for custom reusable components (EzTable, EzForm, EzSearch)
+2. **Feature-based organization** (e.g., `src/api/dict.ts`, `src/views/system/dict/`)
+3. **No manual imports** for auto-imported Vue APIs, Naive UI components, or local components
+4. **Composition API only**
+5. **Include `title` in route meta** for breadcrumbs/page titles
+6. **Chinese language UI** (这是中文项目)
 
-1. **Component Naming**: Custom reusable components use "Ez" prefix (EzTable, EzForm, EzSearch)
-2. **File Organization**: By feature/vertical, not by type (e.g., `src/api/dict.ts`, `src/types/modules/dict.ts`, `src/views/system/dict/`)
-3. **Auto-Imports**: Vue APIs (`ref`, `reactive`, etc.) and Naive UI components are auto-imported - don't add manual imports
-4. **Composition API**: Use Vue 3 Composition API exclusively
-5. **Route Meta**: Include `title` in route meta for breadcrumbs and page titles
-6. **Permission Checks**: Dynamic routes are loaded based on backend permissions
+## Other Notes
 
-## Development Notes
+- Hash-based routing (`createWebHashHistory`)
+- Work tabs with persistence
+- Dark mode with localStorage persistence
+- Documentation via VitePress in `docs/`
 
-- The project uses hash-based routing (`createWebHashHistory`)
-- Work tabs feature allows tab-based navigation with persistence
-- Dark mode is supported with localStorage persistence
-- Documentation is built with VitePress and located in `docs/`
-- Chinese language UI and documentation (这是中文项目)
+## Styling
 
-## css 相关
-
-- 项目使用了 tailwindcss v4, 所有样式都通过 tailwindcss 来定义
-- 项目使用了 naive-ui 组件库，所有组件的样式都通过 naive-ui 来定义
+- Tailwind CSS v4 for all custom styles
+- Naive UI component library for UI components

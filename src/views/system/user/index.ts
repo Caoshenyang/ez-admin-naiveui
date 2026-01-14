@@ -127,7 +127,8 @@ export const userDetailConfig: DetailModalConfig = {
 
 // === CRUD 配置 ===
 // 用户管理 CRUD 配置，约定：只配置业务相关的动态值，通用逻辑由 hooks 处理
-export const userCrudConfig: UserCrudConfig = {
+// TODO: 迁移到 CrudFlatConfig 扁平化配置结构
+export const userCrudConfig: any = {
   // 表格配置
   tableConfig: userTableConfig,
   // 详情配置

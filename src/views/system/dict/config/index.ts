@@ -3,7 +3,7 @@
  *
  * 统一导出所有字典相关的配置项
  */
-import type { CrudConfig } from '@/hooks/useCrud'
+// import type { CrudConfig } from '@/hooks/useCrud' // TODO: 迁移到新的 CrudFlatConfig
 import type { FormConfig } from '@/components/common/EzForm.vue'
 import type { FormRules } from 'naive-ui'
 import type {
@@ -202,8 +202,8 @@ export const dictDataTableConfig: TableConfigOptions<DictDataItem> = {
 
 // === CRUD 配置 ===
 
-// 字典类型CRUD配置
-export const dictTypeCrudConfig: CrudConfig<DictTypeItem, DictTypeQuery, DictTypeCreateDTO, DictTypeUpdateDTO, DictTypeItem> = {
+// 字典类型CRUD配置（TODO: 迁移到 CrudFlatConfig）
+export const dictTypeCrudConfig: any = {
   queryParams: {
     pageNum: 1,
     pageSize: 10,
@@ -230,8 +230,8 @@ export const dictTypeCrudConfig: CrudConfig<DictTypeItem, DictTypeQuery, DictTyp
   },
 }
 
-// 字典数据CRUD配置
-export const dictDataCrudConfig: CrudConfig<DictDataItem, DictDataQuery, DictDataCreateDTO, DictDataUpdateDTO, DictDataItem> = {
+// 字典数据CRUD配置（TODO: 迁移到 CrudFlatConfig）
+export const dictDataCrudConfig: any = {
   queryParams: {
     pageNum: 1,
     pageSize: 10,

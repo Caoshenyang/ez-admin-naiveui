@@ -1,8 +1,9 @@
 // 部门相关类型定义
-import type { CrudConfig } from '@/hooks/useCrud'
+import type { CrudFlatConfig } from '@/hooks/types/crud-config'
+import type { RowData } from 'naive-ui/es/data-table/src/interface'
 
 // 部门列表VO（匹配接口文档字段）
-export interface DeptListVO {
+export interface DeptListVO extends RowData {
   deptId: number
   deptName: string
   parentId?: number
@@ -48,4 +49,4 @@ export interface DeptUpdateDTO extends DeptCreateDTO {
 }
 
 // 部门CRUD配置类型
-export type DeptCrudConfig = CrudConfig<DeptListVO, DeptQuery, DeptCreateDTO, DeptUpdateDTO, DeptDetailVO>
+export type DeptCrudConfig = CrudFlatConfig<DeptListVO, DeptQuery, DeptCreateDTO, DeptUpdateDTO, DeptDetailVO>

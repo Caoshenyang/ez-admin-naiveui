@@ -63,7 +63,7 @@
   <EzDetailModal
     v-model:show="detailVisible"
     :data="detailData"
-    :config="userCrudConfig.detailConfig"
+    :config="(userCrudConfig as any).detailConfig"
     :loading="detailLoading"
   />
 </template>
@@ -117,13 +117,13 @@ const { resetPaginationAndLoad, loadDataList } = crud
 const { handleAdd, handleSubmit, handleBatchDelete } = crud
 
 // 表格配置
-const tableConfig = computed<EzTableConfig<UserListVO>>(() => ({
-  columns: columns.value,
-  data: userList.value,
+const tableConfig = computed(() => ({
+  columns: columns.value as import('naive-ui').DataTableColumns<UserListVO>,
+  data: userList.value as UserListVO[],
   loading: loading.value,
   rowKey: (row: UserListVO) => row.userId,
   pagination: pagination!,
-}))
+}) as EzTableConfig<UserListVO>)
 
 // === 计算属性 ===
 const formConfig = computed(() => ({
