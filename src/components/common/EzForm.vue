@@ -329,6 +329,24 @@ export interface FormField<T = Record<string, unknown>, K extends keyof T = keyo
   /** 树形选项列表，仅对type='tree-select'有效 */
   treeOptions?: TreeOption[]
 
+  /**
+   * 动态选项键（配置驱动）
+   * 用于从外部 optionsMap 中自动获取选项数据
+   *
+   * 使用示例：
+   * 在表单字段配置中设置 dynamicOptions: 'parentId'
+   * 然后在 EzForm 组件传入 :options-map="{ parentId: treeData }"
+   * 组件会自动将 treeData 赋值给 field.treeOptions
+   *
+   * @example
+   * // 配置中
+   * { key: 'parentId', type: 'tree-select', dynamicOptions: 'parentId' }
+   *
+   * // 组件中
+   * <EzForm :options-map="{ parentId: crud.getFieldOptions('parentId') }" />
+   */
+  dynamicOptions?: string
+
   /** 是否支持多选，仅对type='tree-select'有效 */
   treeMultiple?: boolean
 
@@ -392,7 +410,21 @@ interface Props<T = Record<string, unknown>> {
 
   /** 表单数据对象，支持双向绑定 */
   formData: T
+
+  /**
+   * 动态选项映射表
+   * 用于存储字段动态选项数据，key 对应 field.dynamicOptions
+   *
+   * @example
+   * // 字段配置
+   * { key: 'parentId', type: 'tree-select', dynamicOptions: 'parentId' }
+   *
+   * // 传入数据
+   * :options-map="{ parentId: crud.getFieldOptions('parentId') }"
+   */
+  optionsMap?: Record<string, unknown[]>
 }
+
 
 /**
  * EzForm 组件事件接口
@@ -415,6 +447,7 @@ interface Emits<T = Record<string, unknown>> {
 const props = withDefaults(defineProps<Props<Record<string, unknown>>>(), {
   loading: false,
   formData: () => ({}),
+  optionsMap: () => ({}),
 })
 
 const emit = defineEmits<Emits<Record<string, unknown>>>()
@@ -429,6 +462,38 @@ const submitText = computed(() => props.config.submitText || '确定')
 const gridCols = computed(() => props.config.gridCols || 24)
 const formRules = computed(() => props.config.rules || {})
 
+/**
+ * 处理动态选项的字段列表
+ * 自动将 optionsMap 中的数据赋值给对应字段的 treeOptions 或 options
+ */
+const visibleFields = computed(() => {
+  return props.config.fields
+    .filter((field) => {
+      // 处理条件显示
+      if (field.condition) {
+        return field.condition(props.formData as T)
+      }
+      return true
+    })
+    .map((field) => {
+      // 处理动态选项
+      if (field.dynamicOptions && props.optionsMap) {
+        const dynamicData = props.optionsMap[field.dynamicOptions]
+        if (dynamicData) {
+          // 对于 tree-select 类型，设置 treeOptions
+          if (field.type === 'tree-select') {
+            return { ...field, treeOptions: dynamicData }
+          }
+          // 对于 select/radio/checkbox 类型，设置 options
+          if (['select', 'radio', 'checkbox'].includes(field.type)) {
+            return { ...field, options: dynamicData }
+          }
+        }
+      }
+      return field
+    })
+})
+
 // 弹窗尺寸样式
 const modalStyle = computed(() => {
   const size = props.config.size || 'medium'
@@ -439,11 +504,6 @@ const modalStyle = computed(() => {
   }
   return sizeMap[size]
 })
-
-// 可见字段（支持条件显示）
-const visibleFields = computed(() =>
-  props.config.fields.filter((field) => !field.condition || field.condition(props.formData)),
-)
 
 // 监听弹窗显示状态
 watch(

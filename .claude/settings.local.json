@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(pnpm type-check)"
+      "Bash(pnpm type-check)",
+      "Bash(pnpm exec eslint:*)"
     ]
   }
 }

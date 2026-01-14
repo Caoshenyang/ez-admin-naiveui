@@ -135,6 +135,44 @@ export interface CrudConfig<
 
   /** 字段级联加载配置（用于表单字段需要异步加载数据的场景） */
   fieldCascadeLoad?: FieldCascadeLoadConfig<TCreateDTO, TUpdateDTO>[]
+
+  /**
+   * 页面级按钮处理函数映射（用于页面上方的操作按钮，如新增、刷新等）
+   *
+   * 支持两种形式：
+   * 1. 函数形式（推荐）：接收 crud 实例作为参数，可以访问所有 crud 的状态和方法
+   * 2. 对象形式：直接提供处理函数映射（适用于不需要访问 crud 状态的场景）
+   *
+   * @example
+   * // 函数形式（推荐）
+   * actionHandlers: (crud) => ({
+   *   add: () => crud.handleAdd(),
+   *   refresh: () => crud.loadDataList(),
+   * })
+   *
+   * @example
+   * // 对象形式
+   * actionHandlers: {
+   *   customAction: () => console.log('custom'),
+   * }
+   */
+  actionHandlers?:
+    | Record<string, () => void | Promise<void>>
+    | ((crud: ReturnType<typeof useCrud>) => Record<string, () => void | Promise<void>>)
+
+  /**
+   * 树形结构配置选项（当 treeMode 为 true 时使用）
+   *
+   * 用于配置树形表格的展开/收起行为
+   */
+  treeOptions?: {
+    /** 子节点字段名（默认 'children'） */
+    childrenKey?: string
+    /** 是否默认展开所有节点（默认 false） */
+    defaultExpandAll?: boolean
+    /** 展开/收起按钮的 key（用于 actionHandlers 中的映射，默认 'toggle-expand'） */
+    toggleActionKey?: string
+  }
 }
 
 /**
@@ -214,6 +252,8 @@ export function useCrud<
     customActionHandlers,
     customLoadData,
     fieldCascadeLoad,
+    actionHandlers,
+    treeOptions,
   } = config
 
   // ==================== 响应式状态定义 ====================
@@ -226,6 +266,9 @@ export function useCrud<
 
   // 查询参数（用于搜索和分页）
   const queryParams = ref<TQuery>(configQueryParams || ({} as TQuery))
+
+  // 树形相关状态（仅在 treeMode 为 true 时使用）
+  const expandedKeys = ref<Array<string | number>>([]) // 展开的节点 keys
 
   // 表单相关状态
   const formVisible = ref(false) // 表单是否显示
@@ -677,6 +720,122 @@ export function useCrud<
     loadDataList()
   }
 
+  // ==================== 树形操作方法 ====================
+
+  /**
+   * 获取树形配置的默认值
+   */
+  const getTreeConfig = () => ({
+    childrenKey: treeOptions?.childrenKey || 'children',
+    defaultExpandAll: treeOptions?.defaultExpandAll || false,
+    toggleActionKey: treeOptions?.toggleActionKey || 'toggle-expand',
+  })
+
+  /**
+   * 收集所有可展开的节点 ID
+   * 用于树形结构的展开/收起功能
+   */
+  const collectExpandableKeys = (data: TListVO[], childrenKey: string): (string | number)[] => {
+    const keys: (string | number)[] = []
+    const traverse = (nodes: any[]) => {
+      nodes.forEach((node) => {
+        const children = node[childrenKey]
+        if (children && Array.isArray(children) && children.length > 0) {
+          const nodeId = typeof idKey === 'function' ? idKey(node) : node[idKey]
+          keys.push(nodeId as string | number)
+          traverse(children)
+        }
+      })
+    }
+    traverse(data as any[])
+    return keys
+  }
+
+  /**
+   * 展开所有节点
+   */
+  const expandAll = () => {
+    if (!treeMode) return
+    const { childrenKey } = getTreeConfig()
+    expandedKeys.value = collectExpandableKeys(dataList.value as TListVO[], childrenKey)
+  }
+
+  /**
+   * 收起所有节点
+   */
+  const collapseAll = () => {
+    expandedKeys.value = []
+  }
+
+  /**
+   * 切换展开/收起状态
+   */
+  const toggleExpand = () => {
+    expandedKeys.value.length > 0 ? collapseAll() : expandAll()
+  }
+
+  /**
+   * 是否有展开的节点
+   */
+  const isExpanded = computed(() => expandedKeys.value.length > 0)
+
+  /**
+   * 展开节点的数量
+   */
+  const expandedCount = computed(() => expandedKeys.value.length)
+
+  /**
+   * 统一的页面按钮处理函数
+   * 根据 actionHandlers 配置自动分发到对应的处理函数
+   *
+   * @param key - 按钮的 key 值
+   */
+  const handlePageAction = (key: string) => {
+    // 判断 actionHandlers 是函数还是对象
+    const handlers =
+      typeof actionHandlers === 'function'
+        ? actionHandlers({
+            // 传入一个包含所有必要状态和方法的 crud 对象
+            loading,
+            dataList,
+            total,
+            formVisible,
+            formLoading,
+            formMode,
+            formData,
+            detailVisible,
+            detailLoading,
+            detailData,
+            checkedRowKeys,
+            pagination,
+            columns,
+            tableScrollWidth,
+            queryParams,
+            fieldOptionsMap,
+            loadDataList,
+            handleAdd,
+            handleEdit,
+            handleView,
+            handleSubmit,
+            handleDelete,
+            handleBatchDelete,
+            handleCancel,
+            handleFormDataUpdate,
+            handleCheck,
+            resetPaginationAndLoad,
+            getFieldOptions,
+            handlePageAction,
+          } as any)
+        : actionHandlers
+
+    const handler = handlers?.[key]
+    if (handler) {
+      handler()
+    } else {
+      console.warn(`未定义的按钮 action: ${key}，请在 actionHandlers 配置中添加对应的处理函数`)
+    }
+  }
+
   // ==================== 返回值 ====================
 
   return {
@@ -697,6 +856,9 @@ export function useCrud<
     tableScrollWidth, // 表格横向滚动宽度
     queryParams, // 查询参数（用于外部访问和修改）
     fieldOptionsMap, // 字段级联选项数据
+    expandedKeys, // 树形展开的节点 keys
+    isExpanded, // 树形是否已展开
+    expandedCount, // 树形展开节点的数量
 
     // ========== 核心方法 ==========
     loadDataList, // 对外暴露的加载数据方法（推荐使用这个）
@@ -715,5 +877,11 @@ export function useCrud<
     handleCheck, // 处理表格行选择
     resetPaginationAndLoad, // 重置分页并加载
     getFieldOptions, // 获取字段级联选项数据
+    handlePageAction, // 统一的页面按钮处理函数（根据 actionHandlers 配置自动分发）
+
+    // ========== 树形操作方法（仅在 treeMode 为 true 时可用）==========
+    expandAll, // 展开所有节点
+    collapseAll, // 收起所有节点
+    toggleExpand, // 切换展开/收起状态
   }
 }

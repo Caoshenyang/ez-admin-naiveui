@@ -10,7 +10,7 @@
     <EzTable
       :config="tableConfig"
       :checked-keys="checkedRowKeys"
-      :expanded-keys="expandedRowKeys"
+      :expanded-keys="expandedKeys"
       :search-value="queryParams.keywords"
       search-placeholder="部门名称"
       @check-change="handleCheck"
@@ -28,6 +28,7 @@
     :config="formConfig"
     :loading="formLoading"
     :form-data="formData"
+    :options-map="fieldOptionsMap"
     @update:form-data="handleFormDataUpdate"
     @submit="handleFormSubmit"
     @cancel="handleCancel"
@@ -35,60 +36,36 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useCrud } from '@/hooks/useCrud'
-import { useTreeCrud } from '@/hooks/useTreeCrud'
-import { handleButtonActions } from '@/utils/actionHandler'
 import EzTable from '@/components/common/EzTable.vue'
 import { deptFormConfig, deptActionButtons, deptCrudConfig } from './'
 import { ChevronDownOutline, ChevronUpOutline } from '@vicons/ionicons5'
 import type { DeptListVO, DeptCreateDTO, DeptUpdateDTO } from '@/types'
 import type { EzTableConfig } from '@/hooks/types/table'
 
-// ==================== 响应式变量 ====================
-
 // ==================== CRUD Hook ====================
 
-// 使用CRUD Hook（约定：自动处理所有CRUD逻辑，包含表格）
+// 使用CRUD Hook（约定：自动处理所有CRUD逻辑，包含表格和树形功能）
 const crud = useCrud(deptCrudConfig)
 
 // 解构响应式数据和方法
-// 表格相关状态
-const { loading, dataList: deptList, columns, checkedRowKeys, queryParams, getFieldOptions } = crud
+const {
+  loading,
+  dataList: deptList,
+  columns,
+  checkedRowKeys,
+  queryParams,
+  fieldOptionsMap, // 字段级联选项数据（用于表单动态选项）
+  expandedKeys, // 树形展开的节点 keys
+  isExpanded, // 树形是否已展开
+} = crud
 
 // 表单相关状态
-const { formVisible, formLoading, formMode, formData, handleCancel, handleFormDataUpdate } = crud
+const { formVisible, formLoading, formMode, formData, handleCancel, handleFormDataUpdate, handleSubmit } = crud
 
 // 查询相关方法
-const { resetPaginationAndLoad, loadDataList } = crud
-
-// 搜索处理
-const handleSearch = (value?: string) => {
-  if (value !== undefined) {
-    queryParams.value.keywords = value
-  }
-  resetPaginationAndLoad()
-}
-
-// 搜索输入处理
-const handleSearchInput = (value: string) => {
-  queryParams.value.keywords = value
-}
-
-// CRUD操作方法
-const { handleAdd: crudHandleAdd, handleSubmit, handleBatchDelete } = crud
-
-// ==================== 树形增强 Hook ====================
-
-// 使用树形增强 Hook（处理展开/收起逻辑）
-const treeCrud = useTreeCrud({
-  treeData: deptList,
-  childrenKey: 'children',
-  idKey: 'deptId',
-})
-
-// 解构树形操作方法
-const { expandedKeys: expandedRowKeys, isExpanded, toggleExpand } = treeCrud
+const { resetPaginationAndLoad, loadDataList, handlePageAction } = crud
 
 // ==================== 计算属性 ====================
 
@@ -107,16 +84,6 @@ const tableConfig = computed<EzTableConfig<DeptListVO>>(() => ({
 const formConfig = computed(() => ({
   ...deptFormConfig,
   title: formMode.value === 'create' ? '新增部门' : '编辑部门',
-  fields: deptFormConfig.fields.map((field) => {
-    if (field.key === 'parentId') {
-      // 为上级部门字段设置树形选项（从 useCrud 的 fieldOptionsMap 获取）
-      return {
-        ...field,
-        treeOptions: getFieldOptions('parentId'),
-      }
-    }
-    return field
-  }),
 }))
 
 // 动态按钮配置（根据展开状态显示不同的图标和文字）
@@ -135,6 +102,19 @@ const dynamicActionButtons = computed(() => {
 
 // ==================== 事件处理方法 ====================
 
+// 搜索处理
+const handleSearch = (value?: string) => {
+  if (value !== undefined) {
+    queryParams.value.keywords = value
+  }
+  resetPaginationAndLoad()
+}
+
+// 搜索输入处理
+const handleSearchInput = (value: string) => {
+  queryParams.value.keywords = value
+}
+
 // 刷新处理
 const handleRefresh = () => {
   loadDataList()
@@ -144,11 +124,6 @@ const handleRefresh = () => {
 const handleAdvancedFilter = () => {
   // TODO: 实现高级筛选功能
   console.log('高级筛选')
-}
-
-// 新增（重写以加载父节点树）
-const handleAdd = () => {
-  crudHandleAdd()
 }
 
 // 表单提交（成功后刷新列表）
@@ -164,27 +139,14 @@ const handleCheck = (keys: (string | number)[]) => {
 
 // 表格行展开处理
 const handleExpandChange = (keys: (string | number)[]) => {
-  expandedRowKeys.value = keys
+  expandedKeys.value = keys
 }
 
-// 批量删除（集成表格选中状态）
-const handleBatchDeleteClick = async () => {
-  const ids = checkedRowKeys.value.map((id) => String(id))
-  await handleBatchDelete(ids, async () => {
-    checkedRowKeys.value = []
-    await loadDataList()
-  })
+// 统一的按钮处理函数（配置驱动）
+const handleAction = (key: string) => {
+  // 所有按钮都使用配置驱动的处理逻辑
+  handlePageAction(key)
 }
-
-// 按钮action处理器
-const handleAction = handleButtonActions({
-  add: handleAdd, // 新增按钮 -> 打开新增表单
-  'toggle-expand': toggleExpand, // 展开/收起 -> 使用 useTreeCrud 的 toggleExpand
-  'batch-delete': handleBatchDeleteClick, // 批量删除按钮 -> 执行批量删除
-  refresh: async () => {
-    await loadDataList() // 刷新数据列表
-  }, // 刷新按钮 -> 刷新数据列表
-})
 
 // ==================== 生命周期 ====================
 
