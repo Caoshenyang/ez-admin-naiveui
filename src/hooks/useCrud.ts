@@ -29,7 +29,7 @@
  * ```
  */
 
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, toRaw } from 'vue'
 import type { PageResult } from '@/types/modules/api'
 import { message, dialog, logger } from '@/hooks/useMessage'
 import { createPagination } from '@/utils/pagination'
@@ -132,6 +132,25 @@ export interface CrudConfig<
   customActionHandlers?: Record<string, (row: TListVO) => void>
   /** 自定义数据加载函数（可选，用于特殊的数据加载逻辑） */
   customLoadData?: (queryParams: TQuery) => Promise<void>
+
+  /** 字段级联加载配置（用于表单字段需要异步加载数据的场景） */
+  fieldCascadeLoad?: FieldCascadeLoadConfig<TCreateDTO, TUpdateDTO>[]
+}
+
+/**
+ * 字段级联加载配置
+ * 用于表单字段需要根据表单模式或表单数据动态加载选项的场景
+ * 例如：部门管理的上级部门选择，需要根据编辑/新增模式加载不同的树形数据
+ */
+export interface FieldCascadeLoadConfig<TCreateDTO, TUpdateDTO> {
+  /** 字段名（表单中的字段 key） */
+  fieldKey: string
+  /** 加载函数（返回选项数据） */
+  loader: (mode: 'create' | 'update', formData?: Partial<TCreateDTO | TUpdateDTO>) => Promise<any[]>
+  /** 是否在编辑时排除当前节点（用于树形结构的父子关系） */
+  excludeSelfOnEdit?: boolean
+  /** 加载后的数据转换函数（可选，用于将API数据转换为组件需要的格式） */
+  transformer?: (data: any[]) => any[]
 }
 
 
@@ -194,6 +213,7 @@ export function useCrud<
     errorMessage = {},
     customActionHandlers,
     customLoadData,
+    fieldCascadeLoad,
   } = config
 
   // ==================== 响应式状态定义 ====================
@@ -217,6 +237,9 @@ export function useCrud<
   const detailVisible = ref(false) // 详情模态框是否显示
   const detailLoading = ref(false) // 详情加载状态
   const detailData = reactive<Partial<TDetailVO>>({}) // 详情数据
+
+  // 字段级联加载相关状态
+  const fieldOptionsMap = ref<Record<string, any[]>>({}) // 存储字段的选项数据
 
   // ==================== 分页配置 ====================
 
@@ -250,6 +273,47 @@ export function useCrud<
     }
     const value = row[nameKey]
     return value ? String(value) : '未知'
+  }
+
+  // ==================== 字段级联加载方法 ====================
+
+  /**
+   * 加载字段级联选项数据
+   * 根据 fieldCascadeLoad 配置自动加载需要的字段选项
+   */
+  const loadFieldOptions = async () => {
+    if (!fieldCascadeLoad || fieldCascadeLoad.length === 0) {
+      return
+    }
+
+    const mode = formMode.value
+    // 使用 toRaw 将 reactive 对象转换为普通对象
+    const currentFormData = toRaw(formData) as Partial<TCreateDTO | TUpdateDTO>
+
+    // 并行加载所有字段的选项
+    const loadPromises = fieldCascadeLoad.map(async (config) => {
+      try {
+        let data = await config.loader(mode, currentFormData)
+        // 如果配置了转换函数，进行数据转换
+        if (config.transformer) {
+          data = config.transformer(data)
+        }
+        fieldOptionsMap.value[config.fieldKey] = data
+      } catch (error) {
+        logger.error(`加载字段 ${config.fieldKey} 的选项失败:`, error)
+        fieldOptionsMap.value[config.fieldKey] = []
+      }
+    })
+
+    await Promise.all(loadPromises)
+  }
+
+  /**
+   * 获取字段的选项数据
+   * 用于表单组件获取字段的动态选项
+   */
+  const getFieldOptions = (fieldKey: string): any[] => {
+    return fieldOptionsMap.value[fieldKey] || []
   }
 
   // ==================== 核心方法 ====================
@@ -318,7 +382,7 @@ export function useCrud<
    * 打开新增表单
    * 清空表单数据，设置默认值，显示表单
    */
-  const handleAdd = () => {
+  const handleAdd = async () => {
     formMode.value = 'create'
     // 清空表单数据，避免残留编辑时的旧数据
     Object.keys(formData).forEach((key) => {
@@ -327,6 +391,10 @@ export function useCrud<
     // 设置默认值（支持对象或函数两种方式）
     const defaults = typeof createDefaultValues === 'function' ? createDefaultValues() : createDefaultValues
     Object.assign(formData, defaults)
+
+    // 加载字段级联选项
+    await loadFieldOptions()
+
     formVisible.value = true
   }
 
@@ -356,6 +424,9 @@ export function useCrud<
       } else {
         Object.assign(formData, detail)
       }
+
+      // 加载字段级联选项
+      await loadFieldOptions()
 
       // 延迟显示表单，确保数据设置完成
       setTimeout(() => {
@@ -625,6 +696,7 @@ export function useCrud<
     columns, // 表格列配置
     tableScrollWidth, // 表格横向滚动宽度
     queryParams, // 查询参数（用于外部访问和修改）
+    fieldOptionsMap, // 字段级联选项数据
 
     // ========== 核心方法 ==========
     loadDataList, // 对外暴露的加载数据方法（推荐使用这个）
@@ -642,5 +714,6 @@ export function useCrud<
     handleFormDataUpdate, // 更新表单数据
     handleCheck, // 处理表格行选择
     resetPaginationAndLoad, // 重置分页并加载
+    getFieldOptions, // 获取字段级联选项数据
   }
 }

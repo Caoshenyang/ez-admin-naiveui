@@ -7,6 +7,7 @@ import type { DeptCrudConfig } from '@/types'
 import type { FormConfig } from '@/components/common/EzForm.vue'
 import type { FormRules } from 'naive-ui'
 import type { DeptCreateDTO, DeptUpdateDTO, DeptListVO } from '@/types'
+import type { TreeOption } from '@/components/common/EzForm.vue'
 import { type TableConfigOptions } from '@/hooks/types/table'
 import type { ActionButton } from '@/components/common/EzButtonGroup.vue'
 import { deptApi } from '@/api/dept'
@@ -78,6 +79,17 @@ export const deptTableConfig: TableConfigOptions<DeptListVO> = {
   actionWidth: 220,
 }
 
+// === 工具函数 ===
+
+/**
+ * 部门树数据转换为表单树形选项
+ */
+export const convertDeptToTreeOption = (dept: DeptListVO): TreeOption => ({
+  key: dept.deptId,
+  label: dept.deptName,
+  children: dept.children?.map(convertDeptToTreeOption),
+})
+
 // === 操作按钮配置 ===
 export const deptActionButtons: ActionButton[] = [
   { key: 'add', text: '新建部门', type: 'primary', icon: PlusOutlined, permission: 'sys:dept:add' },
@@ -113,4 +125,17 @@ export const deptCrudConfig: DeptCrudConfig = {
     status: 1, // 默认启用
     deptSort: 0, // 默认排序
   },
+
+  // 字段级联加载配置（用于上级部门选择）
+  fieldCascadeLoad: [
+    {
+      fieldKey: 'parentId',
+      loader: async (mode, formData) => {
+        const excludeId = mode === 'update' ? (formData as DeptUpdateDTO)?.deptId : undefined
+        const treeData = await deptApi.parentTree(excludeId)
+        return treeData.map(convertDeptToTreeOption)
+      },
+      transformer: (data) => data,
+    },
+  ],
 }
