@@ -357,7 +357,10 @@ export function useCrud<
         Object.assign(formData, detail)
       }
 
-      formVisible.value = true
+      // 延迟显示表单，确保数据设置完成
+      setTimeout(() => {
+        formVisible.value = true
+      }, 10)
     } catch (error) {
       logger.error(errorMessage?.detail || '获取详情失败:', error)
       message.error(errorMessage?.detail || '获取详情失败')

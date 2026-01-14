@@ -1,5 +1,23 @@
 // 菜单相关类型定义
-import type { PageQuery } from './api'
+import type { CrudConfig } from '@/hooks/useCrud'
+
+// 菜单实体
+export interface Menu {
+  menuId: number
+  parentId: number
+  menuName: string
+  routePath: string
+  componentPath?: string
+  menuIcon?: string
+  menuType: number
+  menuPerm?: string
+  menuSort?: number
+  hidden?: number
+  redirect?: string
+  status?: number
+  createTime?: string
+  updateTime?: string
+}
 
 // 菜单树形结构VO
 export interface MenuTreeVO {
@@ -54,27 +72,27 @@ export interface MenuItem {
 
 // 菜单搜索条件
 export interface MenuSearchCriteria {
-  menuName?: string
-  status?: number
-  menuType?: number
-  parentId?: number
+  keywords?: string
 }
 
-// 菜单分页查询参数
-export type MenuQuery = PageQuery<MenuSearchCriteria>
+// 菜单查询参数（树形模式，无分页）
+export type MenuQuery = MenuSearchCriteria
 
 // 菜单保存/更新DTO
 export interface SaveMenuDTO {
-  id?: number
+  menuId?: string
   parentId: number
   menuName: string
-  path: string
-  component?: string
-  icon?: string
+  routePath: string
+  componentPath?: string
+  menuIcon?: string
   menuType: number
-  permission?: string
-  sort?: number
+  menuPerm?: string
+  menuSort?: number
   hidden?: number
   redirect?: string
   status?: number
 }
+
+// 菜单CRUD配置类型
+export type MenuCrudConfig = CrudConfig<MenuTreeVO, MenuQuery, SaveMenuDTO, SaveMenuDTO, Menu>

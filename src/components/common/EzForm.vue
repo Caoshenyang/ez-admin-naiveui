@@ -459,6 +459,26 @@ watch(
   },
 )
 
+// 监听表单数据变化，当数据更新时也重置验证状态并重新验证
+watch(
+  () => props.formData,
+  () => {
+    // 当表单数据发生变化时，重置验证状态并重新验证
+    if (props.modelValue) {
+      nextTick(() => {
+        formRef.value?.restoreValidation()
+        // 短暂延迟后重新验证，确保数据已完全设置
+        setTimeout(() => {
+          formRef.value?.validate().catch(() => {
+            // 忽略验证错误，因为这只是为了更新验证状态
+          })
+        }, 10)
+      })
+    }
+  },
+  { deep: true },
+)
+
 // 监听show变化，同步到modelValue
 watch(show, (newValue) => {
   emit('update:modelValue', newValue)
@@ -495,6 +515,7 @@ const handleAfterLeave = () => {
 // 暴露方法给父组件
 defineExpose({
   validate: () => formRef.value?.validate(),
+  restoreValidation: () => formRef.value?.restoreValidation(),
 })
 </script>
 
