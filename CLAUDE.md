@@ -4,7 +4,7 @@
 
 基于 **Vite + Vue 3 (TS) + Tailwind CSS + NaiveUI** 的高效率后台管理系统。
 
-## 核心行为准则 (重要：Token 节省模式)
+## 核心行为准则 (重要：Token 节省模式，强制执行)
 
 为了提高响应速度并减少 Token 消耗，请遵循以下原则：
 
@@ -29,6 +29,7 @@
 - **状态管理**: Pinia (使用 Setup Store 模式)。
 - **路由**: Vue Router 4 (集中化路由配置)。
 - **代码风格**: 无分号, 单引号, 120 字符行宽, Tailwind 类名顺序遵循标准。
+- **组件命名 (Strict)**: **严禁使用 `index.vue` 命名组件**。所有组件文件必须使用具有明确语义的 PascalCase 命名（例如 `UserManagement.vue`, `AppHeader.vue`）。
 
 ## 目录架构
 
@@ -45,10 +46,15 @@
 - [x] 项目初始化 (Vite + Vue 3 + TS)
 - [x] 包管理规范配置 (pnpm)
 - [x] 集成 Tailwind CSS
-- [ ] 集成 NaiveUI 并设置 ConfigProvider (中文语言包)
-- [ ] 搭建 Admin 基础 Layout 布局
-- [ ] 封装基础路由系统
+- [x] 集成 NaiveUI 并设置 ConfigProvider (中文语言包)
+- [x] 搭建 Admin 基础 Layout 布局
+- [x] 封装基础路由系统
+- [x] 完善 AppMenu 组件（菜单路由配置）
+- [ ] 完善 AppLogo 组件（Logo + 折叠按钮）
+- [ ] 完善 AppTopBar 组件（用户信息、全屏、主题切换）
+- [ ] 完善 AppWorkTab 组件（多标签页功能）
+- [ ] 配置图标库（支持 mdi: 图标）
 
 ---
 
-_注：每次完成重要任务后，请主动更新此清单并建议下一步行动。_
+**注：每次完成重要任务后，请主动更新此清单并建议下一步行动。**
