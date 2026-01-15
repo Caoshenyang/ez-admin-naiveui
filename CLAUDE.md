@@ -29,7 +29,7 @@
 - **状态管理**: Pinia (使用 Setup Store 模式)。
 - **路由**: Vue Router 4 (集中化路由配置)。
 - **代码风格**: 无分号, 单引号, 120 字符行宽, Tailwind 类名顺序遵循标准。
-- **组件命名 (Strict)**: **严禁使用 `index.vue` 命名组件**。所有组件文件必须使用具有明确语义的 PascalCase 命名（例如 `UserManagement.vue`, `AppHeader.vue`）。
+- **组件命名 (Strict)**: **严禁使用 `index.vue` 命名组件**。所有组件文件必须使用具有明确语义(至少包含两个单词)的 PascalCase 命名（例如 `UserManagement.vue`, `AppHeader.vue`）。二次封装的全局组件必须在文件名中包含 `Ez` 前缀（例如 `EzButton.vue`）。
 
 ## 目录架构
 
@@ -50,10 +50,12 @@
 - [x] 搭建 Admin 基础 Layout 布局
 - [x] 封装基础路由系统
 - [x] 完善 AppMenu 组件（菜单路由配置）
+- [x] 配置图标库（支持 Iconify + 自定义图片）
+- [x] 开发图标选择器组件（EzIconPicker）
+- [x] 修正组件命名规范（SystemUser, SystemRole, SystemMenu）
 - [ ] 完善 AppLogo 组件（Logo + 折叠按钮）
 - [ ] 完善 AppTopBar 组件（用户信息、全屏、主题切换）
 - [ ] 完善 AppWorkTab 组件（多标签页功能）
-- [ ] 配置图标库（支持 mdi: 图标）
 
 ---
 

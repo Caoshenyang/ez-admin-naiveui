@@ -40,7 +40,7 @@ const routes: RouteRecordRaw[] = [
           {
             path: 'user',
             name: 'SystemUser',
-            component: () => import('@/views/system/User.vue'),
+            component: () => import('@/views/system/SystemUser.vue'),
             meta: {
               title: '用户管理',
               icon: 'mdi:account',
@@ -49,7 +49,7 @@ const routes: RouteRecordRaw[] = [
           {
             path: 'role',
             name: 'SystemRole',
-            component: () => import('@/views/system/Role.vue'),
+            component: () => import('@/views/system/SystemRole.vue'),
             meta: {
               title: '角色管理',
               icon: 'mdi:shield-account',
@@ -58,7 +58,7 @@ const routes: RouteRecordRaw[] = [
           {
             path: 'menu',
             name: 'SystemMenu',
-            component: () => import('@/views/system/Menu.vue'),
+            component: () => import('@/views/system/SystemMenu.vue'),
             meta: {
               title: '菜单管理',
               icon: 'mdi:menu',

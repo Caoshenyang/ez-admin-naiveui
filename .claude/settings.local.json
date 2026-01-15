@@ -3,7 +3,8 @@
     "allow": [
       "Bash(tree:*)",
       "Bash(pnpm add:*)",
-      "Bash(if not exist \"D:\\AA\\ez-admin-naiveui\\src\\styles\" mkdir:*)"
+      "Bash(if not exist \"D:\\AA\\ez-admin-naiveui\\src\\styles\" mkdir:*)",
+      "WebSearch"
     ]
   }
 }
