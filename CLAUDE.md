@@ -53,7 +53,7 @@
 - [x] 配置图标库（支持 Iconify + 自定义图片）
 - [x] 开发图标选择器组件（EzIconPicker）
 - [x] 修正组件命名规范（SystemUser, SystemRole, SystemMenu）
-- [ ] 完善 AppLogo 组件（Logo + 折叠按钮）
+- [x] 完善 AppLogo 组件（Logo + 折叠按钮）
 - [ ] 完善 AppTopBar 组件（用户信息、全屏、主题切换）
 - [ ] 完善 AppWorkTab 组件（多标签页功能）
 

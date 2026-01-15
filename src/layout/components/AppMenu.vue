@@ -2,16 +2,18 @@
 import { computed, h } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAppStore } from '@/stores/modules/app'
+import { useSystemStore, MenuWidthEnum } from '@/stores/modules/system'
 import EzIconRender from '@/components/EzIconRender.vue'
 
 const router = useRouter()
 const appStore = useAppStore()
+const systemStore = useSystemStore()
 
 const menuOptions = computed(() => {
   return appStore.menuRoutes.map((route) => {
     const renderIcon = (icon: string) => {
       if (!icon) return undefined
-      return () => h(EzIconRender, { icon, size: 18 })
+      return () => h(EzIconRender, { icon, size: systemStore.isCollapse ? 24 : 22 })
     }
 
     if (route.children && route.children.length > 0) {
@@ -41,9 +43,8 @@ function handleMenuKey(key: string) {
 
 <template>
   <n-menu
-    :collapsed="false"
-    :collapsed-width="64"
-    :collapsed-icon-size="22"
+    :collapsed="systemStore.isCollapse"
+    :collapsed-width="MenuWidthEnum.CLOSE"
     :options="menuOptions"
     @update:value="handleMenuKey"
   />
