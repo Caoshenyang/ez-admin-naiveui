@@ -18,10 +18,3 @@ const keepAlive = computed(() => route.meta?.keepAlive)
     </router-view>
   </n-layout-content>
 </template>
-
-<style scoped>
-.app-main {
-  padding: 16px;
-  height: calc(100vh - 60px);
-}
-</style>

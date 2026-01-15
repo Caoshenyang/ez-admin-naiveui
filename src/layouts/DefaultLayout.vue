@@ -34,10 +34,3 @@ const sidebarCollapsed = computed(() => appStore.sidebarCollapsed)
     </n-layout>
   </n-layout>
 </template>
-
-<style scoped>
-.app-layout {
-  width: 100%;
-  height: 100vh;
-}
-</style>

@@ -49,25 +49,3 @@ const menuOptions = computed(() => transformRoutes(menuRoutes.value))
     />
   </div>
 </template>
-
-<style scoped>
-.sidebar {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.logo {
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-bottom: 1px solid var(--n-border-color);
-}
-
-.logo h2 {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-}
-</style>

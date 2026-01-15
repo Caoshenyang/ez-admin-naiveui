@@ -310,15 +310,3 @@ onMounted(() => {
     </n-card>
   </div>
 </template>
-
-<style scoped>
-.dict-management {
-  padding: 16px;
-}
-
-.pagination {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 16px;
-}
-</style>

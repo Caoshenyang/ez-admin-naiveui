@@ -18,13 +18,3 @@ function goHome() {
     </n-result>
   </div>
 </template>
-
-<style scoped>
-.error-page {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100vh;
-}
-</style>

@@ -306,9 +306,3 @@ onMounted(() => {
     <MenuForm ref="menuFormRef" @submit="handleSubmit" />
   </div>
 </template>
-
-<style scoped>
-.menu-management {
-  padding: 16px;
-}
-</style>

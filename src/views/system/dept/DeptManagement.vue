@@ -66,9 +66,3 @@ loadData()
     </n-card>
   </div>
 </template>
-
-<style scoped>
-.dept-management {
-  padding: 16px;
-}
-</style>

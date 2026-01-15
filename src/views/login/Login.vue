@@ -94,36 +94,3 @@ async function handleSubmit() {
     </div>
   </div>
 </template>
-
-<style scoped>
-.login-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100vw;
-  height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.login-box {
-  width: 400px;
-}
-
-.login-header {
-  text-align: center;
-  margin-bottom: 24px;
-  color: #fff;
-}
-
-.login-header h1 {
-  margin: 0 0 8px 0;
-  font-size: 28px;
-  font-weight: 600;
-}
-
-.login-header p {
-  margin: 0;
-  font-size: 14px;
-  opacity: 0.8;
-}
-</style>

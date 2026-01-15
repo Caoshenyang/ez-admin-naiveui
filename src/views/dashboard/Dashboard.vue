@@ -42,9 +42,3 @@ import { PeopleOutline, DocumentTextOutline, SettingsOutline } from '@vicons/ion
     </n-card>
   </div>
 </template>
-
-<style scoped>
-.dashboard {
-  width: 100%;
-}
-</style>

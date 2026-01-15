@@ -220,16 +220,3 @@ onMounted(() => {
     </div>
   </div>
 </template>
-
-<style scoped>
-.crud-table {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.pagination {
-  display: flex;
-  justify-content: flex-end;
-}
-</style>

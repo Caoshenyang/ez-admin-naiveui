@@ -8,7 +8,8 @@
       "Bash(curl:*)",
       "Bash(python:*)",
       "Bash(npm run type-check:*)",
-      "Bash(pnpm build-only:*)"
+      "Bash(pnpm build-only:*)",
+      "Bash(find:*)"
     ]
   }
 }

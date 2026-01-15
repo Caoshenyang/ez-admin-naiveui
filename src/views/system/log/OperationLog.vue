@@ -204,15 +204,3 @@ onMounted(() => {
     </n-card>
   </div>
 </template>
-
-<style scoped>
-.log-management {
-  padding: 16px;
-}
-
-.pagination {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 16px;
-}
-</style>

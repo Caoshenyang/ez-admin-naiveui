@@ -264,15 +264,3 @@ onMounted(() => {
     <RoleForm ref="roleFormRef" @submit="handleSubmit" />
   </div>
 </template>
-
-<style scoped>
-.role-management {
-  padding: 16px;
-}
-
-.pagination {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 16px;
-}
-</style>
