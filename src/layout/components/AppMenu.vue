@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { computed, h } from 'vue'
+import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAppStore } from '@/stores/modules/app'
 import { useSystemStore, MenuWidthEnum } from '@/stores/modules/system'
-import EzIconRender from '@/components/EzIconRender.vue'
+import { renderMenuIcon } from '@/utils/icon'
 
 const router = useRouter()
 const appStore = useAppStore()
@@ -11,27 +11,22 @@ const systemStore = useSystemStore()
 
 const menuOptions = computed(() => {
   return appStore.menuRoutes.map((route) => {
-    const renderIcon = (icon: string) => {
-      if (!icon) return undefined
-      return () => h(EzIconRender, { icon, size: systemStore.isCollapse ? 24 : 22 })
-    }
-
     if (route.children && route.children.length > 0) {
       return {
         label: route.meta?.title || route.name,
         key: route.name as string,
-        icon: renderIcon(route.meta?.icon as string),
+        icon: route.meta?.icon ? renderMenuIcon(route.meta?.icon as string, systemStore.isCollapse) : undefined,
         children: route.children.map((child) => ({
           label: child.meta?.title || child.name,
           key: child.name as string,
-          icon: renderIcon(child.meta?.icon as string),
+          icon: child.meta?.icon ? renderMenuIcon(child.meta?.icon as string, systemStore.isCollapse) : undefined,
         })),
       }
     }
     return {
       label: route.meta?.title || route.name,
       key: route.name as string,
-      icon: renderIcon(route.meta?.icon as string),
+      icon: route.meta?.icon ? renderMenuIcon(route.meta?.icon as string, systemStore.isCollapse) : undefined,
     }
   })
 })

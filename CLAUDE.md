@@ -54,7 +54,7 @@
 - [x] 开发图标选择器组件（EzIconPicker）
 - [x] 修正组件命名规范（SystemUser, SystemRole, SystemMenu）
 - [x] 完善 AppLogo 组件（Logo + 折叠按钮）
-- [ ] 完善 AppTopBar 组件（用户信息、全屏、主题切换）
+- [x] 完善 AppTopBar 组件（面包屑、全屏、用户菜单）
 - [ ] 完善 AppWorkTab 组件（多标签页功能）
 
 ---

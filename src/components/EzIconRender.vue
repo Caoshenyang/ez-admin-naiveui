@@ -25,9 +25,14 @@ const isImage = (icon: MenuIcon): icon is IconImageConfig => {
 </script>
 
 <template>
-  <div class="inline-flex items-center justify-center">
+  <div class="inline-flex h-full w-full items-center justify-center">
     <!-- Iconify 图标 -->
-    <Icon v-if="typeof icon === 'string'" :icon="icon" :width="size" :height="size" />
+    <Icon
+      v-if="typeof icon === 'string'"
+      :icon="icon"
+      :width="size"
+      :height="size"
+    />
     <!-- 自定义图片图标 -->
     <img
       v-else-if="isImage(icon)"
