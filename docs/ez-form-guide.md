@@ -411,12 +411,14 @@ const clearValidation = () => {
 
 ## Events
 
-| 事件 | 说明 | 回调参数 |
-|------|------|----------|
-| update:modelValue | 表单数据变化 | `(values: FormValues)` |
-| submit | 表单提交（验证通过后） | `(values: FormValues)` |
-| reset | 表单重置 | `(values: FormValues)` |
-| validate | 表单验证通过 | `(values: FormValues)` |
+| 事件 | 说明 | 回调参数 | 触发时机 |
+|------|------|----------|----------|
+| update:modelValue | 表单数据更新 | `(values: FormValues)` | 表单提交或重置时 |
+| submit | 表单提交（验证通过后） | `(values: FormValues)` | 点击提交按钮且验证通过 |
+| reset | 表单重置 | `(values: FormValues)` | 点击重置按钮 |
+| validate | 表单验证通过 | `(values: FormValues)` | 表单验证通过时 |
+
+**注意：** `update:modelValue` 不会在用户输入时实时触发，只在表单提交或重置时同步数据。这是为了优化性能，避免频繁的父子组件通信。如需实时预览，请参考 [ADR 002: EzForm 表单状态管理方案](./adr/002-form-state-management.md)。
 
 ## EzFormInstance
 

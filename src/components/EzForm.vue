@@ -28,11 +28,8 @@ const slots = useSlots()
 
 const formRef = ref<FormInst | null>(null)
 
-// 表单数据
+// 表单数据（内部状态）
 const formValues = ref<FormValues>({})
-
-// 用于防止循环更新的标志
-const isUpdatingFromParent = ref(false)
 
 // 初始化表单数据
 const initFormValues = () => {
@@ -47,28 +44,12 @@ const initFormValues = () => {
   formValues.value = values
 }
 
-// 监听外部 modelValue 变化
+// 监听外部 modelValue 变化（单向同步：外部 → 内部）
 watch(
   () => props.modelValue,
   (newVal) => {
-    if (newVal && !isUpdatingFromParent.value) {
-      formValues.value = { ...newVal }
-    }
-  },
-  { deep: true }
-)
-
-// 监听内部表单数据变化，同步到外部
-watch(
-  formValues,
-  (newVal) => {
-    if (!isUpdatingFromParent.value) {
-      isUpdatingFromParent.value = true
-      emit('update:modelValue', { ...newVal })
-      // 在下一个 tick 重置标志
-      setTimeout(() => {
-        isUpdatingFromParent.value = false
-      }, 0)
+    if (newVal) {
+      Object.assign(formValues.value, newVal)
     }
   },
   { deep: true }
@@ -134,12 +115,14 @@ const formRules = computed(() => {
   return rules
 })
 
-// 提交表单
+// 提交表单（验证通过后同步数据到外部）
 const handleSubmit = async () => {
   try {
     await formRef.value?.validate()
-    emit('submit', { ...formValues.value })
-    emit('validate', { ...formValues.value })
+    const values = { ...formValues.value }
+    emit('update:modelValue', values) // 同步到外部
+    emit('submit', values)
+    emit('validate', values)
   } catch {
     // 验证失败
   }
@@ -149,7 +132,9 @@ const handleSubmit = async () => {
 const handleReset = () => {
   formRef.value?.restoreValidation()
   initFormValues()
-  emit('reset', { ...formValues.value })
+  const values = { ...formValues.value }
+  emit('update:modelValue', values) // 同步到外部
+  emit('reset', values)
 }
 
 // 暴露的方法

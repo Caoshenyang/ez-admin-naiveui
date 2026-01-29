@@ -456,11 +456,13 @@ const verticalFormOptions: FormOptions = {
 // 提交处理
 const handleSubmit = (values: FormValues) => {
   console.log('表单提交：', values)
+  // formData 会通过 v-model 自动更新
 }
 
 // 重置处理
 const handleReset = (values: FormValues) => {
   console.log('表单重置：', values)
+  // formData 会通过 v-model 自动更新
 }
 
 // 手动验证
@@ -476,7 +478,10 @@ const handleValidate = async () => {
 // 获取数据
 const handleGetData = () => {
   const values = formRef.value?.getValues()
-  console.log('表单数据：', values)
+  if (values) {
+    formData.value = values
+    console.log('表单数据：', values)
+  }
 }
 
 // 设置数据
@@ -552,10 +557,21 @@ const handleResetForm = () => {
 
       <!-- 表单数据展示 -->
       <div class="mb-10">
-        <h2 class="text-xl font-semibold text-gray-800 mb-4">表单数据（实时）</h2>
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-semibold text-gray-800">表单数据</h2>
+          <button
+            class="px-3 py-1 text-sm bg-gray-500 text-white rounded hover:bg-gray-600 transition"
+            @click="handleGetData"
+          >
+            刷新数据
+          </button>
+        </div>
         <div class="bg-gray-900 rounded-lg p-4 overflow-auto">
           <pre class="text-sm text-green-400 font-mono">{{ JSON.stringify(formData, null, 2) }}</pre>
         </div>
+        <p class="mt-2 text-sm text-gray-500">
+          💡 提示：表单数据只在提交/重置时更新。点击"刷新数据"可获取当前表单内容。
+        </p>
       </div>
 
       <!-- 示例 2: 条件显示和联动 -->
