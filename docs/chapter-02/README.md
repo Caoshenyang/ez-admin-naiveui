@@ -1,126 +1,104 @@
-# 第2章：NaiveUI 组件库集成与主题配置 - 总结
+# 第二章：核心框架搭建
 
-## 本章回顾
+> **学习目标**: 集成 Vue Router、Pinia、NaiveUI、Tailwind CSS 等核心依赖
 
-本章完成了 NaiveUI 组件库的集成，实现了按需引入、主题定制和暗黑模式功能。
+## 本章概述
 
-### 完成清单
+在第一章完成基础项目搭建后，本章将集成核心框架和依赖，建立完整的技术栈。
 
-- [x] 2.1 安装 NaiveUI 及依赖包 (Done - 2025-01-28)
-- [x] 2.2 按需引入配置（unplugin-vue-components）(Done - 2025-01-28)
-- [x] 2.3 主题定制与 CSS 变量系统 (Done - 2025-01-28)
-- [x] 2.4 暗黑模式实现方案 (Done - 2025-01-28)
-- [x] 2.5 全局组件注册规范 (Done - 2025-01-28)
-- [x] 2.6 第2章总结文章输出 (Done - 2025-01-28)
+**本章你将学会**:
+- ✅ Vue Router 4 的配置和路由设计
+- ✅ Pinia 状态管理的使用
+- ✅ NaiveUI 组件库的集成
+- ✅ Tailwind CSS 的安装和配置
+- ✅ 规范的项目目录结构
 
-## 安装的依赖
+**学习时长**: 约 3-4 小时
 
-| 依赖 | 版本 | 类型 |
-|------|------|------|
-| naive-ui | ^2.43.2 | dependencies |
-| @vueuse/core | ^11.0.0 | dependencies |
-| unplugin-auto-import | ^21.0.0 | devDependencies |
-| unplugin-vue-components | ^31.0.0 | devDependencies |
-| vfonts | ^0.0.3 | devDependencies |
-| @iconify/vue | ^5.0.0 | devDependencies |
-
-## 核心功能
-
-### 1. 按需引入
-
-使用 `unplugin-vue-components` 实现 NaiveUI 组件的按需引入，无需手动导入。
-
-```vue
-<template>
-  <!-- 直接使用，无需 import -->
-  <n-button type="primary">按钮</n-button>
-  <n-card title="卡片">内容</n-card>
-</template>
-```
-
-### 2. 自动导入
-
-使用 `unplugin-auto-import` 自动导入 Vue API 和组合式函数。
-
-```typescript
-// 无需手动导入，直接使用
-const count = ref(0)
-const doubled = computed(() => count.value * 2)
-```
-
-### 3. 主题系统
-
-基于 CSS 变量的主题定制系统，支持明亮/暗黑模式切换。
-
-```css
-:root {
-  --primary-color: #18a058;
-  --bg-color: #ffffff;
-}
-
-.dark {
-  --bg-color: #101014;
-}
-```
-
-### 4. 暗黑模式
-
-使用 VueUse 的 `useDark` 实现暗黑模式，支持持久化存储。
-
-```typescript
-const { isDark, toggleTheme } = useTheme()
-```
-
-### 5. 全局组件规范
-
-- **NaiveUI 组件**：`n-` 前缀（如 `<n-button>`）
-- **自定义组件**：`Ez` 前缀（如 `<EzButton>`）
-- **页面组件**：语义化命名（如 `UserManagement.vue`）
-
-## 文件变更
-
-### 新增文件
-
-```
-src/
-├── components/common/EzButton.vue
-├── composables/useTheme.ts
-├── styles/theme.css
-├── styles/index.css
-└── utils/componentResolver.ts
-
-docs/chapter-02/
-├── 01-installation.md
-└── README.md
-```
-
-### 修改文件
-
-```
-vite.config.ts          # 添加按需引入配置
-src/main.ts             # 引入 NaiveUI 字体和样式
-src/App.vue             # 添加 NaiveUI 组件示例
-```
-
-## 验证安装
-
-运行 `pnpm dev` 后，访问 http://localhost:5173 应该看到：
-
-1. Ez-Admin 标题
-2. 三个按钮（主要按钮、次要按钮、主题切换按钮）
-3. 项目信息卡片
-4. 点击主题切换按钮可以切换明亮/暗黑模式
-
-## 下一步预告
-
-**第3章：Tailwind CSS 样式系统搭建**
-
-- 安装 Tailwind CSS 与配置初始化
-- 自定义主题配置（颜色、间距、字体）
-- 响应式断点设计规范
-- Tailwind 与 NaiveUI 样式隔离方案
-- 常用工具类封装
+**难度**: ⭐⭐⭐☆☆
 
 ---
 
-**第2章完成！** 🎉 准备进入第3章：Tailwind CSS 样式系统搭建。
+## 课程目录
+
+- [2.1 Vue Router 4 配置与路由设计](./01-Vue-Router4配置与路由设计.md)
+- [2.2 Pinia 状态管理搭建](./02-Pinia状态管理搭建.md)
+- [2.3 NaiveUI 安装与基础配置](./03-NaiveUI安装与基础配置.md)
+- [2.4 Tailwind CSS 安装](./04-Tailwind-CSS安装.md)
+- [2.5 项目目录结构规范](./05-项目目录结构规范.md)
+
+---
+
+## 核心依赖清单
+
+```json
+{
+  "dependencies": {
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0",
+    "pinia": "^2.2.6",
+    "naive-ui": "^2.40.1"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.17",
+    "postcss": "^8.4.49",
+    "autoprefixer": "^10.4.20"
+  }
+}
+```
+
+---
+
+## 学习路径
+
+```
+1. 安装核心依赖
+       ↓
+2. 配置路由系统
+       ↓
+3. 配置状态管理
+       ↓
+4. 集成 UI 组件库
+       ↓
+5. 集成样式系统
+       ↓
+6. 规范目录结构
+```
+
+---
+
+## 完成标准
+
+学习完本章后，你应该能够：
+
+1. ✅ 配置和使用 Vue Router 4
+2. ✅ 创建和使用 Pinia Store
+3. ✅ 使用 NaiveUI 组件
+4. ✅ 使用 Tailwind CSS 类名
+5. ✅ 理解项目的目录结构
+
+**验收成果**:
+- 页面路由切换正常
+- Pinia 状态可以正常读写
+- NaiveUI 组件正常显示
+- Tailwind CSS 样式生效
+
+---
+
+## 常见问题
+
+### Q1: 为什么先装路由和状态管理？
+
+**A**: 路由和状态管理是应用的基础架构，其他功能都依赖它们。先搭建好基础，后续开发会更顺畅。
+
+### Q2: NaiveUI 和 Tailwind CSS 会不会冲突？
+
+**A**: 不会。NaiveUI 使用 scoped 样式，Tailwind CSS 是原子化类名，两者可以完美配合。
+
+### Q3: 必须按顺序学习吗？
+
+**A**: 建议按顺序学习，因为每个章节的内容可能依赖前面的配置。如果你已经熟悉某个技术，可以快速浏览或跳过。
+
+---
+
+**开始学习**: [2.1 Vue Router 4 配置与路由设计](./01-vue-router.md)
