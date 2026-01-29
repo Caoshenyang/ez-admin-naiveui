@@ -5,6 +5,15 @@ import type { RouteRecordRaw } from 'vue-router'
  * 注意：404 通配路由也在此处，确保始终存在兜底路由
  */
 export const constantRoutes: RouteRecordRaw[] = [
+  // 首页
+  {
+    path: '/',
+    name: 'Home',
+    component: () => import('@/views/HomePage.vue'),
+    meta: {
+      title: '首页',
+    },
+  },
   {
     path: '/login',
     name: 'Login',
@@ -23,13 +32,33 @@ export const constantRoutes: RouteRecordRaw[] = [
       hidden: true,
     },
   },
-  // 表单示例页面
+  // 示例合集页面
+  {
+    path: '/examples',
+    name: 'ExamplesIndex',
+    component: () => import('@/views/examples/ExamplesIndex.vue'),
+    meta: {
+      title: '组件示例合集',
+    },
+  },
+  // 表单示例页面（独立访问）
   {
     path: '/form',
     name: 'FormExample',
     component: () => import('@/views/examples/FormExample.vue'),
     meta: {
       title: '表单示例',
+      hidden: true, // 隐藏，通过合集页面访问
+    },
+  },
+  // Loading 示例页面（独立访问）
+  {
+    path: '/loading',
+    name: 'LoadingExample',
+    component: () => import('@/views/examples/LoadingExample.vue'),
+    meta: {
+      title: 'Loading 示例',
+      hidden: true, // 隐藏，通过合集页面访问
     },
   },
   {

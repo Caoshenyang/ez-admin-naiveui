@@ -9,13 +9,6 @@ const pinia = createPinia()
 /**
  * 配置持久化
  */
-pinia.use(
-  createPersistedState({
-    // 存储到 sessionStorage
-    storage: localStorage,
-    // 默认所有 store 都持久化
-    auto: true,
-  })
-)
+pinia.use(createPersistedState())
 
 export default pinia
