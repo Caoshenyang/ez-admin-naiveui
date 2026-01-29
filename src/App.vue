@@ -11,13 +11,7 @@ const theme = ref(lightTheme)
 
 <template>
   <n-config-provider :theme-overrides="theme" :locale="zhCN" :date-locale="dateZhCN">
-    <n-message-provider>
-      <n-dialog-provider>
-        <n-notification-provider>
-          <router-view />
-        </n-notification-provider>
-      </n-dialog-provider>
-    </n-message-provider>
+    <router-view />
   </n-config-provider>
 </template>
 

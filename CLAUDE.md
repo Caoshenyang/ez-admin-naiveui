@@ -59,9 +59,22 @@
   - ✅ 创建类型定义目录 (`src/stores/types/`)
   - ✅ 实现示例模块：`app.ts`（应用配置）、`user.ts`（用户管理）
 
+- [x] **API 请求模块（axios 封装）** (2026-01-29)
+  - ✅ 创建 Axios 请求封装 (`src/utils/request.ts`)
+  - ✅ 实现 Bearer Token 认证机制
+  - ✅ 实现完整的请求/响应拦截器
+  - ✅ 实现统一的错误处理（HTTP 状态码、网络错误、超时）
+  - ✅ 实现 401 自动跳转登录
+  - ✅ 封装常用请求方法（GET, POST, PUT, DELETE, PATCH）
+  - ✅ 实现文件上传/下载功能
+  - ✅ 创建 API 通用类型定义 (`src/types/api.ts`)
+  - ✅ 创建 NaiveUI 离散式 API 封装 (`src/hooks/useNaiveApi.ts`)
+  - ✅ 集成日志工具（开发环境自动输出）
+  - ✅ 创建用户 API 模块示例 (`src/api/user.ts`)
+  - ✅ 创建使用指南文档 (`docs/request-module-guide.md`)
+
 ### 待办任务
 
-- [ ] 实现 API 请求模块（axios 封装）
 - [ ] 实现路由权限控制
 - [ ] 实现动态菜单生成
 
