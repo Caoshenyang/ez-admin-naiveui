@@ -16,6 +16,7 @@
     "@tailwindcss/vite": "^4.1.18",
     "@vicons/ionicons5": "^0.13.0",
     "axios": "^1.13.4",
+    "dayjs": "^1.11.19",
     "naive-ui": "^2.43.2",
     "pinia": "^3.0.4",
     "pinia-plugin-persistedstate": "^4.7.1",

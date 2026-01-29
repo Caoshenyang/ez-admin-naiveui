@@ -73,6 +73,15 @@
   - ✅ 创建用户 API 模块示例 (`src/api/user.ts`)
   - ✅ 创建使用指南文档 (`docs/request-module-guide.md`)
 
+- [x] **工具函数库封装（部分）** (2026-01-29)
+  - ✅ 创建日期工具 (`src/utils/date.ts`)
+  - ✅ 创建验证工具 (`src/utils/validate.ts`)
+  - 🔄 创建存储工具 (`src/utils/storage.ts`) - 待完成
+  - 🔄 创建字符串工具 (`src/utils/string.ts`) - 待完成
+  - 🔄 创建数组工具 (`src/utils/array.ts`) - 待完成
+  - 🔄 创建对象工具 (`src/utils/object.ts`) - 待完成
+  - 🔄 创建统一导出 (`src/utils/index.ts`) - 待完成
+
 ### 待办任务
 
 - [ ] 实现路由权限控制
