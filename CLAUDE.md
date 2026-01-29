@@ -82,10 +82,22 @@
   - 🔄 创建对象工具 (`src/utils/object.ts`) - 待完成
   - 🔄 创建统一导出 (`src/utils/index.ts`) - 待完成
 
+- [x] **EzForm 表单组件封装** (2026-01-29)
+  - ✅ 创建表单类型定义 (`src/types/form.ts`)
+  - ✅ 实现 EzForm 主组件 (`src/components/EzForm.vue`)
+  - ✅ 实现表单项渲染器 (`src/components/form/EzFormItemRenderer.vue`)
+  - ✅ 支持 16+ 种表单项类型
+  - ✅ 支持条件显示/禁用、动态加载选项
+  - ✅ 支持响应式布局和自定义插槽
+  - ✅ 创建使用示例视图 (`src/views/FormExample.vue`)
+  - ✅ 创建使用指南文档 (`docs/ez-form-guide.md`)
+
 ### 待办任务
 
+- [ ] 完成工具函数库封装（storage、string、array、object、index）
 - [ ] 实现路由权限控制
 - [ ] 实现动态菜单生成
+- [ ] 封装更多全局组件（EzTable、EzModal 等）
 
 ---
 

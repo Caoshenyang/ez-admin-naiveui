@@ -1,0 +1,17 @@
+# Prettier ignore file
+
+# 依赖目录
+node_modules/
+dist/
+
+# 文档目录
+docs/
+
+# 配置文件
+*.config.js
+*.config.ts
+.gitignore
+.prettierrc.json
+
+# 环境变量文件
+.env*

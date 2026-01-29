@@ -23,6 +23,15 @@ export const constantRoutes: RouteRecordRaw[] = [
       hidden: true,
     },
   },
+  // 表单示例页面
+  {
+    path: '/form',
+    name: 'FormExample',
+    component: () => import('@/views/examples/FormExample.vue'),
+    meta: {
+      title: '表单示例',
+    },
+  },
   {
     path: '/:pathMatch(.*)*',
     redirect: '/404',
