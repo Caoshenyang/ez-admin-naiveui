@@ -8,7 +8,10 @@
       "Bash(do sed:*)",
       "Bash(done:*)",
       "Bash(ls:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(del:*)",
+      "Bash(tree:*)"
     ]
   }
 }
