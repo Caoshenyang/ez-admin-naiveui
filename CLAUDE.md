@@ -26,7 +26,14 @@
 
 - **框架**: Vue 3.5+ (使用 `<script setup>` 语法)。
 - **组件库**: **NaiveUI** (负责复杂交互：表格、表单、弹窗)。
-- **样式**: **Tailwind CSS** (负责所有布局、间距、响应式设计)。
+- **样式**: **Tailwind CSS 4.x** (负责所有布局、间距、响应式设计)。
+  - ✅ 配置方式：使用 `@tailwindcss/vite` 插件（已在 `vite.config.ts` 中配置）
+  - ✅ CSS 导入：使用 `@import "tailwindcss"`（已在 `src/assets/index.css` 中配置）
+  - 🚫 **严禁使用 `@apply` 指令**（官方已不再推荐）
+  - ✅ 推荐直接使用 utility classes
+  - ✅ 复杂样式使用 `@utility` 指令或 CSS 变量
+  - ✅ 主题自定义使用 `@theme` 指令
+  - 📖 详细使用指南：`docs/tailwind-v4-guide.md`
 - **状态管理**: Pinia (使用 **Setup Store 模式**，目录结构采用 `modules/` 组织方式)。
 - **路由**: Vue Router 4 (集中化路由配置)。
 - **代码风格**: 无分号, 单引号, 120 字符行宽, Tailwind 类名顺序遵循标准。
@@ -37,6 +44,13 @@
 ---
 
 ### 已完成任务
+
+- [x] **Tailwind CSS 4.x 集成** (2026-01-29)
+  - ✅ 安装 `tailwindcss@4.1.18` 和 `@tailwindcss/vite@4.1.18`
+  - ✅ 配置 Vite 插件模式（`vite.config.ts`）
+  - ✅ 配置 CSS 导入（`src/assets/index.css`）
+  - ✅ 创建使用指南文档 (`docs/tailwind-v4-guide.md`)
+  - ✅ 创建迁移方案文档 (`docs/tailwind-v4-migration.md`)
 
 - [x] **Pinia Store 架构设计** (2026-01-29)
   - ✅ 创建 Pinia Store 模式对比文档 (`docs/pinia-store-comparison.md`)

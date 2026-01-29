@@ -2,7 +2,7 @@
 <template>
   <div>
     登录页
-
+    <h1 class="text-3xl font-bold underline">Hello world!</h1>
     <n-space>
       <n-button type="primary">主要按钮</n-button>
       <n-button type="info">信息按钮</n-button>
