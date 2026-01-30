@@ -45,7 +45,7 @@ export const constantRoutes: RouteRecordRaw[] = [
   {
     path: '/form',
     name: 'FormExample',
-    component: () => import('@/views/examples/FormExample.vue'),
+    component: () => import('@/views/examples/components/FormExample.vue'),
     meta: {
       title: '表单示例',
       hidden: true, // 隐藏，通过合集页面访问
@@ -55,9 +55,19 @@ export const constantRoutes: RouteRecordRaw[] = [
   {
     path: '/loading',
     name: 'LoadingExample',
-    component: () => import('@/views/examples/LoadingExample.vue'),
+    component: () => import('@/views/examples/components/LoadingExample.vue'),
     meta: {
       title: 'Loading 示例',
+      hidden: true, // 隐藏，通过合集页面访问
+    },
+  },
+  // LoadingBar 示例页面（独立访问）
+  {
+    path: '/loadingbar',
+    name: 'EzLoadingBarExample',
+    component: () => import('@/views/examples/components/EzLoadingBarExample.vue'),
+    meta: {
+      title: 'EzLoadingBar 示例',
       hidden: true, // 隐藏，通过合集页面访问
     },
   },

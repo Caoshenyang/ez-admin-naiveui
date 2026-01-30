@@ -11,7 +11,10 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(del:*)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(pnpm type-check:*)",
+      "Bash(npx vue-tsc:*)",
+      "Bash(cat:*)"
     ]
   }
 }

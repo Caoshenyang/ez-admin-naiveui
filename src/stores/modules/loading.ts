@@ -24,6 +24,11 @@ export const useLoadingStore = defineStore('loading', () => {
    */
   const loadingText = ref<string>('加载中...')
 
+  /**
+   * Loading 错误状态
+   */
+  const loadingError = ref<boolean>(false)
+
   // ========== Getters ==========
   /**
    * 是否有任何 loading 在进行中
@@ -55,8 +60,12 @@ export const useLoadingStore = defineStore('loading', () => {
     // 如果是全局 loading，设置全局状态
     if (config.global) {
       globalLoading.value = true
+      loadingError.value = false // 重置错误状态
       if (config.text) {
         loadingText.value = config.text
+      }
+      if (config.error) {
+        loadingError.value = true
       }
     }
   }
@@ -64,22 +73,26 @@ export const useLoadingStore = defineStore('loading', () => {
   /**
    * 结束 loading
    * @param key Loading 标识
+   * @param isError 是否出错
    */
-  function stop(key?: LoadingKey) {
+  function stop(key?: LoadingKey, isError?: boolean) {
     if (key) {
       // 移除指定的 loading
       loadingSet.value.delete(key)
 
-      // 如果没有全局 loading 了，重置全局状态
-      if (globalLoading.value && !Array.from(loadingSet.value).some((k) => k.startsWith('global:'))) {
+      // 如果当前停止的 loading 设置了全局状态，且没有其他全局 loading，重置全局状态
+      // 只要 loadingSet 为空或没有显式设置 global 的 loading，就重置
+      if (globalLoading.value && loadingSet.value.size === 0) {
         globalLoading.value = false
         loadingText.value = '加载中...'
+        loadingError.value = isError || false
       }
     } else {
       // 清空所有 loading
       loadingSet.value.clear()
       globalLoading.value = false
       loadingText.value = '加载中...'
+      loadingError.value = false
     }
   }
 
@@ -90,6 +103,7 @@ export const useLoadingStore = defineStore('loading', () => {
     loadingSet.value.clear()
     globalLoading.value = false
     loadingText.value = '加载中...'
+    loadingError.value = false
   }
 
   /**
@@ -111,8 +125,16 @@ export const useLoadingStore = defineStore('loading', () => {
     try {
       start({ ...options, key })
       return await promise
+    } catch (error) {
+      // 发生错误时标记错误状态
+      if (options?.global) {
+        loadingError.value = true
+      }
+      throw error
     } finally {
-      stop(key)
+      // 根据是否有错误决定是否传递错误状态
+      const hasError = loadingError.value
+      stop(key, hasError)
     }
   }
 
@@ -121,6 +143,7 @@ export const useLoadingStore = defineStore('loading', () => {
     loadingSet,
     globalLoading,
     loadingText,
+    loadingError,
     // Getters
     isLoading,
     loadingCount,

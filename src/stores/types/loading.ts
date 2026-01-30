@@ -27,4 +27,10 @@ export interface LoadingOptions {
    * 加载提示文本
    */
   text?: string
+
+  /**
+   * 是否出错（出错时进度条显示错误状态）
+   * @default false
+   */
+  error?: boolean
 }

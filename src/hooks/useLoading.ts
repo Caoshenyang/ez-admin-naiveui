@@ -26,7 +26,7 @@ import type { LoadingKey, LoadingOptions } from '@/stores/types/loading'
  */
 export function useLoading(prefix?: string) {
   const loadingStore = useLoadingStore()
-  const { isLoading, loadingCount, isGlobalLoading, loadingText } = storeToRefs(loadingStore)
+  const { isLoading, loadingCount, isGlobalLoading, loadingText, loadingError } = storeToRefs(loadingStore)
 
   /**
    * 生成完整的 loading key
@@ -99,6 +99,7 @@ export function useLoading(prefix?: string) {
     isPrefixLoading,
     loadingCount,
     loadingText,
+    loadingError,
     // Actions
     startLoading,
     stopLoading,

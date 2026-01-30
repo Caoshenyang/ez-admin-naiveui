@@ -3,17 +3,18 @@
   集成所有示例页面，方便测试和查看
 -->
 <script setup lang="ts">
-import { ref, markRaw } from 'vue'
-import { NTabs, NTabPane, NCard, NSpace, NButton } from 'naive-ui'
-import FormExample from './FormExample.vue'
-import LoadingExample from './LoadingExample.vue'
+import { ref, markRaw, type Component } from 'vue'
+import { NTabs, NTabPane, NCard, NButton } from 'naive-ui'
+import FormExample from './components/FormExample.vue'
+import LoadingExample from './components/LoadingExample.vue'
+import EzLoadingBarExample from './components/EzLoadingBarExample.vue'
 
 interface ExampleTab {
   key: string
   label: string
   icon?: string
   description: string
-  component: unknown
+  component: Component
 }
 
 // 示例列表（使用 markRaw 避免组件被包装成响应式对象）
@@ -30,13 +31,19 @@ const examples = ref<ExampleTab[]>([
     description: '全局加载状态管理系统，支持 LoadingBar、Message、Notification、Dialog',
     component: markRaw(LoadingExample),
   },
+  {
+    key: 'loadingbar',
+    label: 'EzLoadingBar 进度条',
+    description: '全局加载进度条组件，页面顶部显示，适合路由切换和异步操作',
+    component: markRaw(EzLoadingBarExample),
+  },
 ])
 
 const activeKey = ref('form')
 
 // 使用 markRaw 标记组件
-const currentComponent = ref(markRaw(FormExample))
-const currentExample = ref(examples.value[0])
+const currentComponent = ref<Component>(markRaw(FormExample))
+const currentExample = ref<ExampleTab>(examples.value[0]!)
 
 // 切换示例
 const handleSwitch = (key: string) => {
@@ -49,7 +56,7 @@ const handleSwitch = (key: string) => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
+  <div class="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 p-6">
     <!-- 页面标题 -->
     <div class="max-w-7xl mx-auto mb-6">
       <div class="flex items-center justify-between">
