@@ -92,12 +92,26 @@
   - ✅ 创建使用示例视图 (`src/views/FormExample.vue`)
   - ✅ 创建使用指南文档 (`docs/ez-form-guide.md`)
 
+- [x] **EzTable 表格组件封装** (2026-01-30)
+  - ✅ 创建完整类型定义 (`src/types/table.ts`)
+  - ✅ 实现 EzTable 主组件 (`src/components/EzTable.vue`)
+  - ✅ 实现表格工具栏组件 (`src/components/table/EzTableToolbar.vue`)
+  - ✅ 实现列设置组件 (`src/components/table/EzTableColumnSetting.vue`)
+  - ✅ 支持选择功能（单选/多选）
+  - ✅ 支持排序和筛选（本地/远程）
+  - ✅ 支持工具栏（刷新、列设置、密度、全屏）
+  - ✅ 支持响应式高度布局
+  - ✅ 支持本地存储配置记忆
+  - ✅ 创建使用示例视图 (`src/views/examples/components/TableExample.vue`)
+  - ✅ 创建使用指南文档 (`docs/ez-table-guide.md`)
+  - ✅ 安装依赖包 `@vueuse/core`
+
 ### 待办任务
 
 - [ ] 完成工具函数库封装（storage、string、array、object、index）
 - [ ] 实现路由权限控制
 - [ ] 实现动态菜单生成
-- [ ] 封装更多全局组件（EzTable、EzModal 等）
+- [ ] 封装 EzModal 弹窗组件
 
 ---
 

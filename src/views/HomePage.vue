@@ -18,24 +18,24 @@ const quickLinks = [
     color: 'bg-blue-500',
   },
   {
+    title: '表格示例',
+    description: 'EzTable 增强型表格组件演示',
+    icon: '📊',
+    path: '/examples',
+    color: 'bg-cyan-500',
+  },
+  {
     title: '表单示例',
     description: 'EzForm 配置式表单组件演示',
     icon: '📝',
-    path: '/form',
+    path: '/examples',
     color: 'bg-green-500',
-  },
-  {
-    title: 'Loading 示例',
-    description: '全局加载状态管理演示',
-    icon: '⏳',
-    path: '/loading',
-    color: 'bg-purple-500',
   },
   {
     title: 'LoadingBar 示例',
     description: '全局进度条组件演示（支持错误处理和局部容器）',
-    icon: '📊',
-    path: '/loadingbar',
+    icon: '📈',
+    path: '/examples',
     color: 'bg-orange-500',
   },
 ]
@@ -129,7 +129,11 @@ const quickLinks = [
                     ? 'success'
                     : link.color.includes('purple')
                       ? 'info'
-                      : 'warning'
+                      : link.color.includes('orange')
+                        ? 'warning'
+                        : link.color.includes('cyan')
+                          ? 'info'
+                          : 'default'
               "
             >
               查看详情 →

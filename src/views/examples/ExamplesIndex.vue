@@ -8,6 +8,7 @@ import { NTabs, NTabPane, NCard, NButton } from 'naive-ui'
 import FormExample from './components/FormExample.vue'
 import LoadingExample from './components/LoadingExample.vue'
 import EzLoadingBarExample from './components/EzLoadingBarExample.vue'
+import TableExample from './components/TableExample.vue'
 
 interface ExampleTab {
   key: string
@@ -26,6 +27,12 @@ const examples = ref<ExampleTab[]>([
     component: markRaw(FormExample),
   },
   {
+    key: 'table',
+    label: 'EzTable 表格',
+    description: '增强型表格组件，支持选择、排序、筛选、工具栏、配置记忆等功能',
+    component: markRaw(TableExample),
+  },
+  {
     key: 'loading',
     label: 'Loading 状态',
     description: '全局加载状态管理系统，支持 LoadingBar、Message、Notification、Dialog',
@@ -39,11 +46,11 @@ const examples = ref<ExampleTab[]>([
   },
 ])
 
-const activeKey = ref('form')
+const activeKey = ref('table')
 
 // 使用 markRaw 标记组件
-const currentComponent = ref<Component>(markRaw(FormExample))
-const currentExample = ref<ExampleTab>(examples.value[0]!)
+const currentComponent = ref<Component>(markRaw(TableExample))
+const currentExample = ref<ExampleTab>(examples.value[1]!)
 
 // 切换示例
 const handleSwitch = (key: string) => {

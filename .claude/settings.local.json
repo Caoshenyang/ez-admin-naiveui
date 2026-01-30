@@ -14,7 +14,9 @@
       "Bash(tree:*)",
       "Bash(pnpm type-check:*)",
       "Bash(npx vue-tsc:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(pnpm add:*)",
+      "WebSearch"
     ]
   }
 }
