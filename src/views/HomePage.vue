@@ -31,11 +31,18 @@ const quickLinks = [
     path: '/loading',
     color: 'bg-purple-500',
   },
+  {
+    title: 'LoadingBar 示例',
+    description: '全局进度条组件演示（支持错误处理和局部容器）',
+    icon: '📊',
+    path: '/loadingbar',
+    color: 'bg-orange-500',
+  },
 ]
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+  <div class="min-h-screen bg-linear-to-br from-gray-50 to-gray-100">
     <!-- Hero 区域 -->
     <div class="bg-white shadow-sm">
       <div class="max-w-7xl mx-auto px-6 py-16">
@@ -99,7 +106,7 @@ const quickLinks = [
       <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
         快速入口
       </h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <NCard
           v-for="link in quickLinks"
           :key="link.path"
@@ -114,7 +121,17 @@ const quickLinks = [
             <p class="text-gray-600 mb-4">
               {{ link.description }}
             </p>
-            <NButton :type="link.color.includes('blue') ? 'primary' : link.color.includes('green') ? 'success' : 'info'">
+            <NButton
+              :type="
+                link.color.includes('blue')
+                  ? 'primary'
+                  : link.color.includes('green')
+                    ? 'success'
+                    : link.color.includes('purple')
+                      ? 'info'
+                      : 'warning'
+              "
+            >
               查看详情 →
             </NButton>
           </div>
