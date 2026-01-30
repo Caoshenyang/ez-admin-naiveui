@@ -27,10 +27,10 @@ const generateUsers = (count: number): User[] => {
     id: i + 1,
     name: `用户${i + 1}`,
     email: `user${i + 1}@example.com`,
-    role: roles[i % roles.length],
-    status: statuses[i % statuses.length],
+    role: roles[i % roles.length]!,
+    status: statuses[i % statuses.length]!,
     age: 20 + (i % 40),
-    department: departments[i % departments.length],
+    department: departments[i % departments.length]!,
     createdAt: `2024-${String((i % 12) + 1).padStart(2, '0')}-${String((i % 28) + 1).padStart(2, '0')}`
   }))
 }
@@ -330,7 +330,7 @@ const handleCheck = (keys: Array<string | number>) => {
         :columns="columns"
         :data="data"
         :loading="loading"
-        :row-key="(row) => row.id"
+        :row-key="(row: { id: any }) => row.id"
         :pagination="pagination"
         :checked-row-keys="selectedRowKeys"
         :toolbar="toolbar"
