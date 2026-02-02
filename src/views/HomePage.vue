@@ -39,6 +39,13 @@ const quickLinks = [
     color: 'bg-purple-500',
   },
   {
+    title: 'Loading 示例',
+    description: '全局加载状态管理（Message、Notification、Dialog、LoadingBar）',
+    icon: '⏳',
+    path: '/examples',
+    color: 'bg-indigo-500',
+  },
+  {
     title: 'LoadingBar 示例',
     description: '全局进度条组件演示（支持错误处理和局部容器）',
     icon: '📈',
@@ -113,7 +120,7 @@ const quickLinks = [
       <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
         快速入口
       </h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
         <NCard
           v-for="link in quickLinks"
           :key="link.path"
@@ -140,7 +147,9 @@ const quickLinks = [
                         ? 'warning'
                         : link.color.includes('cyan')
                           ? 'info'
-                          : 'default'
+                          : link.color.includes('indigo')
+                            ? 'info'
+                            : 'default'
               "
             >
               查看详情 →

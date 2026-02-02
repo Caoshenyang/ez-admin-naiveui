@@ -169,7 +169,7 @@ const showStyled = ref(false)
     <!-- ==================== 弹窗组件 ==================== -->
 
     <!-- 基础弹窗 -->
-    <EzModal v-model:show="showBasic" title="基础弹窗" @positive-click="handleBasicConfirm">
+    <EzModal v-model:show="showBasic" title="基础弹窗" size="small" @positive-click="handleBasicConfirm">
       <div class="py-4">
         <p class="text-gray-700">这是一个基础的弹窗示例，支持 v-model 双向绑定显示状态。</p>
       </div>
@@ -179,6 +179,7 @@ const showStyled = ref(false)
     <EzModal
       v-model:show="showConfirm"
       title="确认删除"
+      size="small"
       positive-text="删除"
       negative-text="取消"
       positive-type="error"
@@ -192,7 +193,7 @@ const showStyled = ref(false)
     </EzModal>
 
     <!-- 表单弹窗 -->
-    <EzModal v-model:show="showFormModal" title="新建用户" width="700px" @positive-click="formRef?.validate()">
+    <EzModal v-model:show="showFormModal" title="新建用户" size="medium" @positive-click="formRef?.validate()">
       <EzForm
         ref="formRef"
         :options="formOptions"
@@ -210,7 +211,7 @@ const showStyled = ref(false)
     </EzModal>
 
     <!-- 自定义内容弹窗 -->
-    <EzModal v-model:show="showCustom" title="用户详情" positive-text="关闭">
+    <EzModal v-model:show="showCustom" title="用户详情" size="small" positive-text="关闭">
       <div class="py-4">
         <div class="space-y-4">
           <div>
@@ -239,6 +240,7 @@ const showStyled = ref(false)
     <EzModal
       v-model:show="showAsync"
       title="异步操作"
+      size="small"
       :loading="asyncLoading"
       positive-text="提交"
       @positive-click="handleAsyncPositive"
@@ -253,6 +255,7 @@ const showStyled = ref(false)
     <EzModal
       v-model:show="showForce"
       title="重要提示"
+      size="small"
       :mask-closable="false"
       :closable="false"
       positive-text="我已知晓"
