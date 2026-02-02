@@ -1,13 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
-import { constantRoutes } from './routes'
+import { constantRoutes, asyncRoutes } from './routes'
 
 /**
  * 创建路由实例
  */
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: constantRoutes,
+  routes: [...constantRoutes, ...asyncRoutes],
   scrollBehavior: () => ({ top: 0 }),
 })
 

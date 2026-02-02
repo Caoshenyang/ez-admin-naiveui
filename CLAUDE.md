@@ -86,7 +86,7 @@
 - [x] **工具函数库封装（部分）** (2026-01-29)
   - ✅ 创建日期工具 (`src/utils/date.ts`)
   - ✅ 创建验证工具 (`src/utils/validate.ts`)
-  - 🔄 创建存储工具 (`src/utils/storage.ts`) - 待完成
+  - ✅ 创建存储工具 (`src/utils/storage.ts`)
   - 🔄 创建字符串工具 (`src/utils/string.ts`) - 待完成
   - 🔄 创建数组工具 (`src/utils/array.ts`) - 待完成
   - 🔄 创建对象工具 (`src/utils/object.ts`) - 待完成
@@ -115,6 +115,24 @@
   - ✅ 创建使用示例视图 (`src/views/examples/components/TableExample.vue`)
   - ✅ 创建使用指南文档 (`docs/ez-table-guide.md`)
   - ✅ 安装依赖包 `@vueuse/core`
+
+- [x] **后台管理系统布局（重构版）** (2026-02-02)
+  - ✅ 创建菜单宽度枚举 (`src/enums/menu.ts`)
+  - ✅ 创建布局类型定义 (`src/types/layout.ts`)
+  - ✅ 创建布局 Store (`src/stores/modules/layout.ts`)
+  - ✅ 创建存储工具 (`src/utils/storage.ts`)
+  - ✅ 创建菜单配置 (`src/config/menu.ts`)
+  - ✅ 实现主布局容器组件 (`src/layouts/AppLayout.vue`)
+  - ✅ 实现 Logo 组件 (`src/layouts/components/AppLogo.vue`)
+  - ✅ 实现菜单组件 (`src/layouts/components/AppMenu.vue`)
+  - ✅ 实现顶部导航栏组件 (`src/layouts/components/AppTopBar.vue`)
+  - ✅ 实现标签页组件 (`src/layouts/components/AppWorkTab.vue`)
+  - ✅ 更新路由配置（分离 constantRoutes 和 asyncRoutes）
+  - ✅ 更新使用指南文档 (`docs/layout-guide.md`)
+  - ✅ 支持响应式设计（移动端自动折叠）
+  - ✅ 支持侧边栏折叠/展开
+  - ✅ 支持菜单状态持久化
+  - ✅ 支持标签页系统（切换、关闭、右键菜单）
 
 ### 待办任务
 

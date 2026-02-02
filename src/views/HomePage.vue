@@ -4,7 +4,7 @@
 -->
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import { NButton, NCard, NSpace, NIcon } from 'naive-ui'
+import { NButton, NCard, NSpace } from 'naive-ui'
 
 const router = useRouter()
 
