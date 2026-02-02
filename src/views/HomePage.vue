@@ -11,13 +11,6 @@ const router = useRouter()
 // 快速入口卡片
 const quickLinks = [
   {
-    title: 'CRUD 示例',
-    description: 'EzCRUD 完整增删改查组件演示（集成表格、表单、弹窗）',
-    icon: '🔄',
-    path: '/examples',
-    color: 'bg-rose-500',
-  },
-  {
     title: '组件示例',
     description: '查看所有组件示例和测试合集',
     icon: '📦',
@@ -127,7 +120,7 @@ const quickLinks = [
       <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
         快速入口
       </h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <NCard
           v-for="link in quickLinks"
           :key="link.path"
@@ -144,21 +137,19 @@ const quickLinks = [
             </p>
             <NButton
               :type="
-                link.color.includes('rose')
-                  ? 'error'
-                  : link.color.includes('blue')
-                    ? 'primary'
-                    : link.color.includes('green')
-                      ? 'success'
-                      : link.color.includes('purple')
-                        ? 'info'
-                        : link.color.includes('orange')
-                          ? 'warning'
-                          : link.color.includes('cyan')
+                link.color.includes('blue')
+                  ? 'primary'
+                  : link.color.includes('green')
+                    ? 'success'
+                    : link.color.includes('purple')
+                      ? 'info'
+                      : link.color.includes('orange')
+                        ? 'warning'
+                        : link.color.includes('cyan')
+                          ? 'info'
+                          : link.color.includes('indigo')
                             ? 'info'
-                            : link.color.includes('indigo')
-                              ? 'info'
-                              : 'default'
+                            : 'default'
               "
             >
               查看详情 →

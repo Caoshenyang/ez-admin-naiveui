@@ -12,7 +12,6 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AppSetup: typeof import('./components/AppSetup.vue')['default']
-    EzCRUD: typeof import('./components/EzCRUD.vue')['default']
     EzForm: typeof import('./components/EzForm.vue')['default']
     EzFormItemRenderer: typeof import('./components/form/EzFormItemRenderer.vue')['default']
     EzLoadingBar: typeof import('./components/EzLoadingBar.vue')['default']

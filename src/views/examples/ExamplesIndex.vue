@@ -10,7 +10,6 @@ import LoadingExample from './components/LoadingExample.vue'
 import EzLoadingBarExample from './components/EzLoadingBarExample.vue'
 import TableExample from './components/TableExample.vue'
 import ModalExample from './components/ModalExample.vue'
-import CRUDExample from './components/CRUDExample.vue'
 
 interface ExampleTab {
   key: string
@@ -22,12 +21,6 @@ interface ExampleTab {
 
 // 示例列表（使用 markRaw 避免组件被包装成响应式对象）
 const examples = ref<ExampleTab[]>([
-  {
-    key: 'crud',
-    label: 'EzCRUD 增删改查',
-    description: '完整的 CRUD 组件，集成表格、表单、弹窗，支持搜索、分页、验证等功能',
-    component: markRaw(CRUDExample),
-  },
   {
     key: 'form',
     label: 'EzForm 表单',
@@ -60,10 +53,10 @@ const examples = ref<ExampleTab[]>([
   },
 ])
 
-const activeKey = ref('crud')
+const activeKey = ref('modal')
 
 // 使用 markRaw 标记组件
-const currentComponent = ref<Component>(markRaw(CRUDExample))
+const currentComponent = ref<Component>(markRaw(ModalExample))
 const currentExample = ref<ExampleTab>(examples.value[0]!)
 
 // 切换示例
