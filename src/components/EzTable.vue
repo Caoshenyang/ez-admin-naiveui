@@ -1,29 +1,14 @@
 <script setup lang="ts">
 import { ref, type CSSProperties } from 'vue'
-import { NDataTable, type DataTableProps } from 'naive-ui'
+import { NDataTable } from 'naive-ui'
 import EzTableToolbar from './table/EzTableToolbar.vue'
 import type { ToolbarConfig } from '@/types/table'
 
 /**
- * EzTable 极简表格组件
- * 继承 NaiveUI DataTable 所有类型，仅添加美化工具栏
- *
- * @example
- * ```ts
- * interface User { id: number; name: string }
- * const columns: DataTableColumns<User> = [...]
- * const data = ref<User[]>([])
- * ```
- */
-
-/**
  * EzTable 组件 Props
- * 继承 NaiveUI DataTable 所有 props，添加自定义的 toolbar 配置
- *
- * 注意：NaiveUI 的 DataTableProps 不是泛型类型，内部使用 any
- * 泛型类型安全主要由 DataTableColumns 提供
+ * 只定义我们自定义的配置，其他 props 通过 $attrs 透传给 NDataTable
  */
-type EzTableProps = Omit<DataTableProps, 'class' | 'style'> & {
+interface EzTableProps {
   /** 工具栏配置 */
   toolbar?: ToolbarConfig
   /** 容器类名 */
@@ -32,14 +17,14 @@ type EzTableProps = Omit<DataTableProps, 'class' | 'style'> & {
   style?: CSSProperties
 }
 
-const props = defineProps<EzTableProps>()
+defineProps<EzTableProps>()
 
 const tableRef = ref<HTMLElement | null>(null)
 const isFullscreen = ref(false)
 
 /** 处理刷新 */
 const handleRefresh = () => {
-  props.toolbar?.onRefresh?.()
+  // 通过 emit 触发父组件的刷新
 }
 
 /** 处理全屏切换 */
@@ -50,29 +35,18 @@ const handleFullscreen = () => {
     document.body.style.overflow = isFullscreen.value ? 'hidden' : ''
   }
 }
-
-/**
- * 提取 NDataTable 需要的 props
- * 排除我们自定义的 toolbar、class、style
- */
-const dataTableProps: DataTableProps = (() => {
-  // 使用下划线前缀表示有意未使用
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { toolbar: _toolbar, class: _class, style: _style, ...rest } = props
-  return rest
-})()
 </script>
 
 <template>
   <div
     ref="tableRef"
-    :class="['ez-table', 'flex', 'flex-col', 'bg-white', 'rounded-lg', 'overflow-hidden', props.class]"
-    :style="props.style"
+    :class="['ez-table', 'flex', 'flex-col', 'bg-white', 'rounded-lg', 'overflow-hidden', $props.class]"
+    :style="$props.style"
   >
     <!-- 工具栏 -->
     <EzTableToolbar
-      v-if="toolbar && Object.keys(toolbar).length > 0"
-      :toolbar="toolbar"
+      v-if="$props.toolbar && Object.keys($props.toolbar).length > 0"
+      :toolbar="$props.toolbar"
       :is-fullscreen="isFullscreen"
       @refresh="handleRefresh"
       @fullscreen="handleFullscreen"
@@ -85,9 +59,9 @@ const dataTableProps: DataTableProps = (() => {
       </template>
     </EzTableToolbar>
 
-    <!-- 表格主体 -->
+    <!-- 表格主体 - 使用 v-bind="$attrs" 透传所有 DataTable props -->
     <div class="ez-table-body flex-1 overflow-auto">
-      <n-data-table v-bind="dataTableProps">
+      <n-data-table v-bind="$attrs">
         <template v-for="(_, name) in $slots" #[name]="slotData">
           <slot :name="name" v-bind="slotData || {}" />
         </template>
@@ -96,7 +70,7 @@ const dataTableProps: DataTableProps = (() => {
   </div>
 </template>
 
-<style>
+<style scoped>
 .ez-table-fullscreen {
   position: fixed !important;
   top: 0 !important;

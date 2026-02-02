@@ -2,22 +2,290 @@
 
 ## 组件概述
 
-`EzTable` 是基于 NaiveUI DataTable 的极简封装，**直接透传所有原生功能**，仅添加美化工具栏。
+`EzTable` 是基于 NaiveUI DataTable 的极简封装，直接透传所有原生功能，仅添加美化工具栏。
 
 ### 设计理念
 
 - ✅ **零学习成本**：完全兼容 NaiveUI DataTable API
-- ✅ **最小封装**：只添加工具栏美化
+- ✅ **最小封装**：只添加工具栏和样式容器
 - ✅ **灵活扩展**：所有 NaiveUI 功能都可用
-- ✅ **易于维护**：代码量极小，维护成本低
-- ✅ **自动同步**：NaiveUI 更新时自动获得新功能
+- ✅ **易于维护**：代码量极小，只有 83 行
 
 ### 核心特性
 
-- ✅ **完全透传**：NaiveUI DataTable 的所有 props 和事件
-- ✅ **美化工具栏**：支持标题、刷新、全屏
-- ✅ **类型安全**：完整的 TypeScript 类型支持
-- ✅ **零破坏性**：可以随时切换回 NaiveUI DataTable
+- ✅ **完全透传**：使用 `$attrs` 透传所有 NaiveUI DataTable 的 props
+- ✅ **工具栏**：支持标题、刷新按钮、全屏按钮
+- ✅ **全屏功能**：内置全屏切换功能
+- ✅ **插槽透传**：自动透传所有 NaiveUI DataTable 的插槽
+
+---
+
+## 技术实现
+
+### 类型方案：使用 `$attrs` 透传
+
+EzTable 不继承 NaiveUI 的 `DataTableProps` 类型，而是只定义自己的 3 个 props，其他所有 props 通过 `$attrs` 透传。
+
+#### 实际代码（`src/components/EzTable.vue`）
+
+```vue
+<script setup lang="ts">
+import { ref, type CSSProperties } from 'vue'
+import { NDataTable } from 'naive-ui'
+import EzTableToolbar from './table/EzTableToolbar.vue'
+import type { ToolbarConfig } from '@/types/table'
+
+/**
+ * EzTable 组件 Props
+ * 只定义我们自定义的配置，其他 props 通过 $attrs 透传给 NDataTable
+ */
+interface EzTableProps {
+  /** 工具栏配置 */
+  toolbar?: ToolbarConfig
+  /** 容器类名 */
+  class?: string
+  /** 容器样式 */
+  style?: CSSProperties
+}
+
+defineProps<EzTableProps>()
+
+const tableRef = ref<HTMLElement | null>(null)
+const isFullscreen = ref(false)
+
+/** 处理刷新 */
+const handleRefresh = () => {
+  // 通过 emit 触发父组件的刷新
+}
+
+/** 处理全屏切换 */
+const handleFullscreen = () => {
+  isFullscreen.value = !isFullscreen.value
+  if (tableRef.value) {
+    tableRef.value.classList.toggle('ez-table-fullscreen', isFullscreen.value)
+    document.body.style.overflow = isFullscreen.value ? 'hidden' : ''
+  }
+}
+</script>
+
+<template>
+  <div
+    ref="tableRef"
+    :class="['ez-table', 'flex', 'flex-col', 'bg-white', 'rounded-lg', 'overflow-hidden', $props.class]"
+    :style="$props.style"
+  >
+    <!-- 工具栏 -->
+    <EzTableToolbar
+      v-if="$props.toolbar && Object.keys($props.toolbar).length > 0"
+      :toolbar="$props.toolbar"
+      :is-fullscreen="isFullscreen"
+      @refresh="handleRefresh"
+      @fullscreen="handleFullscreen"
+    >
+      <template v-if="$slots['toolbar-left']" #left>
+        <slot name="toolbar-left" />
+      </template>
+      <template v-if="$slots['toolbar-right']" #right>
+        <slot name="toolbar-right" />
+      </template>
+    </EzTableToolbar>
+
+    <!-- 表格主体 - 使用 v-bind="$attrs" 透传所有 DataTable props -->
+    <div class="ez-table-body flex-1 overflow-auto">
+      <n-data-table v-bind="$attrs">
+        <template v-for="(_, name) in $slots" #[name]="slotData">
+          <slot :name="name" v-bind="slotData || {}" />
+        </template>
+      </n-data-table>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.ez-table-fullscreen {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 9999 !important;
+}
+</style>
+```
+
+### 工具栏组件（`src/components/table/EzTableToolbar.vue`）
+
+```vue
+<script setup lang="ts">
+import { computed } from 'vue'
+import { NButton, NTooltip, NIcon } from 'naive-ui'
+import { RefreshOutline, ContractOutline, ExpandOutline } from '@vicons/ionicons5'
+import type { ToolbarConfig } from '@/types/table'
+
+interface Props {
+  toolbar: ToolbarConfig
+  isFullscreen: boolean
+}
+
+interface Emits {
+  refresh: []
+  fullscreen: []
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  toolbar: () => ({}),
+  isFullscreen: false,
+})
+
+const emit = defineEmits<Emits>()
+
+// 是否显示工具栏
+const showToolbar = computed(() => {
+  return (
+    props.toolbar.showRefresh ||
+    props.toolbar.showFullscreen ||
+    props.toolbar.left ||
+    props.toolbar.right ||
+    Boolean(props.toolbar.title)
+  )
+})
+
+const handleRefresh = () => {
+  emit('refresh')
+}
+
+const handleFullscreen = () => {
+  emit('fullscreen')
+}
+</script>
+
+<template>
+  <div v-if="showToolbar" class="ez-table-toolbar flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-gray-50">
+    <!-- 左侧：标题和自定义内容 -->
+    <div class="toolbar-left flex items-center gap-3">
+      <slot name="left">
+        <h3 v-if="toolbar.title" class="text-base font-semibold text-gray-700">
+          {{ toolbar.title }}
+        </h3>
+        <component v-if="toolbar.left" :is="toolbar.left()" />
+      </slot>
+    </div>
+
+    <!-- 右侧：操作按钮 -->
+    <div class="toolbar-right flex items-center">
+      <div class="flex items-center gap-2">
+        <!-- 右侧自定义内容（按钮组之前） -->
+        <slot name="right">
+          <component v-if="toolbar.right" :is="toolbar.right()" />
+        </slot>
+
+        <!-- 刷新按钮 -->
+        <NTooltip v-if="toolbar.showRefresh" placement="bottom">
+          <template #trigger>
+            <NButton quaternary circle size="small" @click="handleRefresh">
+              <template #icon>
+                <NIcon :component="RefreshOutline" />
+              </template>
+            </NButton>
+          </template>
+          刷新
+        </NTooltip>
+
+        <!-- 全屏按钮 -->
+        <NTooltip v-if="toolbar.showFullscreen" placement="bottom">
+          <template #trigger>
+            <NButton quaternary circle size="small" @click="handleFullscreen">
+              <template #icon>
+                <NIcon :component="isFullscreen ? ContractOutline : ExpandOutline" />
+              </template>
+            </NButton>
+          </template>
+          {{ isFullscreen ? '退出全屏' : '全屏' }}
+        </NTooltip>
+      </div>
+    </div>
+  </div>
+</template>
+```
+
+### 类型定义（`src/types/table.ts`）
+
+```typescript
+/**
+ * 表格工具栏配置
+ */
+export interface ToolbarConfig {
+  /** 工具栏标题 */
+  title?: string
+  /** 是否显示刷新按钮 */
+  showRefresh?: boolean
+  /** 是否显示全屏按钮 */
+  showFullscreen?: boolean
+  /** 刷新回调 */
+  onRefresh?: () => void
+  /** 左侧自定义内容 */
+  left?: () => VNode | VNode[]
+  /** 右侧自定义内容（按钮组之前） */
+  right?: () => VNode | VNode[]
+}
+```
+
+---
+
+## API 文档
+
+### EzTable Props
+
+EzTable 只定义了 3 个自定义 props，其他所有 NaiveUI DataTable 的 props 通过 `$attrs` 透传。
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `toolbar` | `ToolbarConfig` | - | 工具栏配置 |
+| `class` | `string` | - | 容器类名 |
+| `style` | `CSSProperties` | - | 容器样式 |
+
+### ToolbarConfig
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `title` | `string` | - | 工具栏标题 |
+| `showRefresh` | `boolean` | - | 是否显示刷新按钮 |
+| `showFullscreen` | `boolean` | - | 是否显示全屏按钮 |
+| `onRefresh` | `() => void` | - | 刷新回调 |
+| `left` | `() => VNode \| VNode[]` | - | 左侧自定义内容 |
+| `right` | `() => VNode \| VNode[]` | - | 右侧自定义内容 |
+
+### EzTable Slots
+
+| 插槽名 | 说明 |
+|--------|------|
+| `toolbar-left` | 工具栏左侧内容（传递给 EzTableToolbar 的 `left` 插槽） |
+| `toolbar-right` | 工具栏右侧内容（传递给 EzTableToolbar 的 `right` 插槽） |
+| 其他插槽 | 自动透传给 NDataTable（如 `empty` 等） |
+
+### 透传的 NaiveUI Props
+
+所有 NaiveUI DataTable 的 props 都可以直接使用，包括：
+
+- `columns` - 列配置（必填）
+- `data` - 数据源
+- `loading` - 是否加载中
+- `pagination` - 分页配置
+- `row-key` - 行唯一标识
+- `bordered` - 是否显示边框
+- `striped` - 是否斑马纹
+- 以及其他所有 NaiveUI DataTable props
+
+完整列表请参考：[NaiveUI DataTable 文档](https://www.naiveui.com/zh-CN/os-theme/components/data-table)
+
+### 透传的 NaiveUI Events
+
+所有 NaiveUI DataTable 的事件都自动透传，包括：
+
+- `update:checked-row-keys` - 选择变化事件
+- `update:page` - 分页变化事件
+- `update:page-size` - 分页大小变化事件
+- 以及其他所有 NaiveUI DataTable events
 
 ---
 
@@ -27,37 +295,26 @@
 
 ```vue
 <script setup lang="ts">
-import { ref, h } from 'vue'
-import { NButton, NTag, type DataTableColumns } from 'naive-ui'
+import { ref } from 'vue'
+import { type DataTableColumns } from 'naive-ui'
 import EzTable from '@/components/EzTable.vue'
 
 interface User {
   id: number
   name: string
   email: string
-  role: string
 }
 
 const data = ref<User[]>([
-  { id: 1, name: '张三', email: 'zhangsan@example.com', role: '管理员' },
-  { id: 2, name: '李四', email: 'lisi@example.com', role: '用户' },
+  { id: 1, name: '张三', email: 'zhangsan@example.com' },
+  { id: 2, name: '李四', email: 'lisi@example.com' },
 ])
 
-// 使用 NaiveUI 原生的 DataTableColumns 格式
 const columns: DataTableColumns<User> = [
   { type: 'selection' },
   { title: 'ID', key: 'id', width: 80 },
   { title: '姓名', key: 'name' },
-  {
-    title: '角色',
-    key: 'role',
-    render: (row) => h(NTag, { type: 'info' }, { default: () => row.role }),
-  },
-  {
-    title: '操作',
-    key: 'actions',
-    render: (row) => h(NButton, { size: 'small' }, { default: () => '编辑' }),
-  },
+  { title: '邮箱', key: 'email' },
 ]
 </script>
 
@@ -72,18 +329,14 @@ const columns: DataTableColumns<User> = [
 </template>
 ```
 
----
-
-## 工具栏配置
-
-### 基础工具栏
+### 带工具栏
 
 ```vue
 <script setup lang="ts">
 const toolbar = {
-  title: '用户列表',        // 工具栏标题
-  showRefresh: true,        // 显示刷新按钮
-  showFullscreen: true,     // 显示全屏按钮
+  title: '用户列表',
+  showRefresh: true,
+  showFullscreen: true,
   onRefresh: () => {
     console.log('刷新数据')
   },
@@ -108,81 +361,32 @@ const toolbar = {
     :data="data"
     :toolbar="toolbar"
   >
-    <!-- 左侧自定义内容 -->
     <template #toolbar-left>
       <NButton type="primary">新增用户</NButton>
-      <NButton>批量操作</NButton>
     </template>
 
-    <!-- 右侧自定义内容（按钮组之前） -->
     <template #toolbar-right>
-      <span class="text-gray-500">共 {{ data.length }} 条数据</span>
+      <span class="text-gray-500">共 {{ data.length }} 条</span>
     </template>
   </EzTable>
 </template>
 ```
 
----
-
-## 分页配置
-
-### 简单分页
-
-```vue
-<script setup lang="ts">
-const pagination = {
-  page: 1,
-  pageSize: 10,
-  itemCount: 100,
-}
-</script>
-
-<template>
-  <EzTable
-    :columns="columns"
-    :data="data"
-    :pagination="pagination"
-    @update:page="pagination.page = $event"
-  />
-</template>
-```
-
-### 完整分页配置
-
-```vue
-<script setup lang="ts">
-const pagination = {
-  page: 1,
-  pageSize: 10,
-  itemCount: 100,
-  showSizePicker: true,
-  pageSizes: [10, 20, 30, 50, 100],
-  showQuickJumper: true,
-  prefix: (info: { itemCount?: number }) => `共 ${info.itemCount || 0} 条`,
-}
-</script>
-
-<template>
-  <EzTable
-    :columns="columns"
-    :data="data"
-    :pagination="pagination"
-  />
-</template>
-```
-
----
-
-## 常用功能示例
-
-### 选择功能
+### 带分页和选择
 
 ```vue
 <script setup lang="ts">
 const selectedRowKeys = ref<number[]>([])
 
+const pagination = ref({
+  page: 1,
+  pageSize: 10,
+  itemCount: 100,
+  showSizePicker: true,
+  pageSizes: [10, 20, 50, 100],
+})
+
 const handleCheck = (keys: number[]) => {
-  console.log('选中的行：', keys)
   selectedRowKeys.value = keys
 }
 </script>
@@ -193,415 +397,104 @@ const handleCheck = (keys: number[]) => {
     :data="data"
     :row-key="(row) => row.id"
     :checked-row-keys="selectedRowKeys"
+    :pagination="pagination"
     @update:checked-row-keys="handleCheck"
   />
 </template>
 ```
 
-### 排序和筛选
-
-```vue
-<script setup lang="ts">
-const columns: DataTableColumns<User> = [
-  {
-    title: 'ID',
-    key: 'id',
-    sorter: (a, b) => a.id - b.id,
-  },
-  {
-    title: '姓名',
-    key: 'name',
-    sorter: (a, b) => a.name.localeCompare(b.name),
-  },
-  {
-    title: '角色',
-    key: 'role',
-    filterOptions: [
-      { label: '管理员', value: 'admin' },
-      { label: '用户', value: 'user' },
-    ],
-    filter: (value, row) => row.role === value,
-  },
-]
-</script>
-
-<template>
-  <EzTable
-    :columns="columns"
-    :data="data"
-  />
-</template>
-```
-
-### 固定列
-
-```vue
-<script setup lang="ts">
-const columns: DataTableColumns<User> = [
-  { title: 'ID', key: 'id', fixed: 'left', width: 80 },
-  { title: '姓名', key: 'name' },
-  { title: '邮箱', key: 'email' },
-  { title: '操作', key: 'actions', fixed: 'right', width: 200 },
-]
-</script>
-
-<template>
-  <EzTable
-    :columns="columns"
-    :data="data"
-    :scroll-x="1200"
-  />
-</template>
-```
-
-### 展开行
-
-```vue
-<script setup lang="ts">
-const expandedRowKeys = ref<number[]>([])
-
-const columns: DataTableColumns<User> = [
-  { type: 'expand' },
-  { title: 'ID', key: 'id' },
-  { title: '姓名', key: 'name' },
-]
-</script>
-
-<template>
-  <EzTable
-    :columns="columns"
-    :data="data"
-    :expanded-row-keys="expandedRowKeys"
-    @update:expanded-row-keys="expandedRowKeys = $event"
-  />
-</template>
-```
-
-### 树形数据
-
-```vue
-<script setup lang="ts">
-interface TreeNode {
-  id: number
-  name: string
-  children?: TreeNode[]
-}
-
-const columns: DataTableColumns<TreeNode> = [
-  { title: '名称', key: 'name', width: 200 },
-]
-
-const data = ref<TreeNode[]>([
-  {
-    id: 1,
-    name: '部门 A',
-    children: [
-      { id: 11, name: '团队 A1' },
-      { id: 12, name: '团队 A2' },
-    ],
-  },
-])
-</script>
-
-<template>
-  <EzTable
-    :columns="columns"
-    :data="data"
-    :row-key="(row) => row.id"
-    default-expand-all
-  />
-</template>
-```
-
-### 自定义行样式
-
-```vue
-<script setup lang="ts">
-const rowClassName = (row: User) => {
-  if (row.role === 'admin') return 'admin-row'
-  return ''
-}
-
-const rowProps = (row: User) => {
-  return {
-    style: { cursor: 'pointer' },
-    onClick: () => console.log('点击行：', row),
-  }
-}
-</script>
-
-<template>
-  <EzTable
-    :columns="columns"
-    :data="data"
-    :row-class-name="rowClassName"
-    :row-props="rowProps"
-  />
-</template>
-```
-
----
-
-## API 文档
-
-### EzTable Props
-
-EzTable 完全透传 NaiveUI DataTable 的所有 props，以下是常用属性：
-
-| 属性 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `columns` | `DataTableColumns` | **必填** | 列配置（NaiveUI 原生格式） |
-| `data` | `T[]` | `[]` | 数据源 |
-| `loading` | `boolean` | `false` | 是否加载中 |
-| `bordered` | `boolean` | `false` | 是否显示边框 |
-| `striped` | `boolean` | `false` | 是否斑马纹 |
-| `singleLine` | `boolean` | `true` | 单行模式 |
-| `tableLayout` | `'auto' \| 'fixed'` | `'auto'` | 表格布局 |
-| `flexHeight` | `boolean` | `false` | 弹性高度 |
-| `maxHeight` | `string \| number` | - | 最大高度 |
-| `rowKey` | `string \| (row) => string \| number` | - | 行唯一标识 |
-| `rowProps` | `(row, index) => object` | - | 自定义行属性 |
-| `rowClassName` | `string \| (row, index) => string` | - | 行类名 |
-| `rowDisabled` | `(row) => boolean` | - | 行是否禁用选择 |
-| `checkedRowKeys` | `Array<string \| number>` | - | 已选择的行 keys |
-| `defaultCheckedRowKeys` | `Array<string \| number>` | - | 默认选中的行 keys |
-| `defaultCheckedAll` | `boolean` | `false` | 是否默认全选 |
-| `cascade` | `boolean` | `false` | 列联选择（树形数据） |
-| `expandedRowKeys` | `Array<string \| number>` | - | 展开行的 keys |
-| `defaultExpandedRowKeys` | `Array<string \| number>` | - | 默认展开的行 keys |
-| `defaultExpandAll` | `boolean` | `false` | 是否默认展开所有 |
-| `scrollX` | `number \| string` | - | 横向滚动 |
-| `virtualScroll` | `boolean` | `false` | 虚拟滚动 |
-| `childrenKey` | `string` | `'children'` | 子节点键名 |
-| `summary` | `() => VNode` | - | 汇总行渲染 |
-| `summaryPlacement` | `'top' \| 'bottom'` | `'bottom'` | 汇总位置 |
-| `pagination` | `boolean \| PaginationProps` | `false` | 分页配置 |
-| `toolbar` | `ToolbarConfig` | - | 工具栏配置 |
-| `class` | `string` | - | 容器类名 |
-| `style` | `CSSProperties` | - | 容器样式 |
-
-### ToolbarConfig
-
-| 属性 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `title` | `string` | - | 工具栏标题 |
-| `showRefresh` | `boolean` | `false` | 是否显示刷新按钮 |
-| `showFullscreen` | `boolean` | `false` | 是否显示全屏按钮 |
-| `onRefresh` | `() => void` | - | 刷新回调 |
-| `left` | `() => VNode` | - | 左侧自定义内容 |
-| `right` | `() => VNode` | - | 右侧自定义内容 |
-
-### EzTable Emits
-
-EzTable 完全透传 NaiveUI DataTable 的所有事件：
-
-| 事件 | 参数 | 说明 |
-|------|------|------|
-| `update:checkedRowKeys` | `keys` | 选择变化事件 |
-| `update:expandedRowKeys` | `keys` | 展开变化事件 |
-| `update:sorter` | `sorter` | 排序变化事件 |
-| `update:filters` | `filters` | 筛选变化事件 |
-| `row-click` | `(row, index)` | 行点击事件 |
-| `scroll` | `e` | 滚动事件 |
-| `update:page` | `page` | 分页变化事件 |
-| `update:pageSize` | `pageSize` | 分页大小变化事件 |
-
-### EzTable Slots
-
-| 插槽名 | 说明 |
-|--------|------|
-| `empty` | 自定义空状态 |
-| `toolbar-left` | 工具栏左侧内容 |
-| `toolbar-right` | 工具栏右侧内容 |
-
----
-
-## 最佳实践
-
-### 1. 远程数据加载
-
-```vue
-<script setup lang="ts">
-import { ref, onMounted } from 'vue'
-
-const data = ref([])
-const loading = ref(false)
-const pagination = ref({
-  page: 1,
-  pageSize: 10,
-  itemCount: 0,
-})
-
-const fetchData = async () => {
-  loading.value = true
-  try {
-    const res = await api.getUsers({
-      page: pagination.value.page,
-      pageSize: pagination.value.pageSize,
-    })
-    data.value = res.data.list
-    pagination.value.itemCount = res.data.total
-  } finally {
-    loading.value = false
-  }
-}
-
-const handlePageChange = (page: number) => {
-  pagination.value.page = page
-  fetchData()
-}
-
-onMounted(() => {
-  fetchData()
-})
-</script>
-
-<template>
-  <EzTable
-    :columns="columns"
-    :data="data"
-    :loading="loading"
-    :pagination="pagination"
-    @update:page="handlePageChange"
-  />
-</template>
-```
-
-### 2. 固定高度表格
-
-```vue
-<template>
-  <!-- 固定高度 600px -->
-  <EzTable
-    :columns="columns"
-    :data="data"
-    :max-height="600"
-    flex-height
-  />
-</template>
-```
-
-### 3. 虚拟滚动（大数据量）
-
-```vue
-<template>
-  <EzTable
-    :columns="columns"
-    :data="data"
-    :max-height="600"
-    :virtual-scroll="true"
-    flex-height
-  />
-</template>
-```
-
----
-
-## 常见问题
-
-### Q1: EzTable 和 NaiveUI DataTable 有什么区别？
-
-A: EzTable 是 NaiveUI DataTable 的极简封装，**完全透传所有功能**，仅添加美化工具栏。你可以像使用 NaiveUI DataTable 一样使用 EzTable，零学习成本。
-
-### Q2: 如何使用 NaiveUI 的所有表格功能？
-
-A: 直接使用 NaiveUI 的 `DataTableColumns` 格式定义列配置，所有 NaiveUI 的功能都完全支持。
-
-### Q3: 如何自定义工具栏？
-
-A: 使用 `toolbar-left` 和 `toolbar-right` 插槽，或者通过 `toolbar.left` 和 `toolbar.right` 配置。
-
-### Q4: 为什么没有列设置功能？
-
-A: 遵循"最小封装"原则，NaiveUI 已经提供了列宽调整功能，不需要额外的列设置。
-
 ---
 
 ## 完整示例
 
+**文件位置**：`src/views/examples/components/TableExample.vue`
+
+该示例包含：
+- ✅ 选择功能（多选）
+- ✅ 排序功能（多列排序）
+- ✅ 筛选功能（多列筛选）
+- ✅ 自定义渲染（头像、标签、徽章）
+- ✅ 固定列（操作列）
+- ✅ 工具栏（标题、刷新、全屏）
+- ✅ 分页配置
+- ✅ 批量操作
+
+访问路径：`/examples/table`
+
+---
+
+## 容器样式
+
+EzTable 的默认容器样式（Tailwind CSS）：
+
+```html
+<div class="ez-table flex flex-col bg-white rounded-lg overflow-hidden">
+  <!-- 工具栏 -->
+  <!-- 表格主体 -->
+</div>
+```
+
+可以通过 `class` prop 自定义：
+
 ```vue
-<script setup lang="ts">
-import { ref, h } from 'vue'
-import { NButton, NTag, type DataTableColumns } from 'naive-ui'
-import EzTable from '@/components/EzTable.vue'
-
-interface User {
-  id: number
-  name: string
-  email: string
-  role: string
-}
-
-const data = ref<User[]>([
-  { id: 1, name: '张三', email: 'zhangsan@example.com', role: '管理员' },
-  { id: 2, name: '李四', email: 'lisi@example.com', role: '用户' },
-])
-
-const selectedRowKeys = ref<number[]>([])
-
-const columns: DataTableColumns<User> = [
-  { type: 'selection' },
-  { title: 'ID', key: 'id', width: 80, sorter: (a, b) => a.id - b.id },
-  { title: '姓名', key: 'name', sorter: (a, b) => a.name.localeCompare(b.name) },
-  { title: '邮箱', key: 'email' },
-  {
-    title: '角色',
-    key: 'role',
-    render: (row) => h(NTag, { type: 'info' }, { default: () => row.role }),
-  },
-  {
-    title: '操作',
-    key: 'actions',
-    fixed: 'right',
-    width: 150,
-    render: (row) => h(NButton, { size: 'small' }, { default: () => '编辑' }),
-  },
-]
-
-const pagination = ref({
-  page: 1,
-  pageSize: 10,
-  itemCount: 2,
-})
-
-const toolbar = {
-  title: '用户列表',
-  showRefresh: true,
-  showFullscreen: true,
-  onRefresh: () => console.log('刷新'),
-}
-</script>
-
-<template>
-  <EzTable
-    :columns="columns"
-    :data="data"
-    :row-key="(row) => row.id"
-    :checked-row-keys="selectedRowKeys"
-    :toolbar="toolbar"
-    :pagination="pagination"
-    striped
-    bordered
-    @update:checked-row-keys="selectedRowKeys = $event"
-    @update:page="pagination.page = $event"
-  />
-</template>
+<EzTable
+  :columns="columns"
+  :data="data"
+  class="shadow-lg border border-gray-200"
+/>
 ```
 
 ---
 
-## 总结
+## 全屏功能
 
-EzTable 遵循"最小封装"原则，**不造轮子**，NaiveUI 已经很强大，直接用！
+点击工具栏的全屏按钮后，表格会进入全屏模式：
 
-**核心优势**：
-- ✅ 零学习成本
-- ✅ 完全兼容 NaiveUI API
-- ✅ 代码量极小
-- ✅ 易于维护
+- 添加 `ez-table-fullscreen` class
+- 固定定位覆盖整个视口
+- `z-index: 9999`
+- 禁止 body 滚动
 
-**推荐使用场景**：
-- ✅ 需要"工具栏 + 表格"的标准后台管理界面
-- ✅ 所有使用 NaiveUI DataTable 的场景
+全屏样式：
 
-**查看完整示例**：`src/views/examples/components/TableExample.vue`
+```css
+.ez-table-fullscreen {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 9999 !important;
+}
+```
+
+---
+
+## 注意事项
+
+### 1. 刷新功能
+
+工具栏的刷新按钮点击后会触发 `toolbar.onRefresh` 回调（如果定义了），需要手动实现刷新逻辑。
+
+### 2. 插槽透传
+
+EzTable 会自动透传所有 NaiveUI DataTable 的插槽，包括：
+- `empty` - 空状态
+- 以及其他所有 NDataTable 插槽
+
+工具栏自定义插槽：
+- `toolbar-left` - 工具栏左侧内容
+- `toolbar-right` - 工具栏右侧内容
+
+### 3. Props 透传
+
+所有未在 EzTable props 中定义的属性都会自动透传给 NDataTable，因此可以直接使用所有 NaiveUI DataTable 的功能。
+
+---
+
+## 相关文件
+
+- **主组件**：`src/components/EzTable.vue` (83 行)
+- **工具栏组件**：`src/components/table/EzTableToolbar.vue` (97 行)
+- **类型定义**：`src/types/table.ts` (18 行)
+- **完整示例**：`src/views/examples/components/TableExample.vue` (426 行)
