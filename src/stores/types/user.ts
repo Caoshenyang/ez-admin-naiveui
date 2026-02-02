@@ -12,13 +12,14 @@ export interface UserInfo {
   permissions?: string[]
 }
 
-export interface LoginParams {
+/**
+ * 登录请求参数
+ */
+export interface LoginReq {
   username: string
   password: string
 }
 
-export interface LoginResponse {
+export interface LoginVO {
   token: string
-  refreshToken?: string
-  userInfo: UserInfo
 }

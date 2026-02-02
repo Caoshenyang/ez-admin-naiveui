@@ -26,6 +26,11 @@
 ## 技术栈规范
 
 - **框架**: Vue 3.5+ (使用 `<script setup>` 语法)。
+  - **响应式数据**: **统一使用 `ref`，严禁使用 `reactive`**（避免响应性丢失和代码一致性问题）。
+  - **函数定义**:
+    - **方法定义**（组件方法、Store actions、对象方法）：使用 `function` 声明，如 `function handleClick() {}`
+    - **回调函数**（数组方法、事件监听、定时器）：使用箭头函数，如 `array.map(item => item.value)`
+    - **函数表达式**：使用箭头函数，如 `const add = (a, b) => a + b`
 - **组件库**: **NaiveUI** (负责复杂交互：表格、表单、弹窗)。
 - **样式**: **Tailwind CSS 4.x** (负责所有布局、间距、响应式设计)。
   - ✅ 配置方式：使用 `@tailwindcss/vite` 插件（已在 `vite.config.ts` 中配置）
@@ -39,6 +44,7 @@
 - **路由**: Vue Router 4 (集中化路由配置)。
 - **代码风格**: 无分号, 单引号, 120 字符行宽, Tailwind 类名顺序遵循标准。
 - **组件命名 (Strict)**: **严禁使用 `index.vue` 命名组件**。所有组件文件必须使用具有明确语义(至少包含两个单词)的 PascalCase 命名（例如 `UserManagement.vue`, `AppHeader.vue`）。二次封装的全局组件必须在文件名中包含 `Ez` 前缀（例如 `EzButton.vue`）。
+- **NaiveUI API 使用**: **必须使用 `src/hooks/useNaiveApi.ts` 中导出的 API**（如 `message`、`dialog`、`notification`、`loadingBar`、`modal`），严禁直接使用 `window.$message` 或其他全局变量。该 hook 提供了开发环境日志集成等增强功能。
 
 ## 当前任务清单 (Todo List)
 
