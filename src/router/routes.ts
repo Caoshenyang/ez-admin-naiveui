@@ -71,6 +71,16 @@ export const constantRoutes: RouteRecordRaw[] = [
       hidden: true, // 隐藏，通过合集页面访问
     },
   },
+  // Modal 示例页面（独立访问）
+  {
+    path: '/modal',
+    name: 'ModalExample',
+    component: () => import('@/views/examples/components/ModalExample.vue'),
+    meta: {
+      title: 'EzModal 示例',
+      hidden: true, // 隐藏，通过合集页面访问
+    },
+  },
   {
     path: '/:pathMatch(.*)*',
     redirect: '/404',

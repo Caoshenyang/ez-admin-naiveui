@@ -32,6 +32,13 @@ const quickLinks = [
     color: 'bg-green-500',
   },
   {
+    title: '弹窗示例',
+    description: 'EzModal 极简弹窗组件演示',
+    icon: '🪟',
+    path: '/examples',
+    color: 'bg-purple-500',
+  },
+  {
     title: 'LoadingBar 示例',
     description: '全局进度条组件演示（支持错误处理和局部容器）',
     icon: '📈',
@@ -106,7 +113,7 @@ const quickLinks = [
       <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
         快速入口
       </h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
         <NCard
           v-for="link in quickLinks"
           :key="link.path"

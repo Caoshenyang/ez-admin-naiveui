@@ -15,6 +15,7 @@ declare module 'vue' {
     EzForm: typeof import('./components/EzForm.vue')['default']
     EzFormItemRenderer: typeof import('./components/form/EzFormItemRenderer.vue')['default']
     EzLoadingBar: typeof import('./components/EzLoadingBar.vue')['default']
+    EzModal: typeof import('./components/EzModal.vue')['default']
     EzTable: typeof import('./components/EzTable.vue')['default']
     EzTableColumnSetting: typeof import('./components/table/EzTableColumnSetting.vue')['default']
     EzTableToolbar: typeof import('./components/table/EzTableToolbar.vue')['default']

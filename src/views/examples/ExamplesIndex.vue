@@ -9,6 +9,7 @@ import FormExample from './components/FormExample.vue'
 import LoadingExample from './components/LoadingExample.vue'
 import EzLoadingBarExample from './components/EzLoadingBarExample.vue'
 import TableExample from './components/TableExample.vue'
+import ModalExample from './components/ModalExample.vue'
 
 interface ExampleTab {
   key: string
@@ -33,6 +34,12 @@ const examples = ref<ExampleTab[]>([
     component: markRaw(TableExample),
   },
   {
+    key: 'modal',
+    label: 'EzModal 弹窗',
+    description: '极简弹窗组件，支持尺寸预设、操作按钮配置、v-model 双向绑定等功能',
+    component: markRaw(ModalExample),
+  },
+  {
     key: 'loading',
     label: 'Loading 状态',
     description: '全局加载状态管理系统，支持 LoadingBar、Message、Notification、Dialog',
@@ -46,11 +53,11 @@ const examples = ref<ExampleTab[]>([
   },
 ])
 
-const activeKey = ref('table')
+const activeKey = ref('modal')
 
 // 使用 markRaw 标记组件
-const currentComponent = ref<Component>(markRaw(TableExample))
-const currentExample = ref<ExampleTab>(examples.value[1]!)
+const currentComponent = ref<Component>(markRaw(ModalExample))
+const currentExample = ref<ExampleTab>(examples.value[2]!)
 
 // 切换示例
 const handleSwitch = (key: string) => {
