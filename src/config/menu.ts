@@ -4,7 +4,6 @@ import {
   Desktop,
   Settings,
   Document,
-  Apps,
 } from '@vicons/ionicons5'
 
 /**
@@ -33,34 +32,6 @@ export const menuConfig: MenuItem[] = [
         key: 'dashboard-overview',
         label: '总览',
         path: '/dashboard/overview',
-      },
-    ],
-  },
-  {
-    key: 'examples',
-    label: '组件示例',
-    icon: Apps,
-    path: '/examples',
-    children: [
-      {
-        key: 'examples-form',
-        label: '表单组件',
-        path: '/form',
-      },
-      {
-        key: 'examples-table',
-        label: '表格组件',
-        path: '/table',
-      },
-      {
-        key: 'examples-modal',
-        label: '弹窗组件',
-        path: '/modal',
-      },
-      {
-        key: 'examples-loading',
-        label: 'Loading 组件',
-        path: '/loading',
       },
     ],
   },

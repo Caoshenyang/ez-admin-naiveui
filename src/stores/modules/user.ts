@@ -6,6 +6,8 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { CurrentUserVO, LoginReq, LoginVO } from '../types/user'
 import { authApi } from '@/api'
+import { resetRouter } from '@/router'
+import { resetPermissionGuard } from '@/router/permission'
 
 export const useUserStore = defineStore(
   'user',
@@ -38,11 +40,16 @@ export const useUserStore = defineStore(
     // 用户登出
     async function logout() {
       await authApi.logout() // 调用登出接口
+      resetRouter() // 重置路由
+      resetPermissionGuard() // 重置路由守卫状态
       resetUserState() // 清除本地状态
     }
 
     // 获取用户信息
     async function getUserInfo() {
+      // 临时添加延迟，方便查看 loading 页面效果（测试完成后请删除）
+      await new Promise(resolve => setTimeout(resolve, 2000))
+
       const res = await authApi.getUserInfo()
       userInfo.value = res
       return res

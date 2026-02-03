@@ -4,55 +4,9 @@
 -->
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import { NButton, NCard, NSpace } from 'naive-ui'
+import { NButton, NSpace } from 'naive-ui'
 
 const router = useRouter()
-
-// 快速入口卡片
-const quickLinks = [
-  {
-    title: '组件示例',
-    description: '查看所有组件示例和测试合集',
-    icon: '📦',
-    path: '/examples',
-    color: 'bg-blue-500',
-  },
-  {
-    title: '表格示例',
-    description: 'EzTable 增强型表格组件演示',
-    icon: '📊',
-    path: '/examples',
-    color: 'bg-cyan-500',
-  },
-  {
-    title: '表单示例',
-    description: 'EzForm 配置式表单组件演示',
-    icon: '📝',
-    path: '/examples',
-    color: 'bg-green-500',
-  },
-  {
-    title: '弹窗示例',
-    description: 'EzModal 极简弹窗组件演示',
-    icon: '🪟',
-    path: '/examples',
-    color: 'bg-purple-500',
-  },
-  {
-    title: 'Loading 示例',
-    description: '全局加载状态管理（Message、Notification、Dialog、LoadingBar）',
-    icon: '⏳',
-    path: '/examples',
-    color: 'bg-indigo-500',
-  },
-  {
-    title: 'LoadingBar 示例',
-    description: '全局进度条组件演示（支持错误处理和局部容器）',
-    icon: '📈',
-    path: '/examples',
-    color: 'bg-orange-500',
-  },
-]
 </script>
 
 <template>
@@ -71,15 +25,9 @@ const quickLinks = [
             <NButton
               type="primary"
               size="large"
-              @click="router.push('/examples')"
+              @click="router.push('/loading')"
             >
-              查看组件示例
-            </NButton>
-            <NButton
-              size="large"
-              @click="router.push('/examples')"
-            >
-              快速开始
+              测试 Loading 页面
             </NButton>
           </NSpace>
         </div>
@@ -115,50 +63,6 @@ const quickLinks = [
       </div>
     </div>
 
-    <!-- 快速入口 -->
-    <div class="max-w-7xl mx-auto px-6 pb-16">
-      <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
-        快速入口
-      </h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <NCard
-          v-for="link in quickLinks"
-          :key="link.path"
-          class="hover:shadow-lg transition-shadow cursor-pointer"
-          @click="router.push(link.path)"
-        >
-          <div class="text-center">
-            <div class="text-5xl mb-4">{{ link.icon }}</div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-2">
-              {{ link.title }}
-            </h3>
-            <p class="text-gray-600 mb-4">
-              {{ link.description }}
-            </p>
-            <NButton
-              :type="
-                link.color.includes('blue')
-                  ? 'primary'
-                  : link.color.includes('green')
-                    ? 'success'
-                    : link.color.includes('purple')
-                      ? 'info'
-                      : link.color.includes('orange')
-                        ? 'warning'
-                        : link.color.includes('cyan')
-                          ? 'info'
-                          : link.color.includes('indigo')
-                            ? 'info'
-                            : 'default'
-              "
-            >
-              查看详情 →
-            </NButton>
-          </div>
-        </NCard>
-      </div>
-    </div>
-
     <!-- 页脚 -->
     <div class="bg-gray-900 text-white py-8">
       <div class="max-w-7xl mx-auto px-6 text-center">
@@ -172,13 +76,3 @@ const quickLinks = [
     </div>
   </div>
 </template>
-
-<style scoped>
-.n-card {
-  transition: all 0.3s ease;
-}
-
-.n-card:hover {
-  transform: translateY(-4px);
-}
-</style>

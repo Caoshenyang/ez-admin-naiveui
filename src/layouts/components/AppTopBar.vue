@@ -5,6 +5,7 @@ import { NButton, NIcon, NBreadcrumb, NBreadcrumbItem, NDropdown, NAvatar, NText
 import { Menu, Person, LogOut, Settings, Moon, Sunny } from '@vicons/ionicons5'
 import { useLayoutStore } from '@/stores/modules/layout'
 import { useUserStore } from '@/stores/modules/user'
+import { dialog, message } from '@/hooks/useNaiveApi'
 
 const router = useRouter()
 const layoutStore = useLayoutStore()
@@ -54,9 +55,22 @@ const handleUserDropdownClick = (key: string) => {
 }
 
 // 退出登录
-const handleLogout = () => {
-  userStore.logout()
-  router.push('/login')
+async function handleLogout() {
+  dialog.warning({
+    title: '退出登录',
+    content: '确定要退出登录吗？',
+    positiveText: '确定',
+    negativeText: '取消',
+    onPositiveClick: async () => {
+      try {
+        await userStore.logout()
+        message.success('已退出登录')
+        router.push('/login')
+      } catch {
+        message.error('退出登录失败，请重试')
+      }
+    }
+  })
 }
 
 const username = computed(() => userStore.username || 'Admin') // 用户名

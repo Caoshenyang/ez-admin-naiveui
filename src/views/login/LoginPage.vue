@@ -39,9 +39,7 @@ async function handleLogin() {
   try {
     // 登录请求
     await userStore.login(loginFormData.value)
-    // 获取用户信息
-    await userStore.getUserInfo()
-    // 跳转到首页
+    // 跳转到首页（路由守卫会自动获取用户信息）
     await router.push('/')
   } finally {
     // 验证结束，隐藏loading

@@ -4,7 +4,6 @@
  */
 import { useUserStore } from '@/stores/modules/user'
 import { message } from '@/hooks/useNaiveApi'
-import router from '@/router'
 import axios, { type AxiosInstance, type AxiosError, type AxiosRequestConfig } from 'axios'
 import type { ApiResponse } from '@/types/api'
 
@@ -147,10 +146,9 @@ service.interceptors.response.use(
           break
         case 401:
           errorMsg = '登录已过期，请重新登录'
-          // 清除用户信息并跳转登录页
+          // 清除用户信息、重置路由并跳转登录页
           const userStore = useUserStore()
-          userStore.resetUserState()
-          router.push('/login')
+          userStore.logout()
           break
         case 403:
           errorMsg = '没有权限访问'
