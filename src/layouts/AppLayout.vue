@@ -12,12 +12,9 @@ import { MenuWidthEnum } from '@/enums/menu'
 const route = useRoute()
 const layoutStore = useLayoutStore()
 
-// 菜单宽度配置
-const menuCollapsedWidth = computed(() => MenuWidthEnum.CLOSE)
-const menuWidth = computed(() => MenuWidthEnum.OPEN)
-
-// 是否折叠侧边栏
-const isCollapsed = computed(() => layoutStore.isSidebarCollapsed)
+const menuCollapsedWidth = computed(() => MenuWidthEnum.CLOSE) // 菜单折叠宽度配置
+const menuWidth = computed(() => MenuWidthEnum.OPEN) // 菜单展开宽度配置
+const isCollapsed = computed(() => layoutStore.isSidebarCollapsed) // 是否折叠侧边栏
 
 // 响应式处理
 const handleResize = () => {

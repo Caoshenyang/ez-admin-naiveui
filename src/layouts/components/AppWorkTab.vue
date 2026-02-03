@@ -18,8 +18,7 @@ const tabs = computed(() => {
   }))
 })
 
-// 当前激活的标签页
-const activeKey = computed(() => layoutStore.activeTab)
+const activeKey = computed(() => layoutStore.activeTab) // 当前激活的标签页
 
 // 处理标签页切换
 const handleUpdateValue = (key: string) => {
@@ -127,8 +126,7 @@ watch(
   { immediate: true }
 )
 
-// 是否显示标签页
-const showTabs = computed(() => layoutStore.showTabs && layoutStore.tabs.length > 0)
+const showTabs = computed(() => layoutStore.showTabs && layoutStore.tabs.length > 0) // 是否显示标签页
 </script>
 
 <template>

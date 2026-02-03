@@ -16,11 +16,8 @@ const loginFormData = ref<LoginReq>({
   password: 'admin123456'
 })
 
-// 登录表单ref
-const loginFormRef = ref<FormInst | null>(null)
-
-// 加载动画
-const loading = ref(false)
+const loginFormRef = ref<FormInst | null>(null) // 登录表单ref
+const loading = ref(false) // 加载动画
 
 // 表单验证规则
 const rules: FormRules = {

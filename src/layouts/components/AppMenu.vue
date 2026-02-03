@@ -17,16 +17,16 @@ const menuOptions = computed<MenuOption[]>(() => {
 
 // 转换菜单选项
 function transformMenuOptions(menus: MenuItem[]): MenuOption[] {
-  return menus.map(menu => {
+  return menus.map((menu) => {
     const option: MenuOption = {
       label: menu.label,
       key: menu.key,
       icon: menu.icon
         ? () =>
             h(NIcon, null, {
-              default: () => h(menu.icon!),
+              default: () => h(menu.icon!)
             })
-        : undefined,
+        : undefined
     }
 
     // 处理子菜单
@@ -67,14 +67,9 @@ const handleUpdateExpandedKeys = (keys: Array<string | number>) => {
   layoutStore.setOpenedMenuKeys(keys as string[])
 }
 
-// 当前激活的菜单 key
-const activeKey = computed(() => layoutStore.activeMenuKey)
-
-// 展开的子菜单 keys
-const expandedKeys = computed(() => layoutStore.openedMenuKeys)
-
-// 是否折叠
-const collapsed = computed(() => layoutStore.isSidebarCollapsed)
+const activeKey = computed(() => layoutStore.activeMenuKey) // 当前激活的菜单 key
+const expandedKeys = computed(() => layoutStore.openedMenuKeys) // 展开的子菜单 keys
+const collapsed = computed(() => layoutStore.isSidebarCollapsed) // 是否折叠
 </script>
 
 <template>

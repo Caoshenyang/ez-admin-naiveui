@@ -2,7 +2,7 @@
  * 认证相关 API
  */
 import { request } from '@/utils/request'
-import type { LoginReq, LoginVO } from '@/stores/types/user'
+import type { LoginReq, LoginVO, CurrentUserVO } from '@/stores/types/user'
 
 export const authApi = {
   /**
@@ -18,8 +18,13 @@ export const authApi = {
    * 用户登出
    */
   logout: () =>
-    request.post('/auth/logout', undefined, {
+    request.post('/auth/logout', {
       showSuccess: true,
       successMsg: '退出成功'
-    })
+    }),
+
+  /**
+   * 获取用户信息
+   */
+  getUserInfo: () => request.get<CurrentUserVO>('/auth/user-info')
 }

@@ -8,48 +8,18 @@ import type { LoadingKey, LoadingState, LoadingOptions } from '../types/loading'
 
 export const useLoadingStore = defineStore('loading', () => {
   // ========== State ==========
-  /**
-   * Loading 状态集合
-   * 存储所有正在加载中的 key
-   */
-  const loadingSet = ref<LoadingState>(new Set<LoadingKey>())
-
-  /**
-   * 全局 Loading 状态
-   */
-  const globalLoading = ref<boolean>(false)
-
-  /**
-   * 加载提示文本
-   */
-  const loadingText = ref<string>('加载中...')
-
-  /**
-   * Loading 错误状态
-   */
-  const loadingError = ref<boolean>(false)
+  const loadingSet = ref<LoadingState>(new Set<LoadingKey>()) // Loading 状态集合，存储所有正在加载中的 key
+  const globalLoading = ref<boolean>(false) // 全局 Loading 状态
+  const loadingText = ref<string>('加载中...') // 加载提示文本
+  const loadingError = ref<boolean>(false) // Loading 错误状态
 
   // ========== Getters ==========
-  /**
-   * 是否有任何 loading 在进行中
-   */
-  const isLoading = computed(() => loadingSet.value.size > 0)
-
-  /**
-   * Loading 数量
-   */
-  const loadingCount = computed(() => loadingSet.value.size)
-
-  /**
-   * 全局加载状态（包括是否有全局 loading 或有任何 loading 在进行）
-   */
-  const isGlobalLoading = computed(() => globalLoading.value || loadingSet.value.size > 0)
+  const isLoading = computed(() => loadingSet.value.size > 0) // 是否有任何 loading 在进行中
+  const loadingCount = computed(() => loadingSet.value.size) // Loading 数量
+  const isGlobalLoading = computed(() => globalLoading.value || loadingSet.value.size > 0) // 全局加载状态（包括是否有全局 loading 或有任何 loading 在进行）
 
   // ========== Actions ==========
-  /**
-   * 开始 loading
-   * @param options Loading 配置选项
-   */
+  // 开始 loading
   function start(options: LoadingOptions | LoadingKey) {
     const key = typeof options === 'string' ? options : options.key
     const config: Partial<LoadingOptions> = typeof options === 'string' ? {} : options
@@ -70,11 +40,7 @@ export const useLoadingStore = defineStore('loading', () => {
     }
   }
 
-  /**
-   * 结束 loading
-   * @param key Loading 标识
-   * @param isError 是否出错
-   */
+  // 结束 loading
   function stop(key?: LoadingKey, isError?: boolean) {
     if (key) {
       // 移除指定的 loading
@@ -96,9 +62,7 @@ export const useLoadingStore = defineStore('loading', () => {
     }
   }
 
-  /**
-   * 清空所有 loading
-   */
+  // 清空所有 loading
   function clear() {
     loadingSet.value.clear()
     globalLoading.value = false
@@ -106,21 +70,12 @@ export const useLoadingStore = defineStore('loading', () => {
     loadingError.value = false
   }
 
-  /**
-   * 检查指定的 key 是否在 loading 中
-   * @param key Loading 标识
-   */
+  // 检查指定的 key 是否在 loading 中
   function check(key: LoadingKey): boolean {
     return loadingSet.value.has(key)
   }
 
-  /**
-   * 异步操作包装函数
-   * 自动管理 loading 状态
-   * @param key Loading 标识
-   * @param promise 异步操作
-   * @param options Loading 配置
-   */
+  // 异步操作包装函数，自动管理 loading 状态
   async function wrap<T>(key: LoadingKey, promise: Promise<T>, options?: Omit<LoadingOptions, 'key'>): Promise<T> {
     try {
       start({ ...options, key })

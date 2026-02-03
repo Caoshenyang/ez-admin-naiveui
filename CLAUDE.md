@@ -43,6 +43,7 @@
 - **状态管理**: Pinia (使用 **Setup Store 模式**，目录结构采用 `modules/` 组织方式)。
 - **路由**: Vue Router 4 (集中化路由配置)。
 - **代码风格**: 无分号, 单引号, 120 字符行宽, Tailwind 类名顺序遵循标准。
+- **注释规范**: 所有简洁的单行注释**必须写在行尾**，保持代码紧凑（如 `const avatar = computed(() => userStore.avatar || '') // 获取头像`）。只有复杂的多行说明或文档注释才使用块注释形式。
 - **组件命名 (Strict)**: **严禁使用 `index.vue` 命名组件**。所有组件文件必须使用具有明确语义(至少包含两个单词)的 PascalCase 命名（例如 `UserManagement.vue`, `AppHeader.vue`）。二次封装的全局组件必须在文件名中包含 `Ez` 前缀（例如 `EzButton.vue`）。
 - **NaiveUI API 使用**: **必须使用 `src/hooks/useNaiveApi.ts` 中导出的 API**（如 `message`、`dialog`、`notification`、`loadingBar`、`modal`），严禁直接使用 `window.$message` 或其他全局变量。该 hook 提供了开发环境日志集成等增强功能。
 

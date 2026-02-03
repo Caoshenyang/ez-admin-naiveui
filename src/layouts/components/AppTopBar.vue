@@ -1,24 +1,8 @@
 <script setup lang="ts">
 import { computed, h } from 'vue'
 import { useRouter } from 'vue-router'
-import {
-  NButton,
-  NIcon,
-  NBreadcrumb,
-  NBreadcrumbItem,
-  NDropdown,
-  NAvatar,
-  NText,
-  NSpace,
-} from 'naive-ui'
-import {
-  Menu,
-  Person,
-  LogOut,
-  Settings,
-  Moon,
-  Sunny,
-} from '@vicons/ionicons5'
+import { NButton, NIcon, NBreadcrumb, NBreadcrumbItem, NDropdown, NAvatar, NText, NSpace } from 'naive-ui'
+import { Menu, Person, LogOut, Settings, Moon, Sunny } from '@vicons/ionicons5'
 import { useLayoutStore } from '@/stores/modules/layout'
 import { useUserStore } from '@/stores/modules/user'
 
@@ -36,22 +20,22 @@ const userDropdownOptions = computed(() => [
   {
     label: '个人中心',
     key: 'profile',
-    icon: () => h(Person),
+    icon: () => h(Person)
   },
   {
     label: '设置',
     key: 'settings',
-    icon: () => h(Settings),
+    icon: () => h(Settings)
   },
   {
     type: 'divider',
-    key: 'divider',
+    key: 'divider'
   },
   {
     label: '退出登录',
     key: 'logout',
-    icon: () => h(LogOut),
-  },
+    icon: () => h(LogOut)
+  }
 ])
 
 // 处理用户下拉菜单点击
@@ -75,23 +59,16 @@ const handleLogout = () => {
   router.push('/login')
 }
 
-// 用户名
-const username = computed(() => userStore.username || 'Admin')
-
-// 头像
-const avatar = computed(() => userStore.avatar || '')
-
-// 是否显示面包屑
-const showBreadcrumb = computed(() => layoutStore.showBreadcrumb)
+const username = computed(() => userStore.username || 'Admin') // 用户名
+const avatar = computed(() => userStore.avatar || '') // 头像
+const showBreadcrumb = computed(() => layoutStore.showBreadcrumb) // 是否显示面包屑
 
 // 面包屑（根据当前路由生成）
 const breadcrumbs = computed(() => {
-  const matched = router.currentRoute.value.matched.filter(
-    item => item.meta && item.meta.title && !item.meta.hidden
-  )
-  return matched.map(item => ({
+  const matched = router.currentRoute.value.matched.filter((item) => item.meta && item.meta.title && !item.meta.hidden)
+  return matched.map((item) => ({
     name: item.meta?.title as string,
-    path: item.path,
+    path: item.path
   }))
 })
 
@@ -152,23 +129,12 @@ const handleToggleFullscreen = () => {
       </n-button>
 
       <!-- 用户下拉菜单 -->
-      <n-dropdown
-        :options="userDropdownOptions"
-        @select="handleUserDropdownClick"
-      >
-        <div class="flex items-center space-x-2 cursor-pointer hover:bg-gray-100 rounded-lg px-3 py-2 transition-colors">
-          <n-avatar
-            v-if="avatar"
-            round
-            :size="32"
-            :src="avatar"
-          />
-          <n-avatar
-            v-else
-            round
-            :size="32"
-            class="bg-blue-600"
-          >
+      <n-dropdown :options="userDropdownOptions" @select="handleUserDropdownClick">
+        <div
+          class="flex items-center space-x-2 cursor-pointer hover:bg-gray-100 rounded-lg px-3 py-2 transition-colors"
+        >
+          <n-avatar v-if="avatar" round :size="32" :src="avatar" />
+          <n-avatar v-else round :size="32" class="bg-blue-600">
             {{ username.charAt(0).toUpperCase() }}
           </n-avatar>
           <n-text class="text-sm font-medium">{{ username }}</n-text>

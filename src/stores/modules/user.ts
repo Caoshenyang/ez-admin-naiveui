@@ -4,7 +4,7 @@
  */
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { UserInfo, LoginReq, LoginVO } from '../types/user'
+import type { CurrentUserVO, LoginReq, LoginVO } from '../types/user'
 import { authApi } from '@/api'
 
 export const useUserStore = defineStore(
@@ -12,14 +12,14 @@ export const useUserStore = defineStore(
   () => {
     // ========== State ==========
     const token = ref<string>('')
-    const userInfo = ref<UserInfo | null>(null)
+    const userInfo = ref<CurrentUserVO | null>(null)
 
     // ========== Getters ==========
     const isLoggedIn = computed(() => !!token.value) // 是否已登录
     const username = computed(() => userInfo.value?.username ?? '') // 获取用户名
     const nickname = computed(() => userInfo.value?.nickname ?? '') // 获取昵称
     const avatar = computed(() => userInfo.value?.avatar ?? '') // 获取头像
-    const roles = computed(() => userInfo.value?.roles ?? []) // 获取角色列表
+    const roles = computed(() => userInfo.value?.roleLabels ?? []) // 获取角色列表
     const permissions = computed(() => userInfo.value?.permissions ?? []) // 获取权限列表
 
     // ========== Methods ==========
@@ -33,6 +33,25 @@ export const useUserStore = defineStore(
     async function login(params: LoginReq) {
       const res: LoginVO = await authApi.login(params)
       token.value = res.token // 保存 token
+    }
+
+    // 用户登出
+    async function logout() {
+      await authApi.logout() // 调用登出接口
+      resetUserState() // 清除本地状态
+    }
+
+    // 获取用户信息
+    async function getUserInfo() {
+      const res = await authApi.getUserInfo()
+      userInfo.value = res
+      return res
+    }
+
+    // 重置用户状态
+    function resetUserState() {
+      token.value = ''
+      userInfo.value = null
     }
 
     return {
@@ -51,7 +70,10 @@ export const useUserStore = defineStore(
       hasAnyRole,
       hasAnyPermission,
       // Actions
-      login
+      login,
+      logout,
+      getUserInfo,
+      resetUserState
     }
   },
   {
