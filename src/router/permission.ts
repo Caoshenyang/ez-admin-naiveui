@@ -15,24 +15,22 @@ const whiteList = ['/login']
 let hasDynamicRoutes = false
 
 router.beforeEach(async (to, _from, next) => {
-  console.log(`🔍 路由守卫触发: ${to.path}`)
   loadingBar.start()
-
   const userStore = useUserStore()
   const menuStore = useMenuStore()
   const hasToken = userStore.isLoggedIn
 
   if (hasToken) {
+    // 快速路径：已加载动态路由，直接放行
+    if (hasDynamicRoutes) {
+      next()
+      return
+    }
+
     // 已登录访问登录页，重定向到首页
     if (to.path === '/login') {
       next({ path: '/' })
       loadingBar.finish()
-      return
-    }
-
-    // 已加载动态路由，直接放行
-    if (hasDynamicRoutes) {
-      next()
       return
     }
 
@@ -63,15 +61,17 @@ router.beforeEach(async (to, _from, next) => {
         router.addRoute('Layout', route)
       })
 
-      // 6. 注册 404 路由
+      // 6. 注册 404 路由（必须在所有路由之后）
       router.addRoute(notFoundRoute)
 
       // 7. 标记已加载
       hasDynamicRoutes = true
 
       // 8. hack方法：确保 addRoutes 完成后重新导航
+      // 使用 replace 避免历史记录堆积
       next({ ...to, replace: true })
     } catch (error) {
+      console.error('加载动态路由失败:', error)
       userStore.resetUserState()
       menuStore.clearMenus()
       message.error('加载用户信息失败，请重新登录')
