@@ -17,8 +17,8 @@ export interface FrontendMenuItem {
   key: string
   /** 菜单显示名称 */
   label: string
-  /** 菜单图标组件 */
-  icon?: Component
+  /** 菜单图标（Iconify 字符串或 Vue 组件） */
+  icon?: string | Component
   /** 路由路径 */
   path?: string
   /** 是否隐藏 */

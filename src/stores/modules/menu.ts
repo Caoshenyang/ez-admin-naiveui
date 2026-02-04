@@ -18,9 +18,10 @@ const staticMenus: FrontendMenuItem[] = [
   {
     key: 'home',
     label: '首页',
+    icon: 'mdi:home-outline',
     path: '/',
-    order: 0, // 确保首页在最前面
-  },
+    order: 0 // 确保首页在最前面
+  }
 ]
 
 export const useMenuStore = defineStore('menu', () => {
@@ -35,7 +36,7 @@ export const useMenuStore = defineStore('menu', () => {
   })
 
   // ========== Actions ==========
-  // 从缓存加载菜单
+  // 从缓存加载前端菜单数据
   function loadMenusFromCache(): FrontendMenuItem[] | null {
     const expire = localStorage.get<number>(CACHE_EXPIRE_KEY)
     if (expire && Date.now() > expire) {
@@ -45,7 +46,7 @@ export const useMenuStore = defineStore('menu', () => {
     return localStorage.get<FrontendMenuItem[]>(CACHE_KEY)
   }
 
-  // 保存菜单到缓存
+  // 保存前端菜单数据到缓存
   function saveMenusToCache(menus: FrontendMenuItem[]) {
     localStorage.set(CACHE_KEY, menus)
     localStorage.set(CACHE_EXPIRE_KEY, Date.now() + CACHE_DURATION)

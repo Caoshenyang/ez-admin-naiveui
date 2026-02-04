@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, h, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { NMenu, NIcon } from 'naive-ui'
+import { NMenu } from 'naive-ui'
+import { Icon } from '@iconify/vue'
 import type { MenuOption } from 'naive-ui'
 import type { FrontendMenuItem } from '@/types/menu'
 import { useLayoutStore } from '@/stores/modules/layout'
@@ -23,12 +24,7 @@ function transformMenuOptions(menus: FrontendMenuItem[]): MenuOption[] {
     const option: MenuOption = {
       label: menu.label,
       key: menu.key,
-      icon: menu.icon
-        ? () =>
-            h(NIcon, null, {
-              default: () => h(menu.icon!)
-            })
-        : undefined
+      icon: menu.icon ? () => h(Icon, { icon: menu.icon as string }) : undefined
     }
 
     // 处理子菜单

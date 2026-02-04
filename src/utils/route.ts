@@ -26,8 +26,13 @@ export function convertMenusToRoutes(menus: MenuTreeVO[]): RouteRecordRaw[] {
       return
     }
 
-    // 确保路径以 / 开头（子路由的绝对路径）
-    const path = menu.routePath.startsWith('/') ? menu.routePath : `/${menu.routePath}`
+    // 处理路由路径
+    // Layout 的 path 是 '/'，子路由不应该以 '/' 开头
+    // 如果后端返回的是 /system/user，需要去掉开头的 '/'
+    let path = menu.routePath
+    if (path.startsWith('/')) {
+      path = path.slice(1) // 去掉开头的 /
+    }
 
     const route: RouteRecordRaw = {
       path,
@@ -77,7 +82,6 @@ export function loadViewComponent(componentPath: string | undefined) {
     return modules[key]
   }
 
-  console.warn(`组件不存在: ${key}`)
   return () => import('@/views/error/NotFoundPage.vue')
 }
 
@@ -91,8 +95,8 @@ export function convertMenusToMenuOptions(menus: MenuTreeVO[]): FrontendMenuItem
 
   menus.forEach((menu) => {
     // 跳过隐藏的菜单（visible 为 false 时隐藏，undefined 或 true 时显示）
-    if (menu.visible === false || menu.status !== 1) {
-      console.log(`⏭️  跳过隐藏/停用菜单: ${menu.menuName} (visible: ${menu.visible}, status: ${menu.status})`)
+    // 跳过停用的菜单（status 明确不为 1 时跳过，undefined 或 1 时显示）
+    if (menu.visible === false || (menu.status !== undefined && menu.status !== 1)) {
       return
     }
 
@@ -113,12 +117,16 @@ export function convertMenusToMenuOptions(menus: MenuTreeVO[]): FrontendMenuItem
       }
     }
 
-    // 只添加有实际内容的菜单（目录或有路由的菜单）
-    if (menu.menuType === 1 || menu.menuType === 2) {
-      console.log(`✅ 添加菜单: ${menu.menuName} (type: ${menu.menuType}, path: ${menu.routePath})`)
+    // 判断是否添加菜单
+    // menuType: 1=目录, 2=页面, 3=按钮
+    // 如果 menuType 为空但有 routePath，默认视为有效菜单
+    const isValidMenu =
+      menu.menuType === 1 || // 目录
+      menu.menuType === 2 || // 页面
+      ((menu.menuType === undefined || menu.menuType === null) && menu.routePath) // 无类型但有路径
+
+    if (isValidMenu) {
       result.push(menuItem)
-    } else {
-      console.log(`⏭️  跳过按钮类型菜单: ${menu.menuName} (type: ${menu.menuType})`)
     }
   })
 

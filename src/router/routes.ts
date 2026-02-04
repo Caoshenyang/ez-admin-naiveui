@@ -31,17 +31,20 @@ export const constantRoutes: RouteRecordRaw[] = [
       }
     ]
   },
-  // 404 页面 - 通配路由
-  {
-    path: '/:pathMatch(.*)*',
-    name: 'NotFound',
-    component: () => import('@/views/error/NotFoundPage.vue'),
-    meta: {
-      title: '页面未找到',
-      hidden: true,
-    },
-  },
 ]
+
+/**
+ * 404 通配路由（必须在动态路由之后注册）
+ */
+export const notFoundRoute: RouteRecordRaw = {
+  path: '/:pathMatch(.*)*',
+  name: 'NotFound',
+  component: () => import('@/views/error/NotFoundPage.vue'),
+  meta: {
+    title: '页面未找到',
+    hidden: true,
+  },
+}
 
 /**
  * 异步路由（需要权限控制的路由）
