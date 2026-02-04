@@ -13,15 +13,6 @@ export const constantRoutes: RouteRecordRaw[] = [
       hidden: true,
     },
   },
-  {
-    path: '/loading',
-    name: 'Loading',
-    component: () => import('@/views/loading/LoadingPage.vue'),
-    meta: {
-      title: '加载中',
-      hidden: true,
-    },
-  },
   // 主布局路由（始终存在，作为动态路由的父容器）
   {
     path: '/',

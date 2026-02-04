@@ -8,6 +8,7 @@ import type { CurrentUserVO, LoginReq, LoginVO } from '../types/user'
 import { authApi } from '@/api'
 import { resetRouter } from '@/router'
 import { resetPermissionGuard } from '@/router/permission'
+import { useMenuStore } from './menu'
 
 export const useUserStore = defineStore(
   'user',
@@ -39,10 +40,17 @@ export const useUserStore = defineStore(
 
     // 用户登出
     async function logout() {
-      await authApi.logout() // 调用登出接口
-      resetRouter() // 重置路由
-      resetPermissionGuard() // 重置路由守卫状态
-      resetUserState() // 清除本地状态
+      try {
+        await authApi.logout() // 调用登出接口
+      } finally {
+        // 清除菜单
+        const menuStore = useMenuStore()
+        menuStore.clearMenus()
+
+        resetRouter() // 重置路由
+        resetPermissionGuard() // 重置路由守卫状态
+        resetUserState() // 清除本地状态
+      }
     }
 
     // 获取用户信息

@@ -1,22 +1,24 @@
 <script setup lang="ts">
-import { computed, h } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, h, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { NMenu, NIcon } from 'naive-ui'
 import type { MenuOption } from 'naive-ui'
-import type { MenuItem } from '@/types/layout'
+import type { FrontendMenuItem } from '@/types/menu'
 import { useLayoutStore } from '@/stores/modules/layout'
-import { menuConfig } from '@/config/menu'
+import { useMenuStore } from '@/stores/modules/menu'
 
 const router = useRouter()
+const route = useRoute()
 const layoutStore = useLayoutStore()
+const menuStore = useMenuStore()
 
-// 将菜单配置转换为 NaiveUI 菜单选项
+// 使用合并后的菜单（静态首页 + 动态菜单）
 const menuOptions = computed<MenuOption[]>(() => {
-  return transformMenuOptions(menuConfig)
+  return transformMenuOptions(menuStore.mergedMenus)
 })
 
 // 转换菜单选项
-function transformMenuOptions(menus: MenuItem[]): MenuOption[] {
+function transformMenuOptions(menus: FrontendMenuItem[]): MenuOption[] {
   return menus.map((menu) => {
     const option: MenuOption = {
       label: menu.label,
@@ -38,28 +40,13 @@ function transformMenuOptions(menus: MenuItem[]): MenuOption[] {
   })
 }
 
-// 处理菜单更新
+// 处理菜单点击
 const handleUpdateValue = (key: string) => {
-  layoutStore.setActiveMenuKey(key)
-
-  // 根据菜单 key 查找对应的路由
-  const findMenuBykey = (menus: MenuItem[], key: string): MenuItem | null => {
-    for (const menu of menus) {
-      if (menu.key === key) {
-        return menu
-      }
-      if (menu.children) {
-        const found = findMenuBykey(menu.children, key)
-        if (found) return found
-      }
-    }
-    return null
-  }
-
-  const menu = findMenuBykey(menuConfig, key)
-  if (menu && menu.path) {
+  const menu = menuStore.findMenuByKey(key, menuStore.mergedMenus)
+  if (menu?.path) {
     router.push(menu.path)
   }
+  layoutStore.setActiveMenuKey(key)
 }
 
 // 处理子菜单展开/收起
@@ -70,6 +57,18 @@ const handleUpdateExpandedKeys = (keys: Array<string | number>) => {
 const activeKey = computed(() => layoutStore.activeMenuKey) // 当前激活的菜单 key
 const expandedKeys = computed(() => layoutStore.openedMenuKeys) // 展开的子菜单 keys
 const collapsed = computed(() => layoutStore.isSidebarCollapsed) // 是否折叠
+
+// 监听路由变化，自动高亮对应菜单
+watch(
+  () => route.path,
+  (path) => {
+    const menu = menuStore.findMenuByPath(path)
+    if (menu?.key) {
+      layoutStore.setActiveMenuKey(menu.key)
+    }
+  },
+  { immediate: true }
+)
 </script>
 
 <template>

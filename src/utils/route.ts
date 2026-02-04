@@ -4,6 +4,8 @@
  */
 import type { RouteRecordRaw } from 'vue-router'
 import type { MenuTreeVO } from '@/stores/types/user'
+import type { FrontendMenuItem } from '@/types/menu'
+import { getIconComponent } from '@/config/icons'
 
 /**
  * 将后端菜单数据转换为路由配置
@@ -78,4 +80,48 @@ export function loadViewComponent(componentPath: string | undefined) {
 
   console.warn(`组件不存在: ${key}`)
   return () => import('@/views/error/NotFoundPage.vue')
+}
+
+/**
+ * 将后端菜单数据转换为前端菜单配置（用于 NaiveUI Menu）
+ * @param menus 后端菜单树数据
+ * @returns 前端菜单配置
+ */
+export function convertMenusToMenuOptions(menus: MenuTreeVO[]): FrontendMenuItem[] {
+  const result: FrontendMenuItem[] = []
+
+  menus.forEach((menu) => {
+    // 跳过隐藏的菜单（visible 为 false 时隐藏，undefined 或 true 时显示）
+    if (menu.visible === false || menu.status !== 1) {
+      console.log(`⏭️  跳过隐藏/停用菜单: ${menu.menuName} (visible: ${menu.visible}, status: ${menu.status})`)
+      return
+    }
+
+    const menuItem: FrontendMenuItem = {
+      key: menu.menuLabel || menu.menuId!,
+      label: menu.menuName!,
+      icon: getIconComponent(menu.menuIcon),
+      path: menu.routePath,
+      order: menu.menuSort,
+      name: menu.routeName
+    }
+
+    // 递归处理子菜单
+    if (menu.children?.length) {
+      const children = convertMenusToMenuOptions(menu.children)
+      if (children.length > 0) {
+        menuItem.children = children
+      }
+    }
+
+    // 只添加有实际内容的菜单（目录或有路由的菜单）
+    if (menu.menuType === 1 || menu.menuType === 2) {
+      console.log(`✅ 添加菜单: ${menu.menuName} (type: ${menu.menuType}, path: ${menu.routePath})`)
+      result.push(menuItem)
+    } else {
+      console.log(`⏭️  跳过按钮类型菜单: ${menu.menuName} (type: ${menu.menuType})`)
+    }
+  })
+
+  return result
 }
