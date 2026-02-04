@@ -5,7 +5,6 @@
 import type { RouteRecordRaw } from 'vue-router'
 import type { MenuTreeVO } from '@/stores/types/user'
 import type { FrontendMenuItem } from '@/types/menu'
-import { getIconComponent } from '@/config/icons'
 
 /**
  * 将后端菜单数据转换为路由配置
@@ -100,7 +99,7 @@ export function convertMenusToMenuOptions(menus: MenuTreeVO[]): FrontendMenuItem
     const menuItem: FrontendMenuItem = {
       key: menu.menuLabel || menu.menuId!,
       label: menu.menuName!,
-      icon: getIconComponent(menu.menuIcon),
+      icon: menu.menuIcon,
       path: menu.routePath,
       order: menu.menuSort,
       name: menu.routeName

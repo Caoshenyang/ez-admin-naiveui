@@ -5,6 +5,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import type { FormItem, FormValues, SelectOption } from '@/types/form'
+import EzIconPicker from '@/components/EzIconPicker.vue'
 
 interface Props {
   item: FormItem
@@ -187,6 +188,12 @@ const rateValue = computed({
   get: () => internalValue.value as number,
   set: (v: number) => updateValue(v),
 })
+
+// 图标选择器值
+const iconPickerValue = computed({
+  get: () => internalValue.value as string | undefined,
+  set: (v: string | undefined) => updateValue(v),
+})
 </script>
 
 <template>
@@ -336,6 +343,14 @@ const rateValue = computed({
       v-else-if="item.type === 'rate'"
       v-model:value="rateValue"
       v-bind="mergedProps"
+    />
+
+    <!-- 图标选择器 -->
+    <EzIconPicker
+      v-else-if="item.type === 'icon-picker'"
+      :model-value="iconPickerValue"
+      v-bind="mergedProps"
+      @update:model-value="updateValue"
     />
 
     <!-- 提示文本 -->

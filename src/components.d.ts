@@ -14,6 +14,8 @@ declare module 'vue' {
     AppSetup: typeof import('./components/AppSetup.vue')['default']
     EzForm: typeof import('./components/EzForm.vue')['default']
     EzFormItemRenderer: typeof import('./components/form/EzFormItemRenderer.vue')['default']
+    EzIcon: typeof import('./components/EzIcon.vue')['default']
+    EzIconPicker: typeof import('./components/EzIconPicker.vue')['default']
     EzLoadingBar: typeof import('./components/EzLoadingBar.vue')['default']
     EzModal: typeof import('./components/EzModal.vue')['default']
     EzTable: typeof import('./components/EzTable.vue')['default']

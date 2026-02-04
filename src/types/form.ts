@@ -27,6 +27,7 @@ export type FormItemType =
   | 'upload'
   | 'slider'
   | 'rate'
+  | 'icon-picker'
   | 'custom'
 
 /**
