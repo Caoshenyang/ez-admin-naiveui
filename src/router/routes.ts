@@ -22,22 +22,7 @@ export const constantRoutes: RouteRecordRaw[] = [
       hidden: true,
     },
   },
-  // 404 页面 - 通配路由
-  {
-    path: '/:pathMatch(.*)*',
-    name: 'NotFound',
-    component: () => import('@/views/error/NotFoundPage.vue'),
-    meta: {
-      title: '页面未找到',
-      hidden: true,
-    },
-  },
-]
-
-/**
- * 异步路由（需要权限控制的路由）
- */
-export const asyncRoutes: RouteRecordRaw[] = [
+  // 主布局路由（始终存在，作为动态路由的父容器）
   {
     path: '/',
     name: 'Layout',
@@ -54,5 +39,20 @@ export const asyncRoutes: RouteRecordRaw[] = [
         }
       }
     ]
-  }
+  },
+  // 404 页面 - 通配路由
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: () => import('@/views/error/NotFoundPage.vue'),
+    meta: {
+      title: '页面未找到',
+      hidden: true,
+    },
+  },
 ]
+
+/**
+ * 异步路由（需要权限控制的路由）
+ */
+export const asyncRoutes: RouteRecordRaw[] = []

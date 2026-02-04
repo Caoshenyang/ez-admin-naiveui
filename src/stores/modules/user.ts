@@ -47,9 +47,6 @@ export const useUserStore = defineStore(
 
     // 获取用户信息
     async function getUserInfo() {
-      // 临时添加延迟，方便查看 loading 页面效果（测试完成后请删除）
-      await new Promise(resolve => setTimeout(resolve, 2000))
-
       const res = await authApi.getUserInfo()
       userInfo.value = res
       return res
