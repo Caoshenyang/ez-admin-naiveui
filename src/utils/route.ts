@@ -4,7 +4,9 @@
  */
 import type { RouteRecordRaw } from 'vue-router'
 import type { MenuTreeVO } from '@/stores/types/user'
-import type { FrontendMenuItem } from '@/types/menu'
+import type { MenuOption } from 'naive-ui'
+import { h } from 'vue'
+import { Icon } from '@iconify/vue'
 
 /**
  * 将后端菜单数据转换为路由配置
@@ -86,12 +88,12 @@ export function loadViewComponent(componentPath: string | undefined) {
 }
 
 /**
- * 将后端菜单数据转换为前端菜单配置（用于 NaiveUI Menu）
+ * 将后端菜单数据转换为 NaiveUI Menu 配置
  * @param menus 后端菜单树数据
- * @returns 前端菜单配置
+ * @returns NaiveUI Menu 配置
  */
-export function convertMenusToMenuOptions(menus: MenuTreeVO[]): FrontendMenuItem[] {
-  const result: FrontendMenuItem[] = []
+export function convertMenusToMenuOptions(menus: MenuTreeVO[]): MenuOption[] {
+  const result: MenuOption[] = []
 
   menus.forEach((menu) => {
     // 跳过隐藏的菜单（visible 为 false 时隐藏，undefined 或 true 时显示）
@@ -100,13 +102,10 @@ export function convertMenusToMenuOptions(menus: MenuTreeVO[]): FrontendMenuItem
       return
     }
 
-    const menuItem: FrontendMenuItem = {
+    const menuItem: MenuOption = {
       key: menu.menuLabel || menu.menuId!,
       label: menu.menuName!,
-      icon: menu.menuIcon,
-      path: menu.routePath,
-      order: menu.menuSort,
-      name: menu.routeName
+      icon: menu.menuIcon ? () => h(Icon, { icon: menu.menuIcon as string }) : undefined
     }
 
     // 递归处理子菜单
@@ -131,4 +130,28 @@ export function convertMenusToMenuOptions(menus: MenuTreeVO[]): FrontendMenuItem
   })
 
   return result
+}
+
+/**
+ * 获取菜单的路径映射（用于路由跳转）
+ * @param menus 后端菜单树数据
+ * @returns key 到 path 的映射
+ */
+export function buildMenuPathMap(menus: MenuTreeVO[]): Map<string, string> {
+  const pathMap = new Map<string, string>()
+
+  function buildMap(items: MenuTreeVO[]) {
+    items.forEach((menu) => {
+      const key = menu.menuLabel || menu.menuId!
+      if (menu.routePath) {
+        pathMap.set(key, menu.routePath)
+      }
+      if (menu.children?.length) {
+        buildMap(menu.children)
+      }
+    })
+  }
+
+  buildMap(menus)
+  return pathMap
 }

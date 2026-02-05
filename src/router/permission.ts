@@ -5,7 +5,7 @@ import router from './index'
 import { useUserStore } from '@/stores/modules/user'
 import { useMenuStore } from '@/stores/modules/menu'
 import { loadingBar, message } from '@/hooks/useNaiveApi'
-import { convertMenusToRoutes, convertMenusToMenuOptions } from '@/utils/route'
+import { convertMenusToRoutes, convertMenusToMenuOptions, buildMenuPathMap } from '@/utils/route'
 import { notFoundRoute } from './routes'
 
 // 白名单路由（不需要登录即可访问）
@@ -49,9 +49,10 @@ router.beforeEach(async (to, _from, next) => {
         return
       }
 
-      // 3. 转换为前端菜单并缓存
-      const frontendMenus = convertMenusToMenuOptions(backendMenus)
-      menuStore.setDynamicMenus(frontendMenus, true)
+      // 3. 转换为 NaiveUI Menu 配置并缓存
+      const menuOptions = convertMenusToMenuOptions(backendMenus)
+      const pathMap = buildMenuPathMap(backendMenus)
+      menuStore.setDynamicMenus(menuOptions, pathMap, true)
 
       // 4. 生成动态路由
       const dynamicRoutes = convertMenusToRoutes(backendMenus)
