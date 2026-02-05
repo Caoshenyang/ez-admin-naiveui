@@ -93,16 +93,16 @@ export const lightTheme: GlobalThemeOverrides = {
     itemTextColor: '#475569', // slate-600（加深，更清晰）
     itemTextColorHover: '#5B6BF0', // 主色 hover
     itemTextColorActive: '#5B6BF0', // 主色 active
-    itemTextColorChildActive: '#334155', // slate-700（加深子菜单）
+    itemTextColorChildActive: '#5B6BF0', // 主色（子菜单激活时父节点高亮）
     itemIconColor: '#64748B', // slate-500（加深图标）
     itemIconColorHover: '#5B6BF0', // 主色 hover
     itemIconColorActive: '#5B6BF0', // 主色 active
-    itemIconColorChildActive: '#475569', // slate-600
+    itemIconColorChildActive: '#5B6BF0', // 主色（子菜单激活时父节点图标高亮）
     itemColorActive: '#EEF2FF', // 极淡蓝紫背景
     itemColorHover: '#F8FAFC', // 浅灰 hover
     arrowColor: '#64748B', // slate-500（加深箭头）
     arrowColorHover: '#5B6BF0',
-    arrowColorChildActive: '#475569',
+    arrowColorChildActive: '#5B6BF0', // 主色（子菜单激活时父节点箭头高亮）
     dividerColor: '#F1F5F9' // 极淡分隔线
   },
 
@@ -429,7 +429,7 @@ export const lightTheme: GlobalThemeOverrides = {
     color: '#5B6BF0', // 默认颜色（主题色）
     colorError: '#EF4444', // 错误时红色
     colorLoading: '#5B6BF0', // 加载中颜色
-    height: '3px' // 进度条高度
+    height: '2px' // 进度条高度
   }
 }
 
@@ -507,16 +507,16 @@ export const darkTheme: GlobalThemeOverrides = {
     itemTextColor: 'rgb(148, 163, 184)', // slate-400
     itemTextColorHover: '#F1F5F9', // slate-100 hover
     itemTextColorActive: '#FFFFFF', // 白色 active
-    itemTextColorChildActive: '#E2E8F0', // slate-200
+    itemTextColorChildActive: '#818CF8', // 亮紫（子菜单激活时父节点高亮）
     itemIconColor: 'rgb(100, 116, 139)', // slate-500
     itemIconColorHover: '#A5B4FC', // 淡紫 hover
     itemIconColorActive: '#818CF8', // 亮紫 active
-    itemIconColorChildActive: '#94A3B8', // slate-400
+    itemIconColorChildActive: '#818CF8', // 亮紫（子菜单激活时父节点图标高亮）
     itemColorActive: 'rgba(129, 140, 248, 0.15)', // 亮紫半透明背景
     itemColorHover: 'rgba(255, 255, 255, 0.04)',
     arrowColor: 'rgb(100, 116, 139)',
     arrowColorHover: '#E2E8F0',
-    arrowColorChildActive: '#94A3B8',
+    arrowColorChildActive: '#818CF8', // 亮紫（子菜单激活时父节点箭头高亮）
     dividerColor: 'rgba(255, 255, 255, 0.06)'
   },
 
@@ -639,6 +639,6 @@ export const darkTheme: GlobalThemeOverrides = {
     color: '#818CF8', // 暗色模式使用更亮的紫色
     colorError: '#EF4444', // 错误色保持红色
     colorLoading: '#818CF8', // 加载中也是亮紫色
-    height: '3px'
+    height: '2px'
   }
 }
