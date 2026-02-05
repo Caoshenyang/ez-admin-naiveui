@@ -60,7 +60,7 @@ onUnmounted(() => {
   <div class="h-screen w-screen overflow-hidden bg-slate-50">
     <n-layout has-sider class="h-full w-full">
       <!-- 侧边栏（桌面端固定显示） -->
-      <app-sidebar class="hidden md:block flex-shrink-0" />
+      <app-sidebar class="hidden md:block shrink-0" />
 
       <!-- 主体区域 -->
       <div class="flex flex-col h-full overflow-hidden flex-1 min-w-0">

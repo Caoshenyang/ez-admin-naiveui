@@ -4,17 +4,22 @@
  * 无需在 Provider 内部使用，可在任何地方调用
  */
 import { createDiscreteApi } from 'naive-ui'
+import { lightTheme } from '@/settings/naiveui-theme'
 
 /**
- * 创建离散式 API
+ * 创建离散式 API（注入亮色主题配置）
  */
-const { message: naiveMessage, notification, dialog, loadingBar, modal } = createDiscreteApi([
-  'message',
-  'dialog',
-  'notification',
-  'loadingBar',
-  'modal'
-])
+const {
+  message: naiveMessage,
+  notification,
+  dialog,
+  loadingBar,
+  modal
+} = createDiscreteApi(['message', 'dialog', 'notification', 'loadingBar', 'modal'], {
+  configProviderProps: {
+    themeOverrides: lightTheme
+  }
+})
 
 /**
  * 环境检测

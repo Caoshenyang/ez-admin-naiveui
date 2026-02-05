@@ -15,7 +15,11 @@
       "Bash(cat:*)",
       "Bash(pnpm add:*)",
       "WebSearch",
-      "Bash(pnpm list:*)"
+      "Bash(pnpm list:*)",
+      "Bash(git rm:*)",
+      "Bash(set PYTHONIOENCODING=utf-8)",
+      "Bash(python \"C:\\Users\\Administrator\\.claude\\plugins\\cache\\ui-ux-pro-max-skill\\ui-ux-pro-max\\2.0.1\\cli\\assets\\scripts\\search.py\" \"professional SaaS admin dashboard business\" --design-system -p \"EzAdmin\" -f markdown)",
+      "Bash(python \"C:\\Users\\Administrator\\.claude\\plugins\\cache\\ui-ux-pro-max-skill\\ui-ux-pro-max\\2.0.1\\cli\\assets\\scripts\\search.py\" \"modern professional SaaS dashboard blue purple\" --design-system -p \"EzAdmin\" -f markdown:*)"
     ]
   }
 }
