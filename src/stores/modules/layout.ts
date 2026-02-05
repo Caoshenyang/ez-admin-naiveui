@@ -11,6 +11,7 @@ export const useLayoutStore = defineStore('layout', () => {
   // ==================== 状态 ====================
   const isSidebarCollapsed = ref(false) // 侧边栏是否折叠
   const device = ref<'desktop' | 'mobile'>('desktop') // 设备类型
+  const mobileSidebarOpen = ref(false) // 移动端侧边栏是否打开
   const openedMenuKeys = ref<string[]>([]) // 打开的菜单 keys
   const activeMenuKey = ref<string>('') // 选中的菜单 key
   const tabs = ref<TabItem[]>([]) // 打开的标签页列表
@@ -63,7 +64,13 @@ export const useLayoutStore = defineStore('layout', () => {
     // 移动端默认折叠侧边栏
     if (deviceType === 'mobile') {
       isSidebarCollapsed.value = true
+      mobileSidebarOpen.value = false
     }
+  }
+
+  // 设置移动端侧边栏打开状态
+  const setMobileSidebarOpen = (open: boolean) => {
+    mobileSidebarOpen.value = open
   }
 
   // 设置打开的菜单 keys
@@ -150,6 +157,7 @@ export const useLayoutStore = defineStore('layout', () => {
     // 状态
     isSidebarCollapsed,
     device,
+    mobileSidebarOpen,
     openedMenuKeys,
     activeMenuKey,
     tabs,
@@ -168,6 +176,7 @@ export const useLayoutStore = defineStore('layout', () => {
     toggleSidebar,
     setSidebarCollapsed,
     setDevice,
+    setMobileSidebarOpen,
     setOpenedMenuKeys,
     setActiveMenuKey,
     addTab,

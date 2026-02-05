@@ -53,6 +53,16 @@
 
 ### 已完成任务
 
+- [x] **专业商务风格布局重构** (2026-02-05)
+  - ✅ 升级 CSS 基础系统（Tailwind `@theme` + 动画 + 字体）
+  - ✅ 创建 AppSidebar 组件（合并 Logo + Menu）
+  - ✅ 创建 AppHeader 组件（重构 TopBar）
+  - ✅ 优化 AppWorkTab 标签页样式
+  - ✅ 重构 AppLayout 主布局容器（响应式）
+  - ✅ 删除旧组件文件（Logo、Menu、TopBar）
+  - ✅ 生成完整设计文档（`docs/layout-redesign-2025.md`）
+  - ✅ NaiveUI（交互逻辑）+ Tailwind CSS（样式定制）协作模式
+
 - [x] **EzModal 弹窗组件封装** (2026-02-02)
   - ✅ 创建类型定义 (`src/types/modal.ts`)
   - ✅ 实现 EzModal 主组件 (`src/components/EzModal.vue`)

@@ -130,29 +130,49 @@ const showTabs = computed(() => layoutStore.showTabs && layoutStore.tabs.length 
 </script>
 
 <template>
-  <div v-if="showTabs" class="border-b border-gray-200 bg-white px-4">
-    <n-tabs
-      :value="activeKey"
-      :tabs="tabs"
-      type="card"
-      size="small"
-      @update:value="handleUpdateValue"
-      @close="handleClose"
-    >
-      <template #prefix>
-        <!-- 可选：左侧操作按钮 -->
-      </template>
-      <template #tab="{ tab, onClose }">
-        <n-dropdown
-          :options="getDropdownOptions(tab.key as string)"
-          trigger="contextmenu"
-          @select="(key: string) => handleSelectDropdown(tab.key as string, key)"
+  <div v-if="showTabs" class="h-10 bg-white border-b border-slate-200 flex items-center px-2 flex-shrink-0">
+    <!-- 标签项列表 -->
+    <div class="flex items-center space-x-1 flex-1 overflow-hidden">
+      <n-dropdown
+        v-for="tab in tabs"
+        :key="tab.key"
+        :options="getDropdownOptions(tab.key as string)"
+        trigger="contextmenu"
+        @select="(key: string) => handleSelectDropdown(tab.key as string, key)"
+      >
+        <div
+          class="flex items-center space-x-2 px-3 py-1.5 text-sm rounded-t-lg border transition-colors cursor-pointer group/tab"
+          :class="
+            activeKey === tab.key
+              ? 'bg-white border-slate-200 border-b-0 border-t-2 border-t-blue-600'
+              : 'bg-slate-50 border-transparent hover:bg-slate-100'
+          "
+          @click="handleUpdateValue(tab.key as string)"
         >
-          <div class="flex items-center space-x-2 px-1 cursor-pointer">
-            <span>{{ tab.label }}</span>
-          </div>
-        </n-dropdown>
-      </template>
-    </n-tabs>
+          <span class="whitespace-nowrap">{{ tab.label }}</span>
+          <button
+            v-if="tab.closable"
+            class="w-4 h-4 rounded-full hover:bg-red-100 flex items-center justify-center opacity-0 group-hover/tab:opacity-100 transition-opacity"
+            @click.stop="handleClose(tab.key as string)"
+          >
+            <span class="text-slate-400 hover:text-red-500 text-xs">×</span>
+          </button>
+        </div>
+      </n-dropdown>
+    </div>
+
+    <!-- 右侧操作按钮 -->
+    <div class="flex items-center space-x-1 ml-2">
+      <n-button
+        text
+        size="tiny"
+        class="hover:bg-slate-50 rounded px-2 py-1 transition-colors"
+        @click="() => handleSelectDropdown('', 'closeAll')"
+      >
+        <template #icon>
+          <span class="text-slate-400 text-sm">关闭全部</span>
+        </template>
+      </n-button>
+    </div>
   </div>
 </template>

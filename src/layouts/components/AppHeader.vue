@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, h } from 'vue'
 import { useRouter } from 'vue-router'
-import { NButton, NIcon, NBreadcrumb, NBreadcrumbItem, NDropdown, NAvatar, NText, NSpace } from 'naive-ui'
-import { Menu, Person, LogOut, Settings, Moon, Sunny } from '@vicons/ionicons5'
+import { NLayoutHeader, NButton, NIcon, NBreadcrumb, NBreadcrumbItem, NDropdown, NAvatar, NSpace } from 'naive-ui'
+import { MenuOutline, SearchOutline, NotificationsOutline, PersonOutline, SettingsOutline, LogOutOutline } from '@vicons/ionicons5'
 import { useLayoutStore } from '@/stores/modules/layout'
 import { useUserStore } from '@/stores/modules/user'
 import { dialog, message } from '@/hooks/useNaiveApi'
@@ -21,12 +21,12 @@ const userDropdownOptions = computed(() => [
   {
     label: '个人中心',
     key: 'profile',
-    icon: () => h(Person)
+    icon: () => h(PersonOutline)
   },
   {
     label: '设置',
     key: 'settings',
-    icon: () => h(Settings)
+    icon: () => h(SettingsOutline)
   },
   {
     type: 'divider',
@@ -35,7 +35,7 @@ const userDropdownOptions = computed(() => [
   {
     label: '退出登录',
     key: 'logout',
-    icon: () => h(LogOut)
+    icon: () => h(LogOutOutline)
   }
 ])
 
@@ -86,6 +86,16 @@ const breadcrumbs = computed(() => {
   }))
 })
 
+// 搜索功能（待实现）
+const handleSearch = () => {
+  console.log('Search')
+}
+
+// 通知功能（待实现）
+const handleNotification = () => {
+  console.log('Notification')
+}
+
 // 主题切换（待实现）
 const handleToggleTheme = () => {
   console.log('Toggle theme')
@@ -98,23 +108,24 @@ const handleToggleFullscreen = () => {
 </script>
 
 <template>
-  <div class="h-16 flex items-center justify-between px-4">
-    <!-- 左侧 -->
-    <div class="flex items-center space-x-4">
+  <n-layout-header bordered class="h-14 px-4 flex items-center justify-between bg-white border-b border-slate-200 flex-shrink-0">
+    <!-- 左侧：折叠按钮 + 面包屑 -->
+    <div class="flex items-center space-x-4 flex-1 min-w-0">
       <!-- 折叠按钮 -->
-      <n-button quaternary circle @click="handleToggleSidebar">
+      <n-button quaternary circle size="small" class="hover:bg-slate-50 transition-colors flex-shrink-0" @click="handleToggleSidebar">
         <template #icon>
           <n-icon>
-            <Menu />
+            <MenuOutline />
           </n-icon>
         </template>
       </n-button>
 
       <!-- 面包屑 -->
-      <n-breadcrumb v-if="showBreadcrumb">
+      <n-breadcrumb v-if="showBreadcrumb" class="text-sm flex-1">
         <n-breadcrumb-item
           v-for="(item, index) in breadcrumbs"
           :key="item.path"
+          class="cursor-pointer hover:text-blue-600 transition-colors"
           @click="index < breadcrumbs.length - 1 && router.push(item.path)"
         >
           {{ item.name }}
@@ -122,38 +133,52 @@ const handleToggleFullscreen = () => {
       </n-breadcrumb>
     </div>
 
-    <!-- 右侧 -->
-    <n-space :size="12">
-      <!-- 全屏切换 -->
-      <n-button quaternary circle @click="handleToggleFullscreen">
+    <!-- 右侧：功能按钮 -->
+    <n-space :size="8">
+      <!-- 搜索框（Tailwind 响应式：平板及以上显示） -->
+      <div class="hidden md:flex items-center space-x-2 px-3 py-1.5 bg-slate-50 rounded-lg border border-slate-200 hover:border-slate-300 transition-colors cursor-pointer" @click="handleSearch">
+        <n-icon class="text-slate-400">
+          <SearchOutline />
+        </n-icon>
+        <input
+          type="text"
+          placeholder="搜索..."
+          class="bg-transparent border-none outline-none text-sm text-slate-700 placeholder-slate-400 w-32 lg:w-40"
+          readonly
+        />
+      </div>
+
+      <!-- 通知按钮 -->
+      <n-button quaternary circle size="small" class="relative hover:bg-slate-50 transition-colors" @click="handleNotification">
         <template #icon>
           <n-icon>
-            <Sunny />
+            <NotificationsOutline />
           </n-icon>
         </template>
+        <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
       </n-button>
 
       <!-- 主题切换 -->
-      <n-button quaternary circle @click="handleToggleTheme">
+      <n-button quaternary circle size="small" class="hover:bg-slate-50 transition-colors" @click="handleToggleTheme">
         <template #icon>
           <n-icon>
-            <Moon />
+            <MenuOutline />
           </n-icon>
         </template>
       </n-button>
 
       <!-- 用户下拉菜单 -->
       <n-dropdown :options="userDropdownOptions" @select="handleUserDropdownClick">
-        <div
-          class="flex items-center space-x-2 cursor-pointer hover:bg-gray-100 rounded-lg px-3 py-2 transition-colors"
-        >
-          <n-avatar v-if="avatar" round :size="32" :src="avatar" />
-          <n-avatar v-else round :size="32" class="bg-blue-600">
+        <div class="flex items-center space-x-2 px-3 py-1.5 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors">
+          <n-avatar v-if="avatar" round :size="28" :src="avatar" />
+          <n-avatar v-else round :size="28" class="bg-blue-600">
             {{ username.charAt(0).toUpperCase() }}
           </n-avatar>
-          <n-text class="text-sm font-medium">{{ username }}</n-text>
+          <span class="text-sm font-medium text-slate-700 hidden lg:block">
+            {{ username }}
+          </span>
         </div>
       </n-dropdown>
     </n-space>
-  </div>
+  </n-layout-header>
 </template>

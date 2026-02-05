@@ -1,23 +1,24 @@
 <script setup lang="ts">
 import { computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { NLayout, NLayoutContent, NLayoutSider } from 'naive-ui'
-import AppLogo from './components/AppLogo.vue'
-import AppMenu from './components/AppMenu.vue'
-import AppTopBar from './components/AppTopBar.vue'
+import { NLayout, NLayoutContent, NDrawer } from 'naive-ui'
+import AppSidebar from './components/AppSidebar.vue'
+import AppHeader from './components/AppHeader.vue'
 import AppWorkTab from './components/AppWorkTab.vue'
 import { useLayoutStore } from '@/stores/modules/layout'
-import { MenuWidthEnum } from '@/enums/menu'
 
 const route = useRoute()
 const layoutStore = useLayoutStore()
 
-const menuCollapsedWidth = computed(() => MenuWidthEnum.CLOSE) // 菜单折叠宽度配置
-const menuWidth = computed(() => MenuWidthEnum.OPEN) // 菜单展开宽度配置
-const isCollapsed = computed(() => layoutStore.isSidebarCollapsed) // 是否折叠侧边栏
-
 // 检测是否正在加载动态路由
 const isRouteLoading = computed(() => route.name === 'TempWildcard')
+
+// 移动端侧边栏状态
+const isMobile = computed(() => layoutStore.device === 'mobile')
+const mobileSidebarOpen = computed({
+  get: () => layoutStore.mobileSidebarOpen,
+  set: (val) => layoutStore.setMobileSidebarOpen(val)
+})
 
 // 响应式处理
 const handleResize = () => {
@@ -39,7 +40,7 @@ watch(
 
     // 更新打开的子菜单
     const matched = route.matched
-    const openedKeys = matched.map(item => item.path).filter(Boolean)
+    const openedKeys = matched.map((item) => item.path).filter(Boolean)
     layoutStore.setOpenedMenuKeys(openedKeys)
   },
   { immediate: true }
@@ -56,58 +57,54 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="h-screen w-screen overflow-hidden">
+  <div class="h-screen w-screen overflow-hidden bg-slate-50">
     <n-layout has-sider class="h-full w-full">
-      <!-- 侧边栏 -->
-      <n-layout-sider
-        bordered
-        collapse-mode="width"
-        :collapsed-width="menuCollapsedWidth"
-        :width="menuWidth"
-        :native-scrollbar="false"
-        :collapsed="isCollapsed"
-        class="transition-all duration-300"
-      >
-        <AppLogo />
-        <AppMenu />
-      </n-layout-sider>
+      <!-- 侧边栏（桌面端固定显示） -->
+      <app-sidebar class="hidden md:block flex-shrink-0" />
 
       <!-- 主体区域 -->
-      <n-layout class="h-full w-full">
+      <div class="flex flex-col h-full overflow-hidden flex-1 min-w-0">
         <!-- 顶部导航 -->
-        <n-layout-header bordered>
-          <AppTopBar />
-        </n-layout-header>
+        <app-header />
 
         <!-- 标签页 -->
-        <AppWorkTab />
+        <app-work-tab />
 
         <!-- 内容区域 -->
-        <n-layout-content content-style="padding: 24px;" class="bg-gray-50">
-          <!-- 动态路由加载遮罩 -->
-          <div v-if="isRouteLoading" class="flex h-full items-center justify-center">
-            <div class="text-center">
-              <div class="mb-4">
-                <div class="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent" />
+        <n-layout-content :native-scrollbar="false" class="flex-1 overflow-y-auto custom-scrollbar">
+          <div class="p-6 min-h-full">
+            <!-- 动态路由加载遮罩 -->
+            <div v-if="isRouteLoading" class="flex h-96 items-center justify-center">
+              <div class="text-center">
+                <div class="mb-4">
+                  <div
+                    class="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"
+                  />
+                </div>
+                <p class="text-slate-600">正在加载路由，请稍候...</p>
               </div>
-              <p class="text-gray-600">正在加载路由，请稍候...</p>
             </div>
-          </div>
 
-          <!-- 正常内容 -->
-          <router-view v-else v-slot="{ Component, route }">
-            <transition name="fade-slide" mode="out-in">
-              <component :is="Component" :key="route.path" />
-            </transition>
-          </router-view>
+            <!-- 正常内容 -->
+            <router-view v-else v-slot="{ Component, route: routeMeta }">
+              <transition name="fade-slide" mode="out-in">
+                <component :is="Component" :key="routeMeta.path" />
+              </transition>
+            </router-view>
+          </div>
         </n-layout-content>
-      </n-layout>
+      </div>
     </n-layout>
+
+    <!-- 移动端抽屉式侧边栏 -->
+    <n-drawer v-model:show="mobileSidebarOpen" :width="240" placement="left" class="md:hidden">
+      <app-sidebar />
+    </n-drawer>
   </div>
 </template>
 
 <style scoped>
-/* 页面切换动画 */
+/* 页面切换动画 - 已在 index.css 中定义，这里保留 scoped 以防未来需要 */
 .fade-slide-enter-active,
 .fade-slide-leave-active {
   transition: all 0.3s ease;
@@ -115,11 +112,11 @@ onUnmounted(() => {
 
 .fade-slide-enter-from {
   opacity: 0;
-  transform: translateX(10px);
+  transform: translateY(10px);
 }
 
 .fade-slide-leave-to {
   opacity: 0;
-  transform: translateX(-10px);
+  transform: translateY(-10px);
 }
 </style>

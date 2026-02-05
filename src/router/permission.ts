@@ -18,9 +18,9 @@ router.beforeEach(async (to, _from, next) => {
   loadingBar.start()
   const userStore = useUserStore()
   const menuStore = useMenuStore()
-  const hasToken = userStore.isLoggedIn
+  const isLoggedIn = userStore.isLoggedIn
 
-  if (hasToken) {
+  if (isLoggedIn) {
     // 已登录访问登录页，重定向到首页
     if (to.path === '/login') {
       next({ path: '/' })
