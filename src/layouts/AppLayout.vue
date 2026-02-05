@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, watch, onMounted, onUnmounted } from 'vue'
+import { watch, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { NLayout, NLayoutContent, NDrawer } from 'naive-ui'
 import AppSidebar from './components/AppSidebar.vue'
@@ -10,11 +10,7 @@ import { useLayoutStore } from '@/stores/modules/layout'
 const route = useRoute()
 const layoutStore = useLayoutStore()
 
-// 检测是否正在加载动态路由
-const isRouteLoading = computed(() => route.name === 'TempWildcard')
-
 // 移动端侧边栏状态
-const isMobile = computed(() => layoutStore.device === 'mobile')
 const mobileSidebarOpen = computed({
   get: () => layoutStore.mobileSidebarOpen,
   set: (val) => layoutStore.setMobileSidebarOpen(val)
@@ -73,20 +69,7 @@ onUnmounted(() => {
         <!-- 内容区域 -->
         <n-layout-content :native-scrollbar="false" class="flex-1 overflow-y-auto custom-scrollbar">
           <div class="p-6 min-h-full">
-            <!-- 动态路由加载遮罩 -->
-            <div v-if="isRouteLoading" class="flex h-96 items-center justify-center">
-              <div class="text-center">
-                <div class="mb-4">
-                  <div
-                    class="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"
-                  />
-                </div>
-                <p class="text-slate-600">正在加载路由，请稍候...</p>
-              </div>
-            </div>
-
-            <!-- 正常内容 -->
-            <router-view v-else v-slot="{ Component, route: routeMeta }">
+            <router-view v-slot="{ Component, route: routeMeta }">
               <transition name="fade-slide" mode="out-in">
                 <component :is="Component" :key="routeMeta.path" />
               </transition>
