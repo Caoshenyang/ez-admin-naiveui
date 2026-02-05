@@ -15,28 +15,22 @@ const whiteList = ['/login']
 let hasDynamicRoutes = false
 
 router.beforeEach(async (to, _from, next) => {
-  // 如果动态路由已加载且目标不是 TempWildcard，说明是正常导航
-  if (hasDynamicRoutes && to.name !== 'TempWildcard') {
-    next()
-    return
-  }
-
   loadingBar.start()
   const userStore = useUserStore()
   const menuStore = useMenuStore()
   const hasToken = userStore.isLoggedIn
 
   if (hasToken) {
-    // 快速路径：已加载动态路由，直接放行
-    if (hasDynamicRoutes) {
-      next()
-      return
-    }
-
     // 已登录访问登录页，重定向到首页
     if (to.path === '/login') {
       next({ path: '/' })
       loadingBar.finish()
+      return
+    }
+
+    // 快速路径：已加载动态路由，直接放行
+    if (hasDynamicRoutes) {
+      next()
       return
     }
 

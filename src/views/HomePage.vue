@@ -5,9 +5,24 @@
 import { ref } from 'vue'
 import EzIcon from '@/components/EzIcon.vue'
 import EzIconPicker from '@/components/EzIconPicker.vue'
+import router from '@/router'
 
 // 示例数据
 const selectedIcon = ref('mdi:view-dashboard-outline')
+// 去登录页
+const handleLoginClick = async () => {
+  console.log('🔘 按钮被点击了，准备跳转到登录页')
+  console.log('当前路由:', router.currentRoute.value.path)
+
+  try {
+    const result = await router.push('/login')
+    console.log('✅ router.push 成功，返回值:', result)
+  } catch (error) {
+    console.log('❌ router.push 失败，错误:', error)
+  }
+
+  console.log('📍 router.push 执行后，当前路由:', router.currentRoute.value.path)
+}
 </script>
 
 <template>
@@ -17,11 +32,17 @@ const selectedIcon = ref('mdi:view-dashboard-outline')
       <h1 class="text-3xl font-bold">欢迎使用 Ez Admin</h1>
       <p class="mt-2 text-blue-100">基于 Vue 3 + NaiveUI + Tailwind CSS 的高效率后台管理系统</p>
     </div>
+    <!-- 加一个去登录页的按钮 -->
+    <div class="flex justify-end">
+      <n-button type="primary" @click="handleLoginClick">去登录页</n-button>
+    </div>
 
     <!-- EzIcon 基础使用 -->
     <div class="bg-white p-6 rounded-lg shadow">
       <h2 class="text-lg font-semibold mb-4 text-gray-900">EzIcon 图标组件</h2>
-      <p class="text-gray-600 text-sm mb-4">基于 Iconify 的企业级图标系统，支持 100,000+ 图标，风格统一为 Material Design Icons</p>
+      <p class="text-gray-600 text-sm mb-4">
+        基于 Iconify 的企业级图标系统，支持 100,000+ 图标，风格统一为 Material Design Icons
+      </p>
 
       <div class="space-y-4">
         <!-- 不同尺寸 -->
