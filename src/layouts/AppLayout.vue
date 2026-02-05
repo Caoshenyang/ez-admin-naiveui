@@ -16,6 +16,9 @@ const menuCollapsedWidth = computed(() => MenuWidthEnum.CLOSE) // 菜单折叠�
 const menuWidth = computed(() => MenuWidthEnum.OPEN) // 菜单展开宽度配置
 const isCollapsed = computed(() => layoutStore.isSidebarCollapsed) // 是否折叠侧边栏
 
+// 检测是否正在加载动态路由
+const isRouteLoading = computed(() => route.name === 'TempWildcard')
+
 // 响应式处理
 const handleResize = () => {
   const width = window.innerWidth
@@ -81,7 +84,18 @@ onUnmounted(() => {
 
         <!-- 内容区域 -->
         <n-layout-content content-style="padding: 24px;" class="bg-gray-50">
-          <router-view v-slot="{ Component, route }">
+          <!-- 动态路由加载遮罩 -->
+          <div v-if="isRouteLoading" class="flex h-full items-center justify-center">
+            <div class="text-center">
+              <div class="mb-4">
+                <div class="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent" />
+              </div>
+              <p class="text-gray-600">正在加载路由，请稍候...</p>
+            </div>
+          </div>
+
+          <!-- 正常内容 -->
+          <router-view v-else v-slot="{ Component, route }">
             <transition name="fade-slide" mode="out-in">
               <component :is="Component" :key="route.path" />
             </transition>

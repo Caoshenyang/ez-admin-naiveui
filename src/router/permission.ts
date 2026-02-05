@@ -15,6 +15,12 @@ const whiteList = ['/login']
 let hasDynamicRoutes = false
 
 router.beforeEach(async (to, _from, next) => {
+  // 如果动态路由已加载且目标不是 TempWildcard，说明是正常导航
+  if (hasDynamicRoutes && to.name !== 'TempWildcard') {
+    next()
+    return
+  }
+
   loadingBar.start()
   const userStore = useUserStore()
   const menuStore = useMenuStore()
@@ -61,15 +67,20 @@ router.beforeEach(async (to, _from, next) => {
         router.addRoute('Layout', route)
       })
 
-      // 6. 注册 404 路由（必须在所有路由之后）
+      // 6. 移除临时通配路由（避免冲突）
+      router.removeRoute('TempWildcard')
+
+      // 7. 注册 404 路由（必须在所有路由之后）
       router.addRoute(notFoundRoute)
 
-      // 7. 标记已加载
+      // 8. 标记已加载
       hasDynamicRoutes = true
 
-      // 8. hack方法：确保 addRoutes 完成后重新导航
-      // 使用 replace 避免历史记录堆积
-      next({ ...to, replace: true })
+      // 9. hack 方法：确保 addRoutes 完成后重新导航
+      // 注意：不能使用 next({ ...to, replace: true })，因为 to.name 是 'TempWildcard'
+      // 移除 TempWildcard 后会导致 "No match for" 错误
+      // 只传递 path，让 Vue Router 重新匹配
+      next({ path: to.path, query: to.query, hash: to.hash, replace: true })
     } catch (error) {
       console.error('加载动态路由失败:', error)
       userStore.resetUserState()

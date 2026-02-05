@@ -10,8 +10,8 @@ export const constantRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/login/LoginPage.vue'),
     meta: {
       title: '登录',
-      hidden: true,
-    },
+      hidden: true
+    }
   },
   // 主布局路由（始终存在，作为动态路由的父容器）
   {
@@ -31,6 +31,15 @@ export const constantRoutes: RouteRecordRaw[] = [
       }
     ]
   },
+  // 临时通配路由（用于动态路由加载期间捕获所有路径，避免 "No match found" 警告）
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'TempWildcard',
+    component: () => import('@/layouts/AppLayout.vue'),
+    meta: {
+      hidden: true
+    }
+  }
 ]
 
 /**
@@ -42,8 +51,8 @@ export const notFoundRoute: RouteRecordRaw = {
   component: () => import('@/views/error/NotFoundPage.vue'),
   meta: {
     title: '页面未找到',
-    hidden: true,
-  },
+    hidden: true
+  }
 }
 
 /**
