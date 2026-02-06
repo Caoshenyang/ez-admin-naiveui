@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, watch, onMounted, h } from 'vue'
+import { computed, watch, h } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { NDropdown, NButton, NIcon } from 'naive-ui'
 import {
@@ -102,7 +102,7 @@ const handleContextMenuSelect = (tabPath: string, action: string) => {
     case 'close':
       layoutStore.removeTab(tabPath)
       if (tabPath === route.path && layoutStore.activeTab) {
-        router.push(layoutStore.activeTab)
+        router.push(layoutStore.activeTab || '/')
       }
       break
   }
@@ -129,21 +129,22 @@ const handleActionSelect = (action: string) => {
 
   // 关闭后跳转到合适的页面
   if (layoutStore.activeTab && layoutStore.activeTab !== currentPath) {
-    router.push(layoutStore.activeTab)
+    router.push(layoutStore.activeTab || '/')
   }
 }
 
 // 处理标签页切换
 const handleTabClick = (path: string) => {
   layoutStore.setActiveTab(path)
-  router.push(path)
+  // 空字符串表示首页，需要转换为 '/' 进行路由跳转
+  router.push(path || '/')
 }
 
 // 处理标签页关闭按钮点击
 const handleClose = (path: string) => {
   layoutStore.removeTab(path)
   if (path === route.path && layoutStore.activeTab) {
-    router.push(layoutStore.activeTab)
+    router.push(layoutStore.activeTab || '/')
   }
 }
 
@@ -167,11 +168,6 @@ watch(
 
 // 是否显示标签页
 const showTabs = computed(() => layoutStore.showTabs && layoutStore.tabs.length > 0)
-
-// 组件挂载时确保首页在第一位
-onMounted(() => {
-  layoutStore.ensureHomeFirst()
-})
 </script>
 
 <template>

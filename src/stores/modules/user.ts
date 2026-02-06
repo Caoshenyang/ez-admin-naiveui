@@ -48,9 +48,9 @@ export const useUserStore = defineStore(
         const menuStore = useMenuStore()
         menuStore.clearMenus()
 
-        // 清除当前激活标签页（保留标签页列表，但重置激活状态）
+        // 清除所有标签页数据（包括内存和 localStorage）
         const layoutStore = useLayoutStore()
-        layoutStore.clearActiveTab()
+        layoutStore.clearAllTabs()
 
         resetRouter() // 重置路由
         resetPermissionGuard() // 重置路由守卫状态
