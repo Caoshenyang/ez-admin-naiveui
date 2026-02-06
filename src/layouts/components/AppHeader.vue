@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, h } from 'vue'
 import { useRouter } from 'vue-router'
 import {
   SearchOutline,
@@ -17,6 +17,7 @@ import { useLayoutStore } from '@/stores/modules/layout'
 import { useUserStore } from '@/stores/modules/user'
 import { dialog, message } from '@/hooks/useNaiveApi'
 import { useTheme } from '@/hooks/useTheme'
+import AppBreadcrumb from './AppBreadcrumb.vue'
 
 const router = useRouter()
 const layoutStore = useLayoutStore()
@@ -98,28 +99,6 @@ async function handleLogout() {
 
 const username = computed(() => userStore.username || 'Admin') // 用户名
 const avatar = computed(() => userStore.avatar || '') // 头像
-const showBreadcrumb = computed(() => {
-  const value = layoutStore.showBreadcrumb
-  // 如果配置未初始化（undefined），默认显示面包屑
-  return value ?? true
-}) // 是否显示面包屑
-
-// 面包屑（根据当前路由生成）
-const breadcrumbs = computed(() => {
-  const matched = router.currentRoute.value.matched
-  console.log('matched:', matched)
-  console.log('meta titles:', matched.map((m) => ({ path: m.path, title: m.meta?.title, hidden: m.meta?.hidden })))
-
-  // 去除根节点（Layout）并过滤没有 title 的路由
-  // 直接使用 item.path，它已经是完整路径了
-  return matched
-    .slice(1)
-    .filter((item) => item.meta?.title && !item.meta.hidden)
-    .map((item) => ({
-      name: item.meta?.title || item.name,
-      path: item.path // 直接使用完整路径
-    }))
-})
 
 // 搜索功能（待实现）
 const handleSearch = () => {
@@ -143,7 +122,7 @@ const handleNotification = () => {
 <template>
   <n-layout-header
     bordered
-    class="h-14 px-4 flex items-center justify-between bg-white dark:bg-[#161B22] border-b border-slate-200 dark:border-[#30363D] flex-shrink-0"
+    class="h-14 px-4 flex items-center justify-between bg-white dark:bg-[#161B22] border-b border-slate-200 dark:border-[#30363D] shrink-0"
   >
     <!-- 左侧：折叠按钮 + 刷新按钮 + 面包屑 -->
     <div class="flex items-center space-x-4 flex-1 min-w-0">
@@ -176,16 +155,7 @@ const handleNotification = () => {
       </n-tooltip>
 
       <!-- 面包屑 -->
-      <n-breadcrumb v-if="showBreadcrumb" class="text-sm flex-1">
-        <n-breadcrumb-item
-          v-for="(item, index) in breadcrumbs"
-          :key="item.path"
-          class="cursor-pointer transition-colors"
-          @click="index < breadcrumbs.length - 1 && router.push(item.path)"
-        >
-          {{ item.name }}
-        </n-breadcrumb-item>
-      </n-breadcrumb>
+      <app-breadcrumb />
     </div>
 
     <!-- 右侧：功能按钮 -->
