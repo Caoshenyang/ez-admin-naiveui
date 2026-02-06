@@ -57,16 +57,22 @@ const handleMenuUpdate = (key: string) => {
 
 <template>
   <n-layout-sider bordered :collapsed="isCollapsed" :collapsed-width="64" :width="240" collapse-mode="width">
-    <!-- Logo 区域（使用 Tailwind） -->
+    <!-- Logo 区域 -->
     <div
-      class="h-15 flex items-center justify-center px-4 border-b border-slate-200 cursor-pointer transition-colors hover:bg-slate-50"
+      class="group h-15 flex items-center justify-center px-4 border-b border-slate-200 dark:border-slate-700 cursor-pointer active:scale-[0.98] transition-transform duration-150"
       @click="handleLogoClick"
     >
-      <div class="flex items-center space-x-2">
-        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shrink-0">
+      <div class="flex items-center gap-2 overflow-hidden">
+        <!-- Logo 图标 -->
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-gradient-to-br from-[#5B6BF0] to-[#7C85F7] dark:from-[#818CF8] dark:to-[#A5B4FC] shadow-sm transition-transform duration-200 group-hover:scale-105">
           <span class="text-white font-bold text-lg">E</span>
         </div>
-        <span v-show="!isCollapsed" class="text-xl font-bold text-slate-900 font-display transition-all duration-200">
+
+        <!-- 文字标签 -->
+        <span
+          v-show="!isCollapsed"
+          class="text-xl font-bold text-slate-900 dark:text-slate-50 font-display whitespace-nowrap transition-[opacity,transform] duration-200 ease-out"
+        >
           EZ Admin
         </span>
       </div>
