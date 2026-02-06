@@ -5,6 +5,7 @@ import { NLayoutSider, NMenu } from 'naive-ui'
 import type { MenuOption } from 'naive-ui'
 import { useLayoutStore } from '@/stores/modules/layout'
 import { useMenuStore } from '@/stores/modules/menu'
+import AppLogo from './AppLogo.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -31,11 +32,6 @@ watch(
   { immediate: true }
 )
 
-// Logo 点击跳转首页
-const handleLogoClick = () => {
-  router.push('/')
-}
-
 // 处理菜单点击
 const handleMenuUpdate = (key: string) => {
   layoutStore.setActiveMenuKey(key)
@@ -58,25 +54,7 @@ const handleMenuUpdate = (key: string) => {
 <template>
   <n-layout-sider bordered :collapsed="isCollapsed" :collapsed-width="64" :width="240" collapse-mode="width">
     <!-- Logo 区域 -->
-    <div
-      class="group h-15 flex items-center justify-center px-4 border-b border-slate-200 dark:border-slate-700 cursor-pointer active:scale-[0.98] transition-transform duration-150"
-      @click="handleLogoClick"
-    >
-      <div class="flex items-center gap-2 overflow-hidden">
-        <!-- Logo 图标 -->
-        <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-gradient-to-br from-[#5B6BF0] to-[#7C85F7] dark:from-[#818CF8] dark:to-[#A5B4FC] shadow-sm transition-transform duration-200 group-hover:scale-105">
-          <span class="text-white font-bold text-lg">E</span>
-        </div>
-
-        <!-- 文字标签 -->
-        <span
-          v-show="!isCollapsed"
-          class="text-xl font-bold text-slate-900 dark:text-slate-50 font-display whitespace-nowrap transition-[opacity,transform] duration-200 ease-out"
-        >
-          EZ Admin
-        </span>
-      </div>
-    </div>
+    <app-logo />
 
     <!-- 菜单区域（NaiveUI NMenu + Tailwind 样式） -->
     <n-menu
