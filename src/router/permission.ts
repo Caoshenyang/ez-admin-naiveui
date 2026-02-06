@@ -66,6 +66,7 @@ router.beforeEach(async (to, from, next) => {
 
       // 4. 生成动态路由
       const dynamicRoutes = convertMenusToRoutes(backendMenus)
+      console.log('生成的动态路由:', dynamicRoutes)
 
       // 5. 注册动态路由到 Layout 下
       dynamicRoutes.forEach((route) => {

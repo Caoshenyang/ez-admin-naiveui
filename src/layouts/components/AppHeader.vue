@@ -98,15 +98,27 @@ async function handleLogout() {
 
 const username = computed(() => userStore.username || 'Admin') // 用户名
 const avatar = computed(() => userStore.avatar || '') // 头像
-const showBreadcrumb = computed(() => layoutStore.showBreadcrumb) // 是否显示面包屑
+const showBreadcrumb = computed(() => {
+  const value = layoutStore.showBreadcrumb
+  // 如果配置未初始化（undefined），默认显示面包屑
+  return value ?? true
+}) // 是否显示面包屑
 
 // 面包屑（根据当前路由生成）
 const breadcrumbs = computed(() => {
-  const matched = router.currentRoute.value.matched.filter((item) => item.meta && item.meta.title && !item.meta.hidden)
-  return matched.map((item) => ({
-    name: item.meta?.title as string,
-    path: item.path
-  }))
+  const matched = router.currentRoute.value.matched
+  console.log('matched:', matched)
+  console.log('meta titles:', matched.map((m) => ({ path: m.path, title: m.meta?.title, hidden: m.meta?.hidden })))
+
+  // 去除根节点（Layout）并过滤没有 title 的路由
+  // 直接使用 item.path，它已经是完整路径了
+  return matched
+    .slice(1)
+    .filter((item) => item.meta?.title && !item.meta.hidden)
+    .map((item) => ({
+      name: item.meta?.title || item.name,
+      path: item.path // 直接使用完整路径
+    }))
 })
 
 // 搜索功能（待实现）

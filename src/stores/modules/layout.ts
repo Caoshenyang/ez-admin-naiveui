@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import type { LayoutConfig, MenuItem, TabItem } from '@/types/layout'
+import type { LayoutConfig, TabItem } from '@/types/layout'
 import { localStorage } from '@/utils/storage'
 
 /**
@@ -26,7 +26,7 @@ export const useLayoutStore = defineStore('layout', () => {
     showBreadcrumb: true,
     showFooter: true,
     layoutMode: 'sidebar',
-    themeMode: 'light',
+    themeMode: 'light'
   }
 
   // 从本地存储读取配置
@@ -36,9 +36,7 @@ export const useLayoutStore = defineStore('layout', () => {
   // ==================== Getters ====================
   // 当前侧边栏宽度
   const sidebarWidth = computed(() =>
-    isSidebarCollapsed.value
-      ? layoutConfig.value.sidebarCollapsedWidth
-      : layoutConfig.value.sidebarWidth
+    isSidebarCollapsed.value ? layoutConfig.value.sidebarCollapsedWidth : layoutConfig.value.sidebarWidth
   )
 
   const showTabs = computed(() => layoutConfig.value.showTabs) // 是否显示标签页
@@ -86,7 +84,7 @@ export const useLayoutStore = defineStore('layout', () => {
   // 添加标签页
   const addTab = (tab: TabItem) => {
     // 检查是否已存在
-    const existTab = tabs.value.find(t => t.path === tab.path)
+    const existTab = tabs.value.find((t) => t.path === tab.path)
     if (!existTab) {
       tabs.value.push(tab)
     }
@@ -95,7 +93,7 @@ export const useLayoutStore = defineStore('layout', () => {
 
   // 移除标签页
   const removeTab = (path: string) => {
-    const index = tabs.value.findIndex(t => t.path === path)
+    const index = tabs.value.findIndex((t) => t.path === path)
     if (index > -1) {
       tabs.value.splice(index, 1)
       // 如果关闭的是当前激活的标签页，则激活最后一个标签页
@@ -107,13 +105,13 @@ export const useLayoutStore = defineStore('layout', () => {
 
   // 关闭其他标签页
   const closeOtherTabs = (path: string) => {
-    tabs.value = tabs.value.filter(t => t.path === path || t.affix)
+    tabs.value = tabs.value.filter((t) => t.path === path || t.affix)
     activeTab.value = path
   }
 
   // 关闭所有标签页
   const closeAllTabs = () => {
-    tabs.value = tabs.value.filter(t => t.affix)
+    tabs.value = tabs.value.filter((t) => t.affix)
     if (tabs.value.length > 0) {
       activeTab.value = tabs.value[0].path
     }
@@ -121,7 +119,7 @@ export const useLayoutStore = defineStore('layout', () => {
 
   // 关闭左侧标签页
   const closeLeftTabs = (path: string) => {
-    const index = tabs.value.findIndex(t => t.path === path)
+    const index = tabs.value.findIndex((t) => t.path === path)
     if (index > -1) {
       tabs.value = tabs.value.slice(index)
     }
@@ -129,7 +127,7 @@ export const useLayoutStore = defineStore('layout', () => {
 
   // 关闭右侧标签页
   const closeRightTabs = (path: string) => {
-    const index = tabs.value.findIndex(t => t.path === path)
+    const index = tabs.value.findIndex((t) => t.path === path)
     if (index > -1) {
       tabs.value = tabs.value.slice(0, index + 1)
     }
@@ -187,6 +185,6 @@ export const useLayoutStore = defineStore('layout', () => {
     closeRightTabs,
     setActiveTab,
     updateLayoutConfig,
-    resetLayoutConfig,
+    resetLayoutConfig
   }
 })

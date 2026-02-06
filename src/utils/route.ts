@@ -17,40 +17,56 @@ export function convertMenusToRoutes(menus: MenuTreeVO[]): RouteRecordRaw[] {
   const routes: RouteRecordRaw[] = []
 
   menus.forEach((menu) => {
-    // 递归处理子菜单
+    // 处理路由路径：去除开头的斜杠（父路由用）
+    let path = ''
+    if (menu.routePath) {
+      path = menu.routePath.startsWith('/') ? menu.routePath.slice(1) : menu.routePath
+    }
+
+    // 如果有子菜单，递归处理
     if (menu.children?.length) {
       const childRoutes = convertMenusToRoutes(menu.children)
-      routes.push(...childRoutes)
-    }
 
-    // 只处理有 componentPath 和 routePath 的菜单
-    if (!menu.componentPath || !menu.routePath) {
-      return
-    }
+      // 如果有 routePath，生成父级路由（目录）
+      if (path) {
+        // 找到第一个有 componentPath 的子路由
+        const firstChildRoute = childRoutes.find((r) => r.component)
 
-    // 处理路由路径
-    // Layout 的 path 是 '/'，子路由不应该以 '/' 开头
-    // 如果后端返回的是 /system/user，需要去掉开头的 '/'
-    let path = menu.routePath
-    if (path.startsWith('/')) {
-      path = path.slice(1) // 去掉开头的 /
-    }
-
-    const route: RouteRecordRaw = {
-      path,
-      name: menu.routeName || menu.menuId,
-      component: loadViewComponent(menu.componentPath),
-      meta: {
-        title: menu.menuName,
-        icon: menu.menuIcon,
-        hidden: !menu.visible,
-        keepAlive: false,
-        affix: false,
-        order: menu.menuSort
+        const route: RouteRecordRaw = {
+          path,
+          name: menu.routeName || menu.menuId,
+          redirect: firstChildRoute ? firstChildRoute.path : undefined, // 重定向到第一个有组件的子路由
+          meta: {
+            title: menu.menuName,
+            icon: menu.menuIcon,
+            hidden: menu.visible === false // 只有明确为 false 时才隐藏
+          },
+          children: childRoutes
+        }
+        routes.push(route)
+      } else {
+        // 如果没有 path，直接添加子路由
+        routes.push(...childRoutes)
       }
     }
-
-    routes.push(route)
+    // 如果有 componentPath，生成页面路由（叶子节点）
+    // 子路由保持完整路径（以 / 开头）
+    else if (menu.componentPath && menu.routePath) {
+      const route: RouteRecordRaw = {
+        path: menu.routePath, // 保持完整路径，如 /system/user
+        name: menu.routeName || menu.menuId,
+        component: loadViewComponent(menu.componentPath),
+        meta: {
+          title: menu.menuName,
+          icon: menu.menuIcon,
+          hidden: menu.visible === false, // 只有明确为 false 时才隐藏
+          keepAlive: false,
+          affix: false,
+          order: menu.menuSort
+        }
+      }
+      routes.push(route)
+    }
   })
 
   return routes
