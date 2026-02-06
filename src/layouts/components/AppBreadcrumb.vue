@@ -17,15 +17,32 @@ const showBreadcrumb = computed(() => {
 // 面包屑数据（根据当前路由生成）
 const breadcrumbs = computed(() => {
   const matched = route.matched
-  // 去除根节点（Layout）并过滤没有 title 的路由
-  // 直接使用 item.path，它已经是完整路径了
-  return matched
-    .slice(1)
-    .filter((item) => item.meta?.title && !item.meta.hidden)
-    .map((item) => ({
-      name: item.meta?.title || item.name,
-      path: item.path
-    }))
+  let breadcrumbsList: Array<{ name: string; path: string }> = []
+
+  // 特殊处理：如果只有 Layout 父路由，说明是首页
+  if (matched.length === 1 && matched[0]?.name === 'Layout' && route.path === '/') {
+    // 手动添加首页面包屑
+    breadcrumbsList = [{ name: '首页', path: '/' }]
+  } else {
+    // 正常情况：去除根节点并过滤没有 title 的路由
+    breadcrumbsList = matched
+      .slice(1)
+      .filter((item) => item.meta?.title && !item.meta.hidden)
+      .map((item) => ({
+        name: item.meta?.title || item.name,
+        path: item.path
+      }))
+  }
+
+  // 调试日志
+  if (import.meta.env.DEV && matched.length > 0) {
+    console.log('[AppBreadcrumb] route.path:', route.path)
+    console.log('[AppBreadcrumb] route.matched:', matched)
+    console.log('[AppBreadcrumb] breadcrumbsList:', breadcrumbsList)
+    console.log('[AppBreadcrumb] showBreadcrumb:', showBreadcrumb.value)
+  }
+
+  return breadcrumbsList
 })
 
 // 处理面包屑点击

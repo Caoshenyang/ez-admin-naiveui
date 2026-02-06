@@ -11,9 +11,8 @@ import { resetPermissionGuard } from '@/router/permission'
 import { useMenuStore } from './menu'
 import { useLayoutStore } from './layout'
 
-export const useUserStore = defineStore(
-  'user',
-  () => {
+export const useUserStore = defineStore( 'user', () => {
+
     // ========== State ==========
     const token = ref<string>('')
     const userInfo = ref<CurrentUserVO | null>(null)
@@ -48,9 +47,10 @@ export const useUserStore = defineStore(
         const menuStore = useMenuStore()
         menuStore.clearMenus()
 
-        // 清除所有标签页数据（包括内存和 localStorage）
+        // 清除所有标签页数据并重置布局配置（包括内存和 localStorage）
         const layoutStore = useLayoutStore()
         layoutStore.clearAllTabs()
+        layoutStore.resetLayoutConfig() // 重置布局配置为默认值
 
         resetRouter() // 重置路由
         resetPermissionGuard() // 重置路由守卫状态
