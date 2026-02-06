@@ -1,9 +1,16 @@
 <script setup lang="ts">
-import { computed, watch, onMounted } from 'vue'
+import { computed, watch, onMounted, h } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { NTabs, NDropdown, type TabOption } from 'naive-ui'
+import { NDropdown, NButton, NIcon } from 'naive-ui'
+import {
+  CloseOutlined,
+  MoreOutlined,
+  LeftOutlined,
+  RightOutlined,
+  CloseCircleOutlined,
+  ReloadOutlined
+} from '@vicons/antd'
 import { useLayoutStore } from '@/stores/modules/layout'
-import type { TabItem } from '@/types/layout'
 
 const router = useRouter()
 const route = useRoute()
@@ -20,83 +27,100 @@ const tabs = computed(() => {
 
 const activeKey = computed(() => layoutStore.activeTab) // 当前激活的标签页
 
-// 处理标签页切换
-const handleUpdateValue = (key: string) => {
-  layoutStore.setActiveTab(key)
-  router.push(key)
-}
-
-// 处理标签页关闭
-const handleClose = (key: string) => {
-  const tab = layoutStore.tabs.find(t => t.path === key)
-  if (tab && !tab.affix) {
-    layoutStore.removeTab(key)
-    // 如果关闭的是当前标签页，跳转到最后一个标签页
-    if (key === route.path && layoutStore.activeTab) {
-      router.push(layoutStore.activeTab)
-    }
-  }
-}
-
-// 标签页右键菜单选项
+// 标签页右键菜单选项（简化版：只保留刷新和关闭单个）
 const getDropdownOptions = (key: string) => {
   const tab = layoutStore.tabs.find(t => t.path === key)
-  const options = [
+  return [
     {
       label: '刷新',
       key: 'reload',
+      icon: () => h(NIcon, null, { default: () => h(ReloadOutlined) })
     },
     {
       label: '关闭',
       key: 'close',
       disabled: tab?.affix,
-    },
+      icon: () => h(NIcon, null, { default: () => h(CloseOutlined) })
+    }
   ]
-
-  if (layoutStore.tabs.length > 1) {
-    options.push(
-      {
-        label: '关闭其他',
-        key: 'closeOther',
-      },
-      {
-        label: '关闭左侧',
-        key: 'closeLeft',
-        disabled: layoutStore.tabs.indexOf(tab!) === 0,
-      },
-      {
-        label: '关闭右侧',
-        key: 'closeRight',
-        disabled: layoutStore.tabs.indexOf(tab!) === layoutStore.tabs.length - 1,
-      }
-    )
-  }
-
-  options.push({
-    label: '关闭全部',
-    key: 'closeAll',
-  })
-
-  return options
 }
 
-// 处理右键菜单选择
-const handleSelectDropdown = (key: string, optionKey: string) => {
-  switch (optionKey) {
+// 右侧操作下拉菜单选项（批量关闭操作）
+const actionsDropdownOptions = computed(() => {
+  const currentPath = route.path
+  const currentIndex = layoutStore.tabs.findIndex(t => t.path === currentPath)
+
+  // 计算左侧可关闭的标签页数量（排除 affix 标签页）
+  const leftTabs = layoutStore.tabs.slice(0, currentIndex)
+  const closableLeftCount = leftTabs.filter(t => !t.affix).length
+
+  // 计算右侧可关闭的标签页数量
+  const rightTabs = layoutStore.tabs.slice(currentIndex + 1)
+  const closableRightCount = rightTabs.length
+
+  // 计算可关闭的其他标签页数量
+  const closableOtherCount = layoutStore.tabs.filter(t => t.path !== currentPath && !t.affix).length
+
+  return [
+    {
+      label: '关闭左侧',
+      key: 'closeLeft',
+      disabled: closableLeftCount === 0,
+      icon: () => h(NIcon, null, { default: () => h(LeftOutlined) })
+    },
+    {
+      label: '关闭右侧',
+      key: 'closeRight',
+      disabled: closableRightCount === 0,
+      icon: () => h(NIcon, null, { default: () => h(RightOutlined) })
+    },
+    {
+      label: '关闭其他',
+      key: 'closeOther',
+      disabled: closableOtherCount === 0,
+      icon: () => h(NIcon, null, { default: () => h(CloseOutlined) })
+    },
+    {
+      type: 'divider',
+      key: 'd1'
+    },
+    {
+      label: '关闭全部',
+      key: 'closeAll',
+      disabled: closableOtherCount === 0,
+      icon: () => h(NIcon, null, { default: () => h(CloseCircleOutlined) })
+    }
+  ]
+})
+
+// 处理右键菜单选择（刷新、关闭单个）
+const handleContextMenuSelect = (tabPath: string, action: string) => {
+  switch (action) {
     case 'reload':
       router.go(0)
       break
     case 'close':
-      layoutStore.removeTab(key)
+      layoutStore.removeTab(tabPath)
+      if (tabPath === route.path && layoutStore.activeTab) {
+        router.push(layoutStore.activeTab)
+      }
       break
-    case 'closeOther':
-      layoutStore.closeOtherTabs(key)
-      break
+  }
+}
+
+// 处理右侧操作菜单选择（批量关闭）
+const handleActionSelect = (action: string) => {
+  const currentPath = route.path
+
+  switch (action) {
     case 'closeLeft':
-      layoutStore.closeLeftTabs(key)
+      layoutStore.closeLeftTabs(currentPath)
       break
     case 'closeRight':
-      layoutStore.closeRightTabs(key)
+      layoutStore.closeRightTabs(currentPath)
+      break
+    case 'closeOther':
+      layoutStore.closeOtherTabs(currentPath)
       break
     case 'closeAll':
       layoutStore.closeAllTabs()
@@ -104,7 +128,21 @@ const handleSelectDropdown = (key: string, optionKey: string) => {
   }
 
   // 关闭后跳转到合适的页面
-  if (optionKey !== 'reload' && key === route.path && layoutStore.activeTab) {
+  if (layoutStore.activeTab && layoutStore.activeTab !== currentPath) {
+    router.push(layoutStore.activeTab)
+  }
+}
+
+// 处理标签页切换
+const handleTabClick = (path: string) => {
+  layoutStore.setActiveTab(path)
+  router.push(path)
+}
+
+// 处理标签页关闭按钮点击
+const handleClose = (path: string) => {
+  layoutStore.removeTab(path)
+  if (path === route.path && layoutStore.activeTab) {
     router.push(layoutStore.activeTab)
   }
 }
@@ -113,7 +151,8 @@ const handleSelectDropdown = (key: string, optionKey: string) => {
 watch(
   () => route.path,
   (path) => {
-    if (route.meta?.title) {
+    // 过滤掉 hidden 的路由（如登录页）
+    if (route.meta?.title && !route.meta?.hidden) {
       layoutStore.addTab({
         path,
         title: route.meta.title as string,
@@ -126,7 +165,13 @@ watch(
   { immediate: true }
 )
 
-const showTabs = computed(() => layoutStore.showTabs && layoutStore.tabs.length > 0) // 是否显示标签页
+// 是否显示标签页
+const showTabs = computed(() => layoutStore.showTabs && layoutStore.tabs.length > 0)
+
+// 组件挂载时确保首页在第一位
+onMounted(() => {
+  layoutStore.ensureHomeFirst()
+})
 </script>
 
 <template>
@@ -137,8 +182,9 @@ const showTabs = computed(() => layoutStore.showTabs && layoutStore.tabs.length 
         v-for="tab in tabs"
         :key="tab.key"
         :options="getDropdownOptions(tab.key as string)"
-        trigger="contextmenu"
-        @select="(key: string) => handleSelectDropdown(tab.key as string, key)"
+        :trigger="'contextmenu' as any"
+        placement="bottom-start"
+        @select="(action: string) => handleContextMenuSelect(tab.key as string, action)"
       >
         <div
           class="flex items-center space-x-2 px-3 py-1.5 text-sm text-slate-700 dark:text-[#C9D1D9] rounded-t-lg border transition-colors cursor-pointer group/tab"
@@ -147,7 +193,7 @@ const showTabs = computed(() => layoutStore.showTabs && layoutStore.tabs.length 
               ? 'bg-white dark:bg-[#161B22] border-slate-200 dark:border-[#30363D] border-b-0 border-t-2 border-t-blue-600 dark:border-t-[#A78BFA]'
               : 'bg-slate-50 dark:bg-[#0D1117] border-transparent hover:bg-slate-100 dark:hover:bg-white/5'
           "
-          @click="handleUpdateValue(tab.key as string)"
+          @click="handleTabClick(tab.key as string)"
         >
           <span class="whitespace-nowrap">{{ tab.label }}</span>
           <button
@@ -162,17 +208,16 @@ const showTabs = computed(() => layoutStore.showTabs && layoutStore.tabs.length 
     </div>
 
     <!-- 右侧操作按钮 -->
-    <div class="flex items-center space-x-1 ml-2">
-      <n-button
-        text
-        size="tiny"
-        class="hover:bg-slate-50 dark:hover:bg-white/10 rounded px-2 py-1 transition-colors"
-        @click="() => handleSelectDropdown('', 'closeAll')"
-      >
-        <template #icon>
-          <span class="text-slate-400 opacity-60 text-sm">关闭全部</span>
-        </template>
-      </n-button>
+    <div class="flex items-center ml-2 flex-shrink-0">
+      <n-dropdown :options="actionsDropdownOptions" placement="bottom-end" @select="handleActionSelect" trigger="click">
+        <n-button text size="small" class="h-7 w-7 px-0 hover:bg-slate-100 dark:hover:bg-white/10 rounded transition-all duration-200">
+          <template #icon>
+            <n-icon :size="16" class="text-slate-500 dark:text-slate-400">
+              <MoreOutlined />
+            </n-icon>
+          </template>
+        </n-button>
+      </n-dropdown>
     </div>
   </div>
 </template>

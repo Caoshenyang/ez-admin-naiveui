@@ -9,6 +9,7 @@ import { authApi } from '@/api'
 import { resetRouter } from '@/router'
 import { resetPermissionGuard } from '@/router/permission'
 import { useMenuStore } from './menu'
+import { useLayoutStore } from './layout'
 
 export const useUserStore = defineStore(
   'user',
@@ -46,6 +47,10 @@ export const useUserStore = defineStore(
         // 清除菜单
         const menuStore = useMenuStore()
         menuStore.clearMenus()
+
+        // 清除当前激活标签页（保留标签页列表，但重置激活状态）
+        const layoutStore = useLayoutStore()
+        layoutStore.clearActiveTab()
 
         resetRouter() // 重置路由
         resetPermissionGuard() // 重置路由守卫状态

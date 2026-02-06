@@ -73,7 +73,9 @@ router.beforeEach(async (to, from, next) => {
       })
 
       // 6. 移除临时通配路由（避免冲突）
-      router.removeRoute('TempWildcard')
+      if (router.hasRoute('TempWildcard')) {
+        router.removeRoute('TempWildcard')
+      }
 
       // 7. 注册 404 路由（必须在所有路由之后）
       router.addRoute(notFoundRoute)

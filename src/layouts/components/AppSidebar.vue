@@ -37,9 +37,9 @@ const handleMenuUpdate = (key: string) => {
   layoutStore.setActiveMenuKey(key)
 
   // 根据菜单 key 查找对应路径
-  // 首页特殊处理
+  // 首页特殊处理（首页路由 path 为空字符串）
   if (key === 'home') {
-    router.push('/')
+    router.push('')
     return
   }
 
