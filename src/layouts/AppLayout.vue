@@ -67,7 +67,7 @@ onUnmounted(() => {
         <app-work-tab />
 
         <!-- 内容区域 -->
-        <n-layout-content :native-scrollbar="false" class="flex-1 overflow-y-auto custom-scrollbar">
+        <n-layout-content :native-scrollbar="false" class="flex-1">
           <div class="p-6 min-h-full">
             <router-view v-slot="{ Component, route: routeMeta }">
               <transition name="fade-slide" mode="out-in">
