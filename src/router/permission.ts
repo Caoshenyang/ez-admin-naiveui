@@ -14,7 +14,17 @@ const whiteList = ['/login']
 // 是否已加载过动态路由
 let hasDynamicRoutes = false
 
-router.beforeEach(async (to, _from, next) => {
+// 是否为手动刷新（跳过 loadingBar）
+let isManualRefresh = false
+
+router.beforeEach(async (to, from, next) => {
+  // 如果是刷新操作且路径相同，跳过 loadingBar
+  if (isManualRefresh && to.path === from.path) {
+    isManualRefresh = false
+    next()
+    return
+  }
+
   loadingBar.start()
   const userStore = useUserStore()
   const menuStore = useMenuStore()
@@ -102,4 +112,10 @@ router.afterEach(() => {
 // 重置路由守卫状态（用于登出后）
 export function resetPermissionGuard() {
   hasDynamicRoutes = false
+}
+
+// 手动刷新页面（不触发 loadingBar）
+export function manualRefresh() {
+  isManualRefresh = true
+  router.go(0)
 }

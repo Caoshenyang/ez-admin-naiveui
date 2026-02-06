@@ -434,148 +434,155 @@ export const lightTheme: GlobalThemeOverrides = {
 }
 
 /**
- * 暗色主题配置（沉浸式深色风格）
+ * 暗色主题配置（现代优雅风格）
  *
- * 专为长时间工作场景设计，减少眼睛疲劳
- * - 侧边栏: 极深黑蓝 (#0B0F19)
- * - 内容区: 深色背景 (#0F172A)
- * - 卡片: 中等深度 (#1E293B)
+ * 设计理念: 参考GitHub、VS Code、Linear等现代应用的暗色模式
+ * - 侧边栏: 深灰蓝 (#0D1117) - GitHub暗色风格
+ * - 内容区: 柔和深灰 (#161B22) - 减少眼疲劳
+ * - 卡片: 略浅层次 (#21262D) - 清晰的视觉层次
+ * - 主色调: 电光紫 (#A78BFA) - 暗色下更醒目
+ *
+ * 优化重点:
+ * - 提高文字对比度，确保可读性
+ * - 增加微妙的光泽感和层次感
+ * - 柔和的深色背景，避免纯黑
+ * - 强化交互状态的视觉反馈
  */
 export const darkTheme: GlobalThemeOverrides = {
   common: {
-    primaryColor: '#818CF8', // 亮紫（暗色模式下更明亮）
-    primaryColorHover: '#A5B4FC',
-    primaryColorPressed: '#6366F1',
-    primaryColorSuppl: '#818CF8',
+    primaryColor: '#A78BFA', // 电光紫（暗色模式下更醒目，类似 VS Code）
+    primaryColorHover: '#C4B5FD',
+    primaryColorPressed: '#8B5CF6',
+    primaryColorSuppl: '#A78BFA',
 
-    successColor: '#818CF8', // 与主色一致（暗色模式）
-    successColorHover: '#A5B4FC',
-    successColorPressed: '#6366F1',
-    successColorSuppl: '#818CF8',
+    successColor: '#34D399', // 翠绿（暗色下更清晰）
+    successColorHover: '#6EE7B7',
+    successColorPressed: '#10B981',
+    successColorSuppl: '#34D399',
 
-    warningColor: '#F59E0B',
-    warningColorHover: '#FBBF24',
-    warningColorPressed: '#D97706',
-    warningColorSuppl: '#F59E0B',
+    warningColor: '#FBBF24', // 琥珀金（比橙色更温暖）
+    warningColorHover: '#FCD34D',
+    warningColorPressed: '#F59E0B',
+    warningColorSuppl: '#FBBF24',
 
-    errorColor: '#EF4444',
-    errorColorHover: '#F87171',
-    errorColorPressed: '#DC2626',
-    errorColorSuppl: '#EF4444',
+    errorColor: '#F87171', // 柔和红（避免过于刺眼）
+    errorColorHover: '#FCA5A5',
+    errorColorPressed: '#EF4444',
+    errorColorSuppl: '#F87171',
 
-    infoColor: '#3B82F6',
-    infoColorHover: '#60A5FA',
-    infoColorPressed: '#2563EB',
-    infoColorSuppl: '#3B82F6',
+    infoColor: '#60A5FA', // 天空蓝
+    infoColorHover: '#93C5FD',
+    infoColorPressed: '#3B82F6',
+    infoColorSuppl: '#60A5FA',
 
-    // 文字颜色（暗色模式）
-    textColorBase: '#CBD5E1', // slate-300
-    textColor1: '#F8FAFC', // slate-50 (标题)
-    textColor2: '#E2E8F0', // slate-200 (正文)
-    textColor3: '#94A3B8', // slate-400 (次要)
+    // 文字颜色（提高对比度）
+    textColorBase: '#E2E8F0', // 基础文字更亮
+    textColor1: '#FFFFFF', // 标题纯白（最高对比度）
+    textColor2: '#E2E8F0', // 正文清晰可读
+    textColor3: '#94A3B8', // 次要文字
 
-    borderColor: '#334155', // slate-700
-    dividerColor: '#1E293B', // slate-800
+    borderColor: '#30363D', // GitHub暗色边框
+    dividerColor: '#21262D', // 更明显的分隔线
 
-    bodyColor: '#0F172A', // slate-900
-    cardColor: '#1E293B', // slate-800
-    modalColor: '#1E293B',
-    popoverColor: '#1E293B',
+    bodyColor: '#0D1117', // GitHub暗色背景
+    cardColor: '#161B22', // 柔和深灰
+    modalColor: '#161B22',
+    popoverColor: '#161B22',
 
     borderRadius: '10px',
     borderRadiusSmall: '6px',
 
-    boxShadow1: '0 1px 2px 0 rgb(0 0 0 / 0.3)',
-    boxShadow2: '0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4)',
-    boxShadow3: '0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4)'
+    boxShadow1: '0 1px 3px 0 rgb(0 0 0 / 0.5)',
+    boxShadow2: '0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5)',
+    boxShadow3: '0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5)'
   },
 
-  // 布局组件（暗色主题 - 深色侧边栏）
+  // 布局组件（暗色主题）
   Layout: {
-    color: '#0F172A', // 深色背景
-    siderColor: '#0B0F19', // 极深黑蓝侧边栏
-    headerColor: '#1E293B', // 深色顶栏
-    footerColor: '#1E293B',
-    textColor: '#94A3B8', // slate-400 (侧边栏文字)
-    textColorChild: '#64748B', // slate-500 (侧边栏子项)
-    textColorHover: '#E2E8F0', // slate-200 hover
-    dividerColor: 'rgba(255, 255, 255, 0.06)'
+    color: '#0D1117', // GitHub深色背景
+    siderColor: '#010409', // 极深侧边栏（接近纯黑但有层次）
+    headerColor: '#161B22', // 统一的卡片色
+    footerColor: '#161B22',
+    textColor: '#8B949E', // GitHub次要文字
+    textColorChild: '#6E7681', // 更浅的子项
+    textColorHover: '#C9D1D9', // GitHub hover色
+    dividerColor: 'rgba(48, 54, 61, 0.5)' // 更明显的分隔线
   },
 
   // 菜单组件（暗色主题）
   Menu: {
-    itemTextColor: 'rgb(148, 163, 184)', // slate-400
-    itemTextColorHover: '#F1F5F9', // slate-100 hover
-    itemTextColorActive: '#FFFFFF', // 白色 active
-    itemTextColorChildActive: '#818CF8', // 亮紫（子菜单激活时父节点高亮）
-    itemIconColor: 'rgb(100, 116, 139)', // slate-500
-    itemIconColorHover: '#A5B4FC', // 淡紫 hover
-    itemIconColorActive: '#818CF8', // 亮紫 active
-    itemIconColorChildActive: '#818CF8', // 亮紫（子菜单激活时父节点图标高亮）
-    itemColorActive: 'rgba(129, 140, 248, 0.15)', // 亮紫半透明背景
-    itemColorHover: 'rgba(255, 255, 255, 0.04)',
-    arrowColor: 'rgb(100, 116, 139)',
-    arrowColorHover: '#E2E8F0',
-    arrowColorChildActive: '#818CF8', // 亮紫（子菜单激活时父节点箭头高亮）
-    dividerColor: 'rgba(255, 255, 255, 0.06)'
+    itemTextColor: '#C9D1D9', // GitHub菜单文字
+    itemTextColorHover: '#FFFFFF', // hover纯白
+    itemTextColorActive: '#FFFFFF', // active纯白
+    itemTextColorChildActive: '#A78BFA', // 电光紫高亮
+    itemIconColor: '#8B949E', // GitHub图标色
+    itemIconColorHover: '#C4B5FD', // 电光紫hover
+    itemIconColorActive: '#A78BFA', // 电光紫active
+    itemIconColorChildActive: '#A78BFA', // 子菜单激活时父节点高亮
+    itemColorActive: 'rgba(167, 139, 250, 0.15)', // 电光紫半透明背景（增强）
+    itemColorHover: 'rgba(255, 255, 255, 0.08)', // 更明显的hover效果
+    arrowColor: '#8B949E',
+    arrowColorHover: '#C9D1D9',
+    arrowColorChildActive: '#A78BFA',
+    dividerColor: 'rgba(48, 54, 61, 0.5)'
   },
 
   // 标签页（暗色）
   Tabs: {
-    tabTextColorBar: '#94A3B8',
-    tabTextColorActiveBar: '#818CF8',
-    tabTextColorHoverBar: '#CBD5E1',
-    tabBarColor: '#1E293B',
-    tabColorBar: '#0F172A',
-    tabColorSegment: '#1E293B',
-    tabColorSegmentActive: '#0F172A',
-    tabTextColorSegment: '#94A3B8',
-    tabTextColorActiveSegment: '#818CF8',
+    tabTextColorBar: '#8B949E',
+    tabTextColorActiveBar: '#A78BFA', // 电光紫
+    tabTextColorHoverBar: '#C9D1D9',
+    tabBarColor: '#21262D',
+    tabColorBar: '#0D1117',
+    tabColorSegment: '#161B22',
+    tabColorSegmentActive: '#0D1117',
+    tabTextColorSegment: '#8B949E',
+    tabTextColorActiveSegment: '#A78BFA',
     tabGap: '12px',
     tabPaddingLarge: '12px 16px'
   },
 
   // 按钮（暗色）
   Button: {
-    textColor: '#FFFFFF',
+    textColor: '#C9D1D9', // GitHub按钮文字
     textColorHover: '#FFFFFF',
     textColorPressed: '#FFFFFF',
     textColorFocus: '#FFFFFF',
     textColorDisabled: 'rgba(255, 255, 255, 0.35)',
-    border: '1px solid #334155',
-    borderHover: '1px solid #475569',
-    borderPressed: '1px solid #64748B',
-    borderFocus: '1px solid #818CF8',
+    border: '1px solid #30363D',
+    borderHover: '1px solid #8B949E',
+    borderPressed: '1px solid #A78BFA',
+    borderFocus: '1px solid #A78BFA',
     borderRadius: '8px'
   },
 
   // 输入框（暗色）
   Input: {
-    color: '#1E293B',
-    colorFocus: '#1E293B',
-    textColor: '#E2E8F0',
-    placeholderColor: '#64748B',
-    border: '1px solid #334155',
-    borderHover: '1px solid #475569',
-    borderFocus: '1px solid #818CF8',
-    boxShadowFocus: '0 0 0 3px rgb(129, 140, 248, 0.15)',
-    colorDisabled: '#0F172A',
-    textColorDisabled: '#64748B',
-    borderDisabled: '1px solid #1E293B',
-    placeholderColorDisabled: '#475569',
-    colorActive: '#1E293B',
+    color: '#0D1117', // 输入框背景
+    colorFocus: '#0D1117',
+    textColor: '#C9D1D9', // GitHub输入框文字
+    placeholderColor: '#6E7681', // GitHub占位符
+    border: '1px solid #30363D',
+    borderHover: '1px solid #8B949E',
+    borderFocus: '1px solid #A78BFA',
+    boxShadowFocus: '0 0 0 3px rgba(167, 139, 250, 0.2)', // 增强焦点效果
+    colorDisabled: '#161B22',
+    textColorDisabled: '#6E7681',
+    borderDisabled: '1px solid #21262D',
+    placeholderColorDisabled: '#484F58',
+    colorActive: '#0D1117',
     borderRadius: '8px'
   },
 
   // 表格（暗色）
   DataTable: {
-    thColor: '#1E293B',
-    thTextColor: '#E2E8F0',
+    thColor: '#161B22', // 表头与卡片统一
+    thTextColor: '#C9D1D9',
     thFontWeight: '600',
-    tdColor: '#0F172A',
-    tdTextColor: '#CBD5E1',
-    tdTextColorHover: '#E2E8F0',
-    borderColor: '#1E293B',
+    tdColor: '#0D1117', // 单元格与背景统一
+    tdTextColor: '#C9D1D9',
+    tdTextColorHover: '#FFFFFF',
+    borderColor: '#21262D',
     borderRadius: '10px',
     thPadding: '12px 16px',
     tdPadding: '12px 16px'
@@ -583,62 +590,68 @@ export const darkTheme: GlobalThemeOverrides = {
 
   // 卡片（暗色）
   Card: {
-    color: '#1E293B',
-    colorModal: '#1E293B',
-    colorTarget: '#0F172A',
-    colorEmbedded: '#1E293B',
-    colorEmbeddedModal: '#1E293B',
-    borderColor: '#334155',
+    color: '#161B22', // 统一卡片色
+    colorModal: '#161B22',
+    colorTarget: '#0D1117',
+    colorEmbedded: '#161B22',
+    colorEmbeddedModal: '#161B22',
+    borderColor: '#30363D',
     borderRadius: '12px'
   },
 
   // 弹窗（暗色）
   Modal: {
-    color: '#1E293B',
-    textColor: '#E2E8F0',
+    color: '#161B22',
+    textColor: '#C9D1D9',
     borderRadius: '16px',
-    boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.5)'
+    boxShadow: '0 25px 50px -12px rgb(0 0 0 / 0.7)' // 更深的阴影
   },
 
   // 下拉菜单（暗色）
   Dropdown: {
-    color: '#1E293B',
-    optionColorHover: '#334155',
-    optionTextColor: '#CBD5E1',
-    optionTextColorHover: '#818CF8',
-    optionIconColor: '#64748B',
-    optionIconColorHover: '#818CF8',
-    dividerColor: '#334155',
+    color: '#161B22',
+    optionColorHover: '#21262D',
+    optionTextColor: '#C9D1D9',
+    optionTextColorHover: '#A78BFA', // 电光紫高亮
+    optionIconColor: '#8B949E',
+    optionIconColorHover: '#A78BFA',
+    dividerColor: '#30363D',
     borderRadius: '10px',
-    boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4)',
+    boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.6), 0 4px 6px -4px rgb(0 0 0 / 0.6)',
     padding: '8px'
   },
 
-  // 其他组件...
+  // 通知（暗色）
   Notification: {
-    color: '#1E293B',
-    textColor: '#CBD5E1',
-    borderRadius: '10px'
+    color: '#161B22',
+    textColor: '#C9D1D9',
+    borderRadius: '10px',
+    boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.6)'
   },
 
+  // 消息提示（暗色）
   Message: {
-    color: '#1E293B',
-    textColor: '#CBD5E1',
+    color: '#161B22',
+    textColor: '#C9D1D9',
     borderRadius: '8px',
-    iconColor: '#64748B'
+    iconColor: '#8B949E',
+    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.6)'
   },
 
+  // 工具提示（暗色）
   Tooltip: {
-    color: '#1E293B',
-    textColor: '#E2E8F0',
+    color: '#161B22',
+    textColor: '#C9D1D9',
     borderRadius: '8px',
-    fontSize: '13px'
+    fontSize: '13px',
+    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.6)'
   },
 
+  // 加载条（暗色）
   LoadingBar: {
-    color: '#818CF8', // 暗色模式使用更亮的紫色
-    colorError: '#EF4444', // 错误色保持红色
-    colorLoading: '#818CF8', // 加载中也是亮紫色
+    color: '#A78BFA', // 电光紫
+    colorError: '#F87171', // 柔和红
+    colorLoading: '#A78BFA',
     height: '2px'
   }
 }

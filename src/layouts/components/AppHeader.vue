@@ -1,15 +1,38 @@
 <script setup lang="ts">
-import { computed, h } from 'vue'
+import { computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { NLayoutHeader, NButton, NIcon, NBreadcrumb, NBreadcrumbItem, NDropdown, NAvatar, NSpace } from 'naive-ui'
-import { MenuOutline, SearchOutline, NotificationsOutline, PersonOutline, SettingsOutline, LogOutOutline } from '@vicons/ionicons5'
+import {
+  SearchOutline,
+  NotificationsOutline,
+  PersonOutline,
+  SettingsOutline,
+  LogOutOutline,
+  ExpandOutline,
+  ContractOutline,
+  RefreshOutline
+} from '@vicons/ionicons5'
+import { MenuFoldOutlined, MenuUnfoldOutlined } from '@vicons/antd'
+import { useFullscreen } from '@vueuse/core'
 import { useLayoutStore } from '@/stores/modules/layout'
 import { useUserStore } from '@/stores/modules/user'
 import { dialog, message } from '@/hooks/useNaiveApi'
+import { useTheme } from '@/hooks/useTheme'
 
 const router = useRouter()
 const layoutStore = useLayoutStore()
 const userStore = useUserStore()
+
+// 使用主题 Hook
+const { themeIcon, isDark, toggleTheme } = useTheme()
+
+// 使用全屏功能（VueUse）
+const { isFullscreen, toggle: toggleFullscreen } = useFullscreen(document.documentElement)
+
+// 全屏图标切换
+const fullscreenIcon = computed(() => (isFullscreen.value ? ContractOutline : ExpandOutline))
+
+// 折叠按钮图标（展开状态 → MenuFoldOutlined，折叠状态 → MenuUnfoldOutlined）
+const sidebarToggleIcon = computed(() => (layoutStore.isSidebarCollapsed ? MenuUnfoldOutlined : MenuFoldOutlined))
 
 // 切换侧边栏
 const handleToggleSidebar = () => {
@@ -91,41 +114,61 @@ const handleSearch = () => {
   console.log('Search')
 }
 
+// 刷新当前页面
+const handleRefresh = () => {
+  // 强制组件重新加载（添加临时 query 参数触发路由变化）
+  const route = router.currentRoute.value
+  const query = { ...route.query, _t: Date.now() }
+  router.replace({ query })
+}
+
 // 通知功能（待实现）
 const handleNotification = () => {
   console.log('Notification')
 }
-
-// 主题切换（待实现）
-const handleToggleTheme = () => {
-  console.log('Toggle theme')
-}
-
-// 全屏切换（待实现）
-const handleToggleFullscreen = () => {
-  console.log('Toggle fullscreen')
-}
 </script>
 
 <template>
-  <n-layout-header bordered class="h-14 px-4 flex items-center justify-between bg-white border-b border-slate-200 flex-shrink-0">
-    <!-- 左侧：折叠按钮 + 面包屑 -->
+  <n-layout-header
+    bordered
+    class="h-14 px-4 flex items-center justify-between bg-white dark:bg-[#161B22] border-b border-slate-200 dark:border-[#30363D] flex-shrink-0"
+  >
+    <!-- 左侧：折叠按钮 + 刷新按钮 + 面包屑 -->
     <div class="flex items-center space-x-4 flex-1 min-w-0">
       <!-- 折叠按钮 -->
-      <n-button quaternary circle size="small" class="hover:bg-slate-50 transition-colors flex-shrink-0" @click="handleToggleSidebar">
-        <template #icon>
-          <n-icon>
-            <MenuOutline />
-          </n-icon>
+      <n-tooltip placement="bottom">
+        <template #trigger>
+          <n-button quaternary circle size="small" :focusable="false" @click="handleToggleSidebar">
+            <template #icon>
+              <n-icon>
+                <component :is="sidebarToggleIcon" />
+              </n-icon>
+            </template>
+          </n-button>
         </template>
-      </n-button>
+        {{ layoutStore.isSidebarCollapsed ? '展开侧边栏' : '折叠侧边栏' }}
+      </n-tooltip>
+
+      <!-- 刷新按钮 -->
+      <n-tooltip placement="bottom">
+        <template #trigger>
+          <n-button quaternary circle size="small" :focusable="false" @click="handleRefresh">
+            <template #icon>
+              <n-icon>
+                <RefreshOutline />
+              </n-icon>
+            </template>
+          </n-button>
+        </template>
+        刷新当前页面
+      </n-tooltip>
 
       <!-- 面包屑 -->
       <n-breadcrumb v-if="showBreadcrumb" class="text-sm flex-1">
         <n-breadcrumb-item
           v-for="(item, index) in breadcrumbs"
           :key="item.path"
-          class="cursor-pointer hover:text-blue-600 transition-colors"
+          class="cursor-pointer transition-colors"
           @click="index < breadcrumbs.length - 1 && router.push(item.path)"
         >
           {{ item.name }}
@@ -134,47 +177,72 @@ const handleToggleFullscreen = () => {
     </div>
 
     <!-- 右侧：功能按钮 -->
-    <n-space :size="8">
+    <n-space :size="8" class="items-center">
       <!-- 搜索框（Tailwind 响应式：平板及以上显示） -->
-      <div class="hidden md:flex items-center space-x-2 px-3 py-1.5 bg-slate-50 rounded-lg border border-slate-200 hover:border-slate-300 transition-colors cursor-pointer" @click="handleSearch">
-        <n-icon class="text-slate-400">
+      <div
+        class="hidden md:flex items-center h-8 px-3 space-x-2 text-slate-700 dark:text-[#C9D1D9] bg-slate-50 dark:bg-[#0D1117] rounded-lg border border-slate-200 dark:border-[#30363D] hover:border-slate-300 dark:hover:border-[#8B949E] transition-colors cursor-pointer"
+        @click="handleSearch"
+      >
+        <n-icon class="text-slate-400 opacity-60">
           <SearchOutline />
         </n-icon>
         <input
           type="text"
           placeholder="搜索..."
-          class="bg-transparent border-none outline-none text-sm text-slate-700 placeholder-slate-400 w-32 lg:w-40"
+          class="bg-transparent border-none outline-none text-sm placeholder-slate-400 dark:placeholder-[#6E7681] w-32 lg:w-40 h-full"
           readonly
         />
       </div>
 
       <!-- 通知按钮 -->
-      <n-button quaternary circle size="small" class="relative hover:bg-slate-50 transition-colors" @click="handleNotification">
+      <n-button quaternary circle size="small" :focusable="false" @click="handleNotification">
         <template #icon>
-          <n-icon>
-            <NotificationsOutline />
-          </n-icon>
+          <n-badge dot processing>
+            <n-icon>
+              <NotificationsOutline />
+            </n-icon>
+          </n-badge>
         </template>
-        <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
       </n-button>
 
-      <!-- 主题切换 -->
-      <n-button quaternary circle size="small" class="hover:bg-slate-50 transition-colors" @click="handleToggleTheme">
-        <template #icon>
-          <n-icon>
-            <MenuOutline />
-          </n-icon>
+      <!-- 全屏切换 -->
+      <n-tooltip placement="bottom">
+        <template #trigger>
+          <n-button quaternary circle size="small" :focusable="false" @click="toggleFullscreen">
+            <template #icon>
+              <n-icon>
+                <component :is="fullscreenIcon" />
+              </n-icon>
+            </template>
+          </n-button>
         </template>
-      </n-button>
+        {{ isFullscreen ? '退出全屏' : '全屏' }}
+      </n-tooltip>
+
+      <!-- 主题切换 -->
+      <n-tooltip placement="bottom">
+        <template #trigger>
+          <n-button quaternary circle size="small" :focusable="false" @click="toggleTheme">
+            <template #icon>
+              <n-icon>
+                <component :is="themeIcon" />
+              </n-icon>
+            </template>
+          </n-button>
+        </template>
+        {{ isDark ? '切换到亮色模式' : '切换到暗色模式' }}
+      </n-tooltip>
 
       <!-- 用户下拉菜单 -->
       <n-dropdown :options="userDropdownOptions" @select="handleUserDropdownClick">
-        <div class="flex items-center space-x-2 px-3 py-1.5 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors">
+        <div
+          class="flex items-center h-8 px-3 space-x-2 text-slate-700 dark:text-[#C9D1D9] rounded-lg hover:bg-slate-50 dark:hover:bg-white/10 cursor-pointer transition-colors"
+        >
           <n-avatar v-if="avatar" round :size="28" :src="avatar" />
           <n-avatar v-else round :size="28" class="bg-blue-600">
             {{ username.charAt(0).toUpperCase() }}
           </n-avatar>
-          <span class="text-sm font-medium text-slate-700 hidden lg:block">
+          <span class="text-sm font-medium hidden lg:block">
             {{ username }}
           </span>
         </div>

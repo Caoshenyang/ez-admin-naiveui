@@ -1,21 +1,18 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { lightTheme } from './settings/naiveui-theme'
 import { zhCN, dateZhCN } from '@/settings/naiveui-locale'
+import { useTheme } from '@/hooks/useTheme'
 
-const theme = ref(lightTheme)
+// 使用主题 Hook
+const { theme, themeOverrides } = useTheme()
 
 // 全局 Loading 状态（预留接口，可用于特殊加载场景）
 const isGlobalLoading = ref(false)
 const loadingText = ref('加载中...')
-
-// const toggleTheme = () => {
-//   theme.value = theme.value === lightTheme ? darkTheme : lightTheme
-// }
 </script>
 
 <template>
-  <n-config-provider :theme-overrides="theme" :locale="zhCN" :date-locale="dateZhCN">
+  <n-config-provider :theme="theme" :theme-overrides="themeOverrides" :locale="zhCN" :date-locale="dateZhCN">
     <n-loading-bar-provider>
       <n-message-provider>
         <n-dialog-provider>

@@ -130,7 +130,7 @@ const showTabs = computed(() => layoutStore.showTabs && layoutStore.tabs.length 
 </script>
 
 <template>
-  <div v-if="showTabs" class="h-10 bg-white border-b border-slate-200 flex items-center px-2 flex-shrink-0">
+  <div v-if="showTabs" class="h-10 bg-white dark:bg-[#0D1117] border-b border-slate-200 dark:border-[#30363D] flex items-center px-2 flex-shrink-0">
     <!-- 标签项列表 -->
     <div class="flex items-center space-x-1 flex-1 overflow-hidden">
       <n-dropdown
@@ -141,21 +141,21 @@ const showTabs = computed(() => layoutStore.showTabs && layoutStore.tabs.length 
         @select="(key: string) => handleSelectDropdown(tab.key as string, key)"
       >
         <div
-          class="flex items-center space-x-2 px-3 py-1.5 text-sm rounded-t-lg border transition-colors cursor-pointer group/tab"
+          class="flex items-center space-x-2 px-3 py-1.5 text-sm text-slate-700 dark:text-[#C9D1D9] rounded-t-lg border transition-colors cursor-pointer group/tab"
           :class="
             activeKey === tab.key
-              ? 'bg-white border-slate-200 border-b-0 border-t-2 border-t-blue-600'
-              : 'bg-slate-50 border-transparent hover:bg-slate-100'
+              ? 'bg-white dark:bg-[#161B22] border-slate-200 dark:border-[#30363D] border-b-0 border-t-2 border-t-blue-600 dark:border-t-[#A78BFA]'
+              : 'bg-slate-50 dark:bg-[#0D1117] border-transparent hover:bg-slate-100 dark:hover:bg-white/5'
           "
           @click="handleUpdateValue(tab.key as string)"
         >
           <span class="whitespace-nowrap">{{ tab.label }}</span>
           <button
             v-if="tab.closable"
-            class="w-4 h-4 rounded-full hover:bg-red-100 flex items-center justify-center opacity-0 group-hover/tab:opacity-100 transition-opacity"
+            class="w-4 h-4 rounded-full hover:bg-red-100 dark:hover:bg-red-900/30 flex items-center justify-center opacity-0 group-hover/tab:opacity-100 transition-opacity"
             @click.stop="handleClose(tab.key as string)"
           >
-            <span class="text-slate-400 hover:text-red-500 text-xs">×</span>
+            <span class="text-slate-400 opacity-60 hover:text-red-500 text-xs">×</span>
           </button>
         </div>
       </n-dropdown>
@@ -166,11 +166,11 @@ const showTabs = computed(() => layoutStore.showTabs && layoutStore.tabs.length 
       <n-button
         text
         size="tiny"
-        class="hover:bg-slate-50 rounded px-2 py-1 transition-colors"
+        class="hover:bg-slate-50 dark:hover:bg-white/10 rounded px-2 py-1 transition-colors"
         @click="() => handleSelectDropdown('', 'closeAll')"
       >
         <template #icon>
-          <span class="text-slate-400 text-sm">关闭全部</span>
+          <span class="text-slate-400 opacity-60 text-sm">关闭全部</span>
         </template>
       </n-button>
     </div>
