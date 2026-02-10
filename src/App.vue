@@ -19,6 +19,7 @@ const loadingText = ref('加载中...')
           <n-notification-provider>
             <!-- 全局 Loading 遮罩 -->
             <n-spin :show="isGlobalLoading" :description="loadingText">
+              <n-global-style />
               <router-view />
             </n-spin>
           </n-notification-provider>
