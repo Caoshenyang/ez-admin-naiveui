@@ -28,7 +28,7 @@ const handleLoginClick = async () => {
 <template>
   <div class="p-6 space-y-6">
     <!-- 欢迎标题 -->
-    <div class="bg-linear-to-r from-blue-500 to-purple-600 rounded-lg p-6 text-white">
+    <div class="bg-linear-to-r from-blue-500 to-purple-600 rounded-lg p-6 text-white" v-once>
       <h1 class="text-3xl font-bold">欢迎使用 Ez Admin</h1>
       <p class="mt-2 text-blue-100">基于 Vue 3 + NaiveUI + Tailwind CSS 的高效率后台管理系统</p>
     </div>

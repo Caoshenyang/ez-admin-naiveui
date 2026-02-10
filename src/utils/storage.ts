@@ -29,6 +29,8 @@ class Storage {
    * @param key 键名
    * @param defaultValue 默认值（可选）
    * @returns 存储的值或默认值
+   * @note 类型说明：由于 JSON.parse 返回 any，这里需要类型断言。
+   *       调用者负责确保存储的数据类型与泛型参数 T 匹配。
    */
   get<T>(key: string, defaultValue?: T): T | null {
     try {
@@ -36,7 +38,10 @@ class Storage {
       if (data === null) {
         return defaultValue ?? null
       }
-      return JSON.parse(data) as T
+      // JSON.parse 返回 any，需要断言为泛型类型 T
+      // 调用者应确保存储的数据与 T 类型一致
+      const parsed = JSON.parse(data)
+      return parsed as T
     } catch (error) {
       console.error(`Storage.get error: ${key}`, error)
       return defaultValue ?? null

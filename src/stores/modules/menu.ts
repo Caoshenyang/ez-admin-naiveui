@@ -49,9 +49,10 @@ export const useMenuStore = defineStore('menu', () => {
     const menus = localStorage.get<MenuOption[]>(CACHE_KEY)
     const pathMapData = localStorage.get<Record<string, string>>(`${CACHE_KEY}-path-map`)
 
-    if (menus && pathMapData) {
+    // 明确类型守卫，确保 menus 和 pathMapData 都存在
+    if (menus !== null && menus !== undefined && pathMapData !== null && pathMapData !== undefined) {
       return {
-        menus: menus as MenuOption[],
+        menus,
         pathMap: new Map(Object.entries(pathMapData))
       }
     }

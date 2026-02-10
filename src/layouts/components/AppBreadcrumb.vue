@@ -17,17 +17,17 @@ const layoutStore = useLayoutStore()
 const showBreadcrumb = computed(() => layoutStore.showBreadcrumb ?? true)
 
 // 面包屑数据（根据当前路由生成）
-const breadcrumbs = computed(() => {
+const breadcrumbs = computed<BreadcrumbItem[]>(() => {
   const matched = route.matched
 
   // 去除 Layout 父路由，过滤没有 title 或 hidden 的路由
   const list = matched
     .slice(1)
-    .filter(item => item.meta?.title && !item.meta.hidden)
-    .map(item => ({
+    .filter((item) => item.meta?.title && !item.meta.hidden)
+    .map<BreadcrumbItem>((item) => ({
       name: String(item.meta?.title || item.name || '未知页面'),
       path: item.path === '' ? '/' : item.path // 空字符串转为 /
-    })) as BreadcrumbItem[]
+    }))
 
   // 如果没有面包屑项（理论上不会发生），默认显示首页
   return list.length > 0 ? list : [{ name: '首页', path: '/' }]

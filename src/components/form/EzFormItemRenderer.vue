@@ -283,20 +283,21 @@ const iconPickerValue = computed({
     />
 
     <!-- 单选组 -->
-    <NRadioGroup
-      v-else-if="item.type === 'radio' || item.type === 'radio-group'"
-      v-model:value="radioValue"
-      v-bind="mergedProps"
-    >
-      <NRadio
-        v-for="opt in options"
-        :key="opt.value"
-        :value="opt.value"
-        :disabled="opt.disabled"
+    <template v-if="item.type === 'radio' || item.type === 'radio-group'">
+      <NRadioGroup
+        v-model:value="radioValue"
+        v-bind="mergedProps"
       >
-        {{ opt.label }}
-      </NRadio>
-    </NRadioGroup>
+        <NRadio
+          v-for="opt in options"
+          :key="opt.value"
+          :value="opt.value"
+          :disabled="opt.disabled"
+        >
+          {{ opt.label }}
+        </NRadio>
+      </NRadioGroup>
+    </template>
 
     <!-- 复选框 -->
     <NCheckbox
@@ -308,20 +309,21 @@ const iconPickerValue = computed({
     </NCheckbox>
 
     <!-- 复选框组 -->
-    <NCheckboxGroup
-      v-else-if="item.type === 'checkbox-group'"
-      v-model:value="checkboxGroupValue"
-      v-bind="mergedProps"
-    >
-      <NCheckbox
-        v-for="opt in options"
-        :key="opt.value"
-        :value="opt.value"
-        :disabled="opt.disabled"
+    <template v-if="item.type === 'checkbox-group'">
+      <NCheckboxGroup
+        v-model:value="checkboxGroupValue"
+        v-bind="mergedProps"
       >
-        {{ opt.label }}
-      </NCheckbox>
-    </NCheckboxGroup>
+        <NCheckbox
+          v-for="opt in options"
+          :key="opt.value"
+          :value="opt.value"
+          :disabled="opt.disabled"
+        >
+          {{ opt.label }}
+        </NCheckbox>
+      </NCheckboxGroup>
+    </template>
 
     <!-- 多行文本 -->
     <NInput

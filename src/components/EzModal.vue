@@ -32,9 +32,9 @@ interface Props extends EzModalProps {
   /** 是否显示底部操作按钮 */
   showAction?: boolean
   /** 确认按钮类型 */
-  positiveType?: 'default' | 'tertiary' | 'success' | 'warning' | 'error'
+  positiveType?: ButtonProps['type']
   /** 取消按钮类型 */
-  negativeType?: 'default' | 'tertiary' | 'success' | 'warning' | 'error'
+  negativeType?: ButtonProps['type']
   /** 弹窗容器类名 */
   class?: string
   /** 弹窗容器样式 */
@@ -111,8 +111,8 @@ const modalStyle = computed<CSSProperties>(() => {
     :title="title"
     :positive-text="showAction ? positiveText : undefined"
     :negative-text="showAction ? negativeText : undefined"
-    :positive-button-props="{ type: positiveType as ButtonProps['type'] }"
-    :negative-button-props="{ type: negativeType as ButtonProps['type'] }"
+    :positive-button-props="{ type: positiveType }"
+    :negative-button-props="{ type: negativeType }"
     @positive-click="handlePositiveClick"
     @negative-click="handleNegativeClick"
     @close="handleClose"

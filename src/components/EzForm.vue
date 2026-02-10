@@ -197,6 +197,7 @@ defineExpose<EzFormInstance>({
           v-for="item in visibleItems"
           :key="item.field"
           v-bind="getItemGridProps(item)"
+          v-memo="[item.field, item.show, item.disabled]"
         >
           <!-- 自定义插槽 -->
           <slot
@@ -230,10 +231,10 @@ defineExpose<EzFormInstance>({
         :justify="actionAlign === 'left' ? 'start' : actionAlign === 'center' ? 'center' : 'end'"
       >
         <slot name="actions" :values="formValues" :submit="handleSubmit" :reset="handleReset">
-          <NButton type="primary" :loading="loading" @click="handleSubmit">
+          <NButton type="primary" :loading="loading" @click.prevent="handleSubmit">
             {{ submitText }}
           </NButton>
-          <NButton v-if="resetText" @click="handleReset">
+          <NButton v-if="resetText" @click.prevent="handleReset">
             {{ resetText }}
           </NButton>
         </slot>
