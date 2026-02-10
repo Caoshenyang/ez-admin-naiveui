@@ -244,7 +244,7 @@ export const useLayoutStore = defineStore(
     persist: {
       key: 'layout-store',
       storage: localStorage,
-      pick: ['tabs', 'activeTab', 'layoutConfig'] // 直接持久化所有 tabs（包括首页）
+      pick: ['layoutConfig'] // 只持久化布局配置，不持久化标签页（标签页是会话级别的）
     }
   }
 )

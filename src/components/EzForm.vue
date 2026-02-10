@@ -45,6 +45,7 @@ const initFormValues = () => {
 }
 
 // 监听外部 modelValue 变化（单向同步：外部 → 内部）
+// 使用深度监听以支持嵌套表单字段对象的完整同步
 watch(
   () => props.modelValue,
   (newVal) => {

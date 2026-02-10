@@ -3,10 +3,6 @@
  * 封装 localStorage 和 sessionStorage，支持类型安全
  */
 
-interface StorageData {
-  [key: string]: any
-}
-
 class Storage {
   private storage: globalThis.Storage
 
@@ -15,9 +11,9 @@ class Storage {
   }
 
   /**
-   * 设置存储
+   * 设置存储（支持泛型）
    * @param key 键名
-   * @param value 值
+   * @param value 值（支持任意类型）
    */
   set<T>(key: string, value: T): void {
     try {
@@ -29,9 +25,10 @@ class Storage {
   }
 
   /**
-   * 获取存储
+   * 获取存储（支持泛型）
    * @param key 键名
-   * @param defaultValue 默认值
+   * @param defaultValue 默认值（可选）
+   * @returns 存储的值或默认值
    */
   get<T>(key: string, defaultValue?: T): T | null {
     try {

@@ -93,8 +93,8 @@ export const useMenuStore = defineStore('menu', () => {
 
   // 根据路径查找菜单 key
   function findMenuKeyByPath(path: string): string | null {
-    // 首页特殊处理（首页路由 path 为空字符串或 /）
-    if (path === '' || path === '/') return 'home'
+    // 首页特殊处理（首页路由为根路径）
+    if (path === '/' || path === '') return 'home'
 
     // 从动态菜单映射中查找
     for (const [key, menuPath] of menuPathMap.value) {

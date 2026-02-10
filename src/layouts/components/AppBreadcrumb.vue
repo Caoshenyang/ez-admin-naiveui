@@ -3,46 +3,34 @@ import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useLayoutStore } from '@/stores/modules/layout'
 
+// 面包屑项类型定义
+interface BreadcrumbItem {
+  name: string
+  path: string
+}
+
 const route = useRoute()
 const router = useRouter()
 const layoutStore = useLayoutStore()
 
-// 是否显示面包屑
-const showBreadcrumb = computed(() => {
-  const value = layoutStore.showBreadcrumb
-  // 如果配置未初始化（undefined），默认显示面包屑
-  return value ?? true
-})
+// 是否显示面包屑（默认 true）
+const showBreadcrumb = computed(() => layoutStore.showBreadcrumb ?? true)
 
 // 面包屑数据（根据当前路由生成）
 const breadcrumbs = computed(() => {
   const matched = route.matched
-  let breadcrumbsList: Array<{ name: string; path: string }> = []
 
-  // 特殊处理：如果只有 Layout 父路由，说明是首页
-  if (matched.length === 1 && matched[0]?.name === 'Layout' && route.path === '/') {
-    // 手动添加首页面包屑
-    breadcrumbsList = [{ name: '首页', path: '/' }]
-  } else {
-    // 正常情况：去除根节点并过滤没有 title 的路由
-    breadcrumbsList = matched
-      .slice(1)
-      .filter((item) => item.meta?.title && !item.meta.hidden)
-      .map((item) => ({
-        name: item.meta?.title || item.name,
-        path: item.path
-      }))
-  }
+  // 去除 Layout 父路由，过滤没有 title 或 hidden 的路由
+  const list = matched
+    .slice(1)
+    .filter(item => item.meta?.title && !item.meta.hidden)
+    .map(item => ({
+      name: String(item.meta?.title || item.name || '未知页面'),
+      path: item.path === '' ? '/' : item.path // 空字符串转为 /
+    })) as BreadcrumbItem[]
 
-  // 调试日志
-  if (import.meta.env.DEV && matched.length > 0) {
-    console.log('[AppBreadcrumb] route.path:', route.path)
-    console.log('[AppBreadcrumb] route.matched:', matched)
-    console.log('[AppBreadcrumb] breadcrumbsList:', breadcrumbsList)
-    console.log('[AppBreadcrumb] showBreadcrumb:', showBreadcrumb.value)
-  }
-
-  return breadcrumbsList
+  // 如果没有面包屑项（理论上不会发生），默认显示首页
+  return list.length > 0 ? list : [{ name: '首页', path: '/' }]
 })
 
 // 处理面包屑点击
@@ -59,7 +47,10 @@ function handleBreadcrumbClick(path: string, index: number) {
     <n-breadcrumb-item
       v-for="(item, index) in breadcrumbs"
       :key="item.path"
-      :class="{ 'cursor-pointer transition-colors': index < breadcrumbs.length - 1 }"
+      :class="{
+        'cursor-pointer transition-colors hover:text-primary': index < breadcrumbs.length - 1,
+        'cursor-default text-foreground/60': index === breadcrumbs.length - 1
+      }"
       @click="handleBreadcrumbClick(item.path, index)"
     >
       {{ item.name }}

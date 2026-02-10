@@ -73,7 +73,7 @@ export interface TabItem {
   /** 是否固定（不可关闭） */
   affix?: boolean
   /** 查询参数 */
-  query?: Record<string, any>
+  query?: Record<string, string | string[] | undefined>
 }
 
 /**

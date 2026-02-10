@@ -19,7 +19,7 @@ export const constantRoutes: RouteRecordRaw[] = [
     name: 'Layout',
     component: () => import('@/layouts/AppLayout.vue'),
     children: [
-      // 首页（根路径）
+      // 首页（根路径，使用空字符串匹配）
       {
         path: '',
         name: 'Home',

@@ -1,7 +1,7 @@
 /**
  * API 通用响应结构
  */
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   /** 状态码 */
   code: number
   /** 响应消息 */
@@ -25,7 +25,7 @@ export interface PageParams {
 /**
  * 分页响应数据
  */
-export interface PageData<T = any> {
+export interface PageData<T = unknown> {
   /** 数据列表 */
   list: T[]
   /** 总条数 */

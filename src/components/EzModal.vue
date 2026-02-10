@@ -5,6 +5,7 @@
 <script setup lang="ts">
 import { computed, type CSSProperties } from 'vue'
 import { NModal } from 'naive-ui'
+import type { ButtonProps } from 'naive-ui'
 import type { EzModalEmits, EzModalProps } from '@/types/modal'
 
 /**
@@ -110,8 +111,8 @@ const modalStyle = computed<CSSProperties>(() => {
     :title="title"
     :positive-text="showAction ? positiveText : undefined"
     :negative-text="showAction ? negativeText : undefined"
-    :positive-button-props="{ type: positiveType as any }"
-    :negative-button-props="{ type: negativeType as any }"
+    :positive-button-props="{ type: positiveType as ButtonProps['type'] }"
+    :negative-button-props="{ type: negativeType as ButtonProps['type'] }"
     @positive-click="handlePositiveClick"
     @negative-click="handleNegativeClick"
     @close="handleClose"

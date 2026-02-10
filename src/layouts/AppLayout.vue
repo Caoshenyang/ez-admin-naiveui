@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { watch, onMounted, onUnmounted } from 'vue'
+import { watch, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { NLayout, NLayoutContent, NDrawer } from 'naive-ui'
 import AppSidebar from './components/AppSidebar.vue'
 import AppHeader from './components/AppHeader.vue'
 import AppWorkTab from './components/AppWorkTab.vue'
 import { useLayoutStore } from '@/stores/modules/layout'
+import { useResize } from '@/composables/useResize'
 
 const route = useRoute()
 const layoutStore = useLayoutStore()
@@ -16,8 +17,8 @@ const mobileSidebarOpen = computed({
   set: (val) => layoutStore.setMobileSidebarOpen(val)
 })
 
-// 响应式处理
-const handleResize = () => {
+// 响应式处理（使用 composable）
+useResize(() => {
   const width = window.innerWidth
   if (width < 768) {
     layoutStore.setDevice('mobile')
@@ -25,7 +26,7 @@ const handleResize = () => {
   } else {
     layoutStore.setDevice('desktop')
   }
-}
+})
 
 // 监听路由变化，更新菜单状态
 watch(
@@ -41,15 +42,6 @@ watch(
   },
   { immediate: true }
 )
-
-onMounted(() => {
-  handleResize()
-  window.addEventListener('resize', handleResize)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('resize', handleResize)
-})
 </script>
 
 <template>
