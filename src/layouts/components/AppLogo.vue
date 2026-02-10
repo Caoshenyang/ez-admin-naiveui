@@ -13,12 +13,12 @@ const handleClick = () => {
 
 <template>
   <div
-    class="h-15 flex items-center justify-center px-4 border-b border-slate-200 dark:border-[#30363D] cursor-pointer active:scale-[0.98] transition-transform duration-150"
+    class="h-15 flex items-center justify-center px-4 border-b border-slate-200 dark:border-dark-border cursor-pointer active:scale-[0.98] transition-transform duration-150"
     @click="handleClick"
   >
     <div class="flex items-center gap-2 overflow-hidden">
       <!-- Logo 图标 -->
-      <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-[#5B6BF0] dark:bg-[#A78BFA] shadow-sm">
+      <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-primary-500 dark:bg-primary-dark-500 shadow-sm">
         <span class="text-white font-bold text-lg">E</span>
       </div>
 

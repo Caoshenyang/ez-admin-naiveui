@@ -1,67 +1,71 @@
 import type { GlobalThemeOverrides } from 'naive-ui'
 
 /**
- * NaiveUI 主题配置
+ * NaiveUI 主题配置（引用 Tailwind CSS 变量）
  *
  * 设计理念: 现代优雅风格
  * 参考: Linear, Vercel, Notion 等现代 SaaS 产品
  *
  * 颜色策略:
- * - 主色调: 蓝紫渐变 (#5B6BF0 + #8B5CF6) - 现代、科技感
+ * - 主色调: 蓝紫色系 (#5B6BF0 亮色 + #A78BFA 暗色) - 现代、科技感
  * - 亮色主题: 纯白侧边栏 + 清爽配色 - 明亮、通透
- * - 暗色主题: 极深黑蓝侧边栏 - 沉浸式、高端
- * - 成功/警告/错误: 柔和状态色 - 不刺眼
+ * - 暗色主题: GitHub 风格深色系 - 专业、护眼
+ * - 语义色: 标准语义色（成功=绿、警告=橙、错误=红）- 符合用户习惯
  *
  * 设计原则:
  * - 极简主义 - 减少视觉干扰
  * - 柔和对比 - 长时间使用不疲劳
  * - 微妙渐变 - 提升质感
  * - 圆润边角 - 现代感
+ *
+ * 技术实现:
+ * - 所有颜色引用 Tailwind CSS 变量（统一管理）
+ * - 修改主题只需修改 src/assets/styles/index.css
  */
 export const lightTheme: GlobalThemeOverrides = {
   // 通用配置
   common: {
-    primaryColor: '#5B6BF0', // 现代蓝紫
-    primaryColorHover: '#7C85F7',
-    primaryColorPressed: '#4A57D9',
-    primaryColorSuppl: '#5B6BF0',
+    primaryColor: 'var(--color-primary-500)',
+    primaryColorHover: 'var(--color-primary-600)',
+    primaryColorPressed: 'var(--color-primary-700)',
+    primaryColorSuppl: 'var(--color-primary-500)',
 
-    // 成功色 - 使用主题色（统一视觉风格）
-    successColor: '#5B6BF0', // 与主色一致
-    successColorHover: '#7C85F7', // 与主色 hover 一致
-    successColorPressed: '#4A57D9', // 与主色 pressed 一致
-    successColorSuppl: '#5B6BF0',
+    // 成功色 - 标准绿色（符合用户习惯）
+    successColor: 'var(--color-success-500)',
+    successColorHover: 'var(--color-success-400)',
+    successColorPressed: 'var(--color-success-600)',
+    successColorSuppl: 'var(--color-success-500)',
 
-    // 警告色 - 温暖橙
-    warningColor: '#F59E0B',
-    warningColorHover: '#FBBF24',
-    warningColorPressed: '#D97706',
-    warningColorSuppl: '#F59E0B',
+    // 警告色 - 琥珀色
+    warningColor: 'var(--color-warning-500)',
+    warningColorHover: 'var(--color-warning-400)',
+    warningColorPressed: 'var(--color-warning-600)',
+    warningColorSuppl: 'var(--color-warning-500)',
 
     // 错误色 - 柔和红
-    errorColor: '#EF4444',
-    errorColorHover: '#F87171',
-    errorColorPressed: '#DC2626',
-    errorColorSuppl: '#EF4444',
+    errorColor: 'var(--color-error-500)',
+    errorColorHover: 'var(--color-error-400)',
+    errorColorPressed: 'var(--color-error-600)',
+    errorColorSuppl: 'var(--color-error-500)',
 
     // 信息色 - 清亮蓝
-    infoColor: '#3B82F6',
-    infoColorHover: '#60A5FA',
-    infoColorPressed: '#2563EB',
-    infoColorSuppl: '#3B82F6',
+    infoColor: 'var(--color-info-500)',
+    infoColorHover: 'var(--color-info-400)',
+    infoColorPressed: 'var(--color-info-600)',
+    infoColorSuppl: 'var(--color-info-500)',
 
     // 文字颜色 - 柔和层次
-    textColorBase: '#64748B', // slate-500
-    textColor1: '#0F172A', // slate-900 (标题)
-    textColor2: '#475569', // slate-600 (正文)
-    textColor3: '#94A3B8', // slate-400 (次要)
+    textColorBase: 'var(--color-slate-500)',
+    textColor1: 'var(--color-slate-900)', // 标题
+    textColor2: 'var(--color-slate-600)', // 正文
+    textColor3: 'var(--color-slate-400)', // 次要
 
     // 边框颜色 - 极淡灰色
-    borderColor: '#E2E8F0', // slate-200
-    dividerColor: '#F1F5F9', // slate-100
+    borderColor: 'var(--color-slate-200)',
+    dividerColor: 'var(--color-slate-100)',
 
     // 背景颜色
-    bodyColor: '#F8FAFC', // slate-50
+    bodyColor: 'var(--color-slate-50)',
     cardColor: '#FFFFFF',
     modalColor: '#FFFFFF',
     popoverColor: '#FFFFFF',
@@ -78,72 +82,67 @@ export const lightTheme: GlobalThemeOverrides = {
 
   // 布局组件（亮色主题 - 纯白侧边栏）
   Layout: {
-    color: '#F8FAFC', // 浅灰背景
-    siderColor: '#FFFFFF', // 纯白侧边栏（亮色主题）
-    headerColor: '#FFFFFF', // 白色顶栏
+    color: 'var(--color-slate-50)',
+    siderColor: '#FFFFFF',
+    headerColor: '#FFFFFF',
     footerColor: '#FFFFFF',
-    textColor: '#64748B', // slate-500 (侧边栏文字)
-    textColorChild: '#94A3B8', // slate-400 (侧边栏子项)
-    textColorHover: '#5B6BF0', // 主色 hover
-    dividerColor: '#F1F5F9' // 极淡分隔线
+    textColor: 'var(--color-slate-500)',
+    textColorChild: 'var(--color-slate-400)',
+    textColorHover: 'var(--color-primary-500)',
+    dividerColor: 'var(--color-slate-100)'
   },
 
   // 菜单组件（亮色主题）
   Menu: {
-    itemTextColor: '#475569', // slate-600（加深，更清晰）
-    itemTextColorHover: '#5B6BF0', // 主色 hover
-    itemTextColorActive: '#5B6BF0', // 主色 active
-    itemTextColorChildActive: '#5B6BF0', // 主色（子菜单激活时父节点高亮）
-    itemIconColor: '#64748B', // slate-500（加深图标）
-    itemIconColorHover: '#5B6BF0', // 主色 hover
-    itemIconColorActive: '#5B6BF0', // 主色 active
-    itemIconColorChildActive: '#5B6BF0', // 主色（子菜单激活时父节点图标高亮）
-    itemColorActive: '#EEF2FF', // 极淡蓝紫背景
-    itemColorHover: '#F8FAFC', // 浅灰 hover
-    arrowColor: '#64748B', // slate-500（加深箭头）
-    arrowColorHover: '#5B6BF0',
-    arrowColorChildActive: '#5B6BF0', // 主色（子菜单激活时父节点箭头高亮）
-    dividerColor: '#F1F5F9' // 极淡分隔线
+    itemTextColor: 'var(--color-slate-600)',
+    itemTextColorHover: 'var(--color-primary-500)',
+    itemTextColorActive: 'var(--color-primary-500)',
+    itemTextColorChildActive: 'var(--color-primary-500)',
+    itemIconColor: 'var(--color-slate-500)',
+    itemIconColorHover: 'var(--color-primary-500)',
+    itemIconColorActive: 'var(--color-primary-500)',
+    itemIconColorChildActive: 'var(--color-primary-500)',
+    itemColorActive: 'var(--color-primary-50)',
+    itemColorHover: 'var(--color-slate-50)',
+    arrowColor: 'var(--color-slate-500)',
+    arrowColorHover: 'var(--color-primary-500)',
+    arrowColorChildActive: 'var(--color-primary-500)',
+    dividerColor: 'var(--color-slate-100)'
   },
 
   // 标签页组件
   Tabs: {
-    tabTextColorBar: '#94A3B8', // slate-400
-    tabTextColorActiveBar: '#5B6BF0', // 主色
-    tabTextColorHoverBar: '#64748B',
-    tabBarColor: '#E2E8F0',
+    tabTextColorBar: 'var(--color-slate-400)',
+    tabTextColorActiveBar: 'var(--color-primary-500)',
+    tabTextColorHoverBar: 'var(--color-slate-500)',
+    tabBarColor: 'var(--color-slate-200)',
     tabColorBar: '#FFFFFF',
-    tabColorSegment: '#F1F5F9',
+    tabColorSegment: 'var(--color-slate-100)',
     tabColorSegmentActive: '#FFFFFF',
-    tabTextColorSegment: '#64748B',
-    tabTextColorActiveSegment: '#5B6BF0',
+    tabTextColorSegment: 'var(--color-slate-500)',
+    tabTextColorActiveSegment: 'var(--color-primary-500)',
     tabGap: '12px',
     tabPaddingLarge: '12px 16px'
   },
 
   // 按钮组件
   Button: {
-    // 普通按钮文字颜色
-    textColor: '#475569', // slate-600
-    textColorHover: '#5B6BF0', // 主色 hover
-    textColorPressed: '#4A57D9', // 主色 pressed
-    textColorFocus: '#5B6BF0', // 主色 focus
-    textColorDisabled: '#CBD5E1', // slate-300
-    // 普通按钮边框
-    border: '1px solid #CBD5E1', // slate-300 (更明显)
-    borderHover: '1px solid #5B6BF0', // 主色 hover
-    borderPressed: '1px solid #4A57D9', // 主色 pressed
-    borderFocus: '1px solid #5B6BF0', // 主色 focus
-    // 主要按钮文字（保持白色）
+    textColor: 'var(--color-slate-600)',
+    textColorHover: 'var(--color-primary-500)',
+    textColorPressed: 'var(--color-primary-600)',
+    textColorFocus: 'var(--color-primary-500)',
+    textColorDisabled: 'var(--color-slate-300)',
+    border: '1px solid var(--color-slate-300)',
+    borderHover: '1px solid var(--color-primary-500)',
+    borderPressed: '1px solid var(--color-primary-600)',
+    borderFocus: '1px solid var(--color-primary-500)',
     textColorPrimary: '#FFFFFF',
     textColorHoverPrimary: '#FFFFFF',
     textColorPressedPrimary: '#FFFFFF',
     textColorFocusPrimary: '#FFFFFF',
-    // 圆角和内边距
     borderRadius: '8px',
     paddingLarge: '10px 20px',
-    // 禁用状态
-    colorDisabled: '#F1F5F9',
+    colorDisabled: 'var(--color-slate-100)',
     colorDisabledPrimary: 'rgba(91, 107, 240, 0.5)'
   },
 
@@ -151,29 +150,29 @@ export const lightTheme: GlobalThemeOverrides = {
   Input: {
     color: '#FFFFFF',
     colorFocus: '#FFFFFF',
-    textColor: '#1E293B',
-    placeholderColor: '#94A3B8',
-    border: '1px solid #E2E8F0',
-    borderHover: '1px solid #CBD5E1',
-    borderFocus: '1px solid #5B6BF0',
+    textColor: 'var(--color-slate-800)',
+    placeholderColor: 'var(--color-slate-400)',
+    border: '1px solid var(--color-slate-200)',
+    borderHover: '1px solid var(--color-slate-300)',
+    borderFocus: '1px solid var(--color-primary-500)',
     boxShadowFocus: '0 0 0 3px rgb(91, 107, 240, 0.08)',
-    colorDisabled: '#F8FAFC',
-    textColorDisabled: '#94A3B8',
-    borderDisabled: '1px solid #E2E8F0',
-    placeholderColorDisabled: '#CBD5E1',
+    colorDisabled: 'var(--color-slate-50)',
+    textColorDisabled: 'var(--color-slate-400)',
+    borderDisabled: '1px solid var(--color-slate-200)',
+    placeholderColorDisabled: 'var(--color-slate-300)',
     colorActive: '#FFFFFF',
     borderRadius: '8px'
   },
 
   // 表格组件
   DataTable: {
-    thColor: '#F8FAFC', // 表头浅灰
-    thTextColor: '#475569', // 表头文字
+    thColor: 'var(--color-slate-50)',
+    thTextColor: 'var(--color-slate-600)',
     thFontWeight: '600',
     tdColor: '#FFFFFF',
-    tdTextColor: '#1E293B',
-    tdTextColorHover: '#475569',
-    borderColor: '#F1F5F9',
+    tdTextColor: 'var(--color-slate-800)',
+    tdTextColorHover: 'var(--color-slate-600)',
+    borderColor: 'var(--color-slate-100)',
     borderRadius: '10px',
     thPadding: '12px 16px',
     tdPadding: '12px 16px'
@@ -183,17 +182,17 @@ export const lightTheme: GlobalThemeOverrides = {
   Card: {
     color: '#FFFFFF',
     colorModal: '#FFFFFF',
-    colorTarget: '#F8FAFC',
+    colorTarget: 'var(--color-slate-50)',
     colorEmbedded: '#FFFFFF',
     colorEmbeddedModal: '#FFFFFF',
-    borderColor: '#F1F5F9',
+    borderColor: 'var(--color-slate-100)',
     borderRadius: '12px'
   },
 
   // 弹窗组件
   Modal: {
     color: '#FFFFFF',
-    textColor: '#1E293B',
+    textColor: 'var(--color-slate-800)',
     borderRadius: '16px',
     boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.08), 0 8px 10px -6px rgb(0 0 0 / 0.08)'
   },
@@ -201,12 +200,12 @@ export const lightTheme: GlobalThemeOverrides = {
   // 下拉菜单
   Dropdown: {
     color: '#FFFFFF',
-    optionColorHover: '#F8FAFC',
-    optionTextColor: '#475569',
-    optionTextColorHover: '#5B6BF0',
-    optionIconColor: '#94A3B8',
-    optionIconColorHover: '#5B6BF0',
-    dividerColor: '#F1F5F9',
+    optionColorHover: 'var(--color-slate-50)',
+    optionTextColor: 'var(--color-slate-600)',
+    optionTextColorHover: 'var(--color-primary-500)',
+    optionIconColor: 'var(--color-slate-400)',
+    optionIconColorHover: 'var(--color-primary-500)',
+    dividerColor: 'var(--color-slate-100)',
     borderRadius: '10px',
     boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.08)',
     padding: '8px'
@@ -218,15 +217,15 @@ export const lightTheme: GlobalThemeOverrides = {
       InternalSelection: {
         color: '#FFFFFF',
         colorActive: '#FFFFFF',
-        textColor: '#1E293B',
-        placeholderColor: '#94A3B8',
-        border: '1px solid #E2E8F0',
-        borderHover: '1px solid #CBD5E1',
-        borderFocus: '1px solid #5B6BF0',
-        borderActive: '1px solid #5B6BF0',
+        textColor: 'var(--color-slate-800)',
+        placeholderColor: 'var(--color-slate-400)',
+        border: '1px solid var(--color-slate-200)',
+        borderHover: '1px solid var(--color-slate-300)',
+        borderFocus: '1px solid var(--color-primary-500)',
+        borderActive: '1px solid var(--color-primary-500)',
         boxShadowFocus: '0 0 0 3px rgb(91, 107, 240, 0.08)',
-        arrowColor: '#94A3B8',
-        colorDisabled: '#F8FAFC',
+        arrowColor: 'var(--color-slate-400)',
+        colorDisabled: 'var(--color-slate-50)',
         borderRadius: '8px'
       }
     }
@@ -235,23 +234,23 @@ export const lightTheme: GlobalThemeOverrides = {
   // 日期选择器
   DatePicker: {
     panelColor: '#FFFFFF',
-    panelTextColor: '#1E293B',
+    panelTextColor: 'var(--color-slate-800)',
     panelHeaderColor: '#FFFFFF',
-    panelActionColor: '#F8FAFC',
-    panelActionHoverColor: '#F1F5F9',
-    calendarDaysTextColor: '#475569',
-    calendarDaysTextColorHover: '#5B6BF0',
-    calendarDaysTextColorCurrent: '#5B6BF0',
-    calendarDaysColorCurrent: '#EEF2FF',
+    panelActionColor: 'var(--color-slate-50)',
+    panelActionHoverColor: 'var(--color-slate-100)',
+    calendarDaysTextColor: 'var(--color-slate-600)',
+    calendarDaysTextColorHover: 'var(--color-primary-500)',
+    calendarDaysTextColorCurrent: 'var(--color-primary-500)',
+    calendarDaysColorCurrent: 'var(--color-primary-50)',
     calendarDaysTextColorSelected: '#FFFFFF',
-    calendarDaysColorSelected: '#5B6BF0',
+    calendarDaysColorSelected: 'var(--color-primary-500)',
     borderRadius: '10px'
   },
 
   // 通知组件
   Notification: {
     color: '#FFFFFF',
-    textColor: '#475569',
+    textColor: 'var(--color-slate-600)',
     borderRadius: '10px',
     boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.08)'
   },
@@ -259,9 +258,9 @@ export const lightTheme: GlobalThemeOverrides = {
   // 消息提示
   Message: {
     color: '#FFFFFF',
-    textColor: '#475569',
+    textColor: 'var(--color-slate-600)',
     borderRadius: '8px',
-    iconColor: '#94A3B8',
+    iconColor: 'var(--color-slate-400)',
     boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.08)'
   },
 
@@ -272,7 +271,7 @@ export const lightTheme: GlobalThemeOverrides = {
 
   // 徽标
   Badge: {
-    color: '#EF4444',
+    color: 'var(--color-error-500)',
     textColor: '#FFFFFF',
     borderRadius: '12px'
   },
@@ -280,90 +279,90 @@ export const lightTheme: GlobalThemeOverrides = {
   // 进度条
   Progress: {
     borderRadius: '4px',
-    railColor: '#F1F5F9',
-    fillColor: '#5B6BF0',
-    fillColorSuccess: '#5B6BF0', // 与主题色一致
-    fillColorWarning: '#F59E0B',
-    fillColorError: '#EF4444'
+    railColor: 'var(--color-slate-100)',
+    fillColor: 'var(--color-primary-500)',
+    fillColorSuccess: 'var(--color-success-500)',
+    fillColorWarning: 'var(--color-warning-500)',
+    fillColorError: 'var(--color-error-500)'
   },
 
   // 开关
   Switch: {
-    railColor: '#E2E8F0',
-    railColorActive: '#5B6BF0',
+    railColor: 'var(--color-slate-200)',
+    railColorActive: 'var(--color-primary-500)',
     buttonColor: '#FFFFFF',
     buttonBoxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.08)'
   },
 
   // 复选框
   Checkbox: {
-    borderColor: '#CBD5E1',
-    borderColorChecked: '#5B6BF0',
-    borderColorDisabled: '#F1F5F9',
+    borderColor: 'var(--color-slate-300)',
+    borderColorChecked: 'var(--color-primary-500)',
+    borderColorDisabled: 'var(--color-slate-100)',
     checkMarkColor: '#FFFFFF',
     color: '#FFFFFF',
-    colorDisabled: '#F8FAFC',
+    colorDisabled: 'var(--color-slate-50)',
     borderRadius: '6px'
   },
 
   // 单选框
   Radio: {
-    buttonColorActive: '#5B6BF0',
-    buttonBorderColor: '#CBD5E1',
-    buttonBorderColorActive: '#5B6BF0',
-    buttonBorderColorHover: '#94A3B8',
+    buttonColorActive: 'var(--color-primary-500)',
+    buttonBorderColor: 'var(--color-slate-300)',
+    buttonBorderColorActive: 'var(--color-primary-500)',
+    buttonBorderColorHover: 'var(--color-slate-400)',
     buttonBoxShadow: '0 0 0 4px rgb(91, 107, 240, 0.08)',
     buttonBoxShadowActive: '0 0 0 4px rgb(91, 107, 240, 0.15)',
     buttonBoxShadowHover: '0 0 0 4px rgb(91, 107, 240, 0.12)',
-    colorDisabled: '#F8FAFC'
+    colorDisabled: 'var(--color-slate-50)'
   },
 
   // 滑块
   Slider: {
-    railColor: '#F1F5F9',
-    railColorHover: '#E2E8F0',
-    fillColor: '#5B6BF0',
-    fillColorHover: '#7C85F7',
+    railColor: 'var(--color-slate-100)',
+    railColorHover: 'var(--color-slate-200)',
+    fillColor: 'var(--color-primary-500)',
+    fillColorHover: 'var(--color-primary-400)',
     handleColor: '#FFFFFF',
     handleBoxShadow: '0 2px 6px 0 rgb(0 0 0 / 0.1), 0 1px 3px 0 rgb(0 0 0 / 0.08)',
     dotColor: '#FFFFFF',
-    dotBorderColor: '#5B6BF0'
+    dotBorderColor: 'var(--color-primary-500)'
   },
 
   // 步骤条
   Steps: {
-    stepHeaderTextColor: '#64748B',
-    stepHeaderTextColorActive: '#5B6BF0',
-    stepHeaderTextColorFinished: '#5B6BF0', // 与主题色一致
-    stepIconColor: '#E2E8F0',
-    stepIconColorActive: '#5B6BF0',
-    stepIconColorFinished: '#5B6BF0', // 与主题色一致
-    stepBorderColor: '#F1F5F9',
-    stepBorderColorActive: '#5B6BF0',
-    stepBorderColorFinished: '#5B6BF0' // 与主题色一致
+    stepHeaderTextColor: 'var(--color-slate-500)',
+    stepHeaderTextColorActive: 'var(--color-primary-500)',
+    stepHeaderTextColorFinished: 'var(--color-primary-500)',
+    stepIconColor: 'var(--color-slate-200)',
+    stepIconColorActive: 'var(--color-primary-500)',
+    stepIconColorFinished: 'var(--color-primary-500)',
+    stepBorderColor: 'var(--color-slate-100)',
+    stepBorderColorActive: 'var(--color-primary-500)',
+    stepBorderColorFinished: 'var(--color-primary-500)'
   },
 
   // 面包屑
   Breadcrumb: {
-    textColor: '#64748B',
-    textColorHover: '#5B6BF0',
-    textColorActive: '#5B6BF0',
-    separatorColor: '#CBD5E1',
+    textColor: 'var(--color-slate-500)',
+    textColorHover: 'var(--color-primary-500)',
+    textColorActive: 'var(--color-primary-500)',
+    separatorColor: 'var(--color-slate-300)',
     fontSize: '14px'
   },
 
   // 分页
   Pagination: {
     itemColor: '#FFFFFF',
-    itemColorHover: '#F8FAFC',
-    itemColorPressed: '#F1F5F9',
-    itemColorActive: '#5B6BF0',
-    itemTextColor: '#475569',
-    itemTextColorHover: '#5B6BF0',
+    itemColorHover: 'var(--color-slate-50)',
+    itemColorPressed: 'var(--color-slate-100)',
+    itemColorActive: 'var(--color-primary-500)',
+    itemTextColor: 'var(--color-slate-600)',
+    itemTextColorHover: 'var(--color-primary-500)',
     itemTextColorActive: '#FFFFFF',
-    itemBorder: '1px solid #E2E8F0',
-    itemBorderHover: '1px solid #CBD5E1',
-    itemBorderActive: '1px solid #5B6BF0',
+    itemBorder: '1px solid var(--color-slate-200)',
+    itemBorderHover: '1px solid var(--color-slate-300)',
+    itemBorderActive: '1px solid var(--color-primary-500)',
     itemDisabledOpacity: 0.5,
     itemSizeLarge: '36px',
     borderRadius: '8px'
@@ -371,46 +370,46 @@ export const lightTheme: GlobalThemeOverrides = {
 
   // 空状态
   Empty: {
-    textColor: '#64748B',
-    iconColor: '#E2E8F0',
-    extraTextColor: '#94A3B8'
+    textColor: 'var(--color-slate-500)',
+    iconColor: 'var(--color-slate-200)',
+    extraTextColor: 'var(--color-slate-400)'
   },
 
   // 加载中
   Spin: {
-    color: '#5B6BF0',
-    textColor: '#64748B'
+    color: 'var(--color-primary-500)',
+    textColor: 'var(--color-slate-500)'
   },
 
   // 结果页
   Result: {
-    textColor: '#475569',
-    titleTextColor: '#1E293B',
-    iconColorInfo: '#3B82F6',
-    iconColorSuccess: '#5B6BF0', // 与主题色一致
-    iconColorWarning: '#F59E0B',
-    iconColorError: '#EF4444'
+    textColor: 'var(--color-slate-600)',
+    titleTextColor: 'var(--color-slate-800)',
+    iconColorInfo: 'var(--color-info-500)',
+    iconColorSuccess: 'var(--color-success-500)',
+    iconColorWarning: 'var(--color-warning-500)',
+    iconColorError: 'var(--color-error-500)'
   },
 
   // 统计
   Statistic: {
-    labelTextColor: '#64748B',
-    valueTextColor: '#0F172A'
+    labelTextColor: 'var(--color-slate-500)',
+    valueTextColor: 'var(--color-slate-900)'
   },
 
   // 时间轴
   Timeline: {
-    titleTextColor: '#1E293B',
-    contentTextColor: '#64748B',
-    lineColor: '#F1F5F9',
-    iconColor: '#5B6BF0',
+    titleTextColor: 'var(--color-slate-800)',
+    contentTextColor: 'var(--color-slate-500)',
+    lineColor: 'var(--color-slate-100)',
+    iconColor: 'var(--color-primary-500)',
     iconSize: '18px'
   },
 
   // 工具提示
   Tooltip: {
-    color: '#1E293B',
-    textColor: '#F8FAFC',
+    color: 'var(--color-slate-800)',
+    textColor: 'var(--color-slate-50)',
     borderRadius: '8px',
     fontSize: '13px',
     boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.08)'
@@ -419,27 +418,27 @@ export const lightTheme: GlobalThemeOverrides = {
   // 气泡确认框
   Popconfirm: {
     color: '#FFFFFF',
-    textColor: '#475569',
-    actionColor: '#F8FAFC',
+    textColor: 'var(--color-slate-600)',
+    actionColor: 'var(--color-slate-50)',
     borderRadius: '10px',
     boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.08)'
   },
 
   LoadingBar: {
-    color: '#5B6BF0', // 默认颜色（主题色）
-    colorError: '#EF4444', // 错误时红色
-    colorLoading: '#5B6BF0', // 加载中颜色
-    height: '2px' // 进度条高度
+    color: 'var(--color-primary-500)',
+    colorError: 'var(--color-error-500)',
+    colorLoading: 'var(--color-primary-500)',
+    height: '2px'
   }
 }
 
 /**
- * 暗色主题配置（现代优雅风格）
+ * 暗色主题配置（引用 Tailwind CSS 变量）
  *
- * 设计理念: 参考GitHub、VS Code、Linear等现代应用的暗色模式
- * - 侧边栏: 深灰蓝 (#0D1117) - GitHub暗色风格
- * - 内容区: 柔和深灰 (#161B22) - 减少眼疲劳
- * - 卡片: 略浅层次 (#21262D) - 清晰的视觉层次
+ * 设计理念: GitHub 风格深色系
+ * - 侧边栏: 极深色 (#010409) - 接近纯黑但有层次
+ * - 内容区: GitHub 深色背景 (#0D1117) - 专业、护眼
+ * - 卡片: 柔和深灰 (#161B22) - 清晰的视觉层次
  * - 主色调: 电光紫 (#A78BFA) - 暗色下更醒目
  *
  * 优化重点:
@@ -447,47 +446,50 @@ export const lightTheme: GlobalThemeOverrides = {
  * - 增加微妙的光泽感和层次感
  * - 柔和的深色背景，避免纯黑
  * - 强化交互状态的视觉反馈
+ *
+ * 技术实现:
+ * - 所有颜色引用 Tailwind CSS 变量（统一管理）
+ * - 修改主题只需修改 src/assets/styles/index.css
  */
 export const darkTheme: GlobalThemeOverrides = {
   common: {
-    primaryColor: '#A78BFA', // 电光紫（暗色模式下更醒目，类似 VS Code）
-    primaryColorHover: '#C4B5FD',
-    primaryColorPressed: '#8B5CF6',
-    primaryColorSuppl: '#A78BFA',
+    primaryColor: 'var(--color-primary-dark-500)',
+    primaryColorHover: 'var(--color-primary-dark-400)',
+    primaryColorPressed: 'var(--color-primary-dark-600)',
+    primaryColorSuppl: 'var(--color-primary-dark-500)',
 
-    successColor: '#34D399', // 翠绿（暗色下更清晰）
-    successColorHover: '#6EE7B7',
-    successColorPressed: '#10B981',
-    successColorSuppl: '#34D399',
+    successColor: 'var(--color-success-400)',
+    successColorHover: 'var(--color-success-500)',
+    successColorPressed: 'var(--color-success-600)',
+    successColorSuppl: 'var(--color-success-400)',
 
-    warningColor: '#FBBF24', // 琥珀金（比橙色更温暖）
-    warningColorHover: '#FCD34D',
-    warningColorPressed: '#F59E0B',
-    warningColorSuppl: '#FBBF24',
+    warningColor: 'var(--color-warning-400)',
+    warningColorHover: 'var(--color-warning-500)',
+    warningColorPressed: 'var(--color-warning-600)',
+    warningColorSuppl: 'var(--color-warning-400)',
 
-    errorColor: '#F87171', // 柔和红（避免过于刺眼）
-    errorColorHover: '#FCA5A5',
-    errorColorPressed: '#EF4444',
-    errorColorSuppl: '#F87171',
+    errorColor: 'var(--color-error-400)',
+    errorColorHover: 'var(--color-error-500)',
+    errorColorPressed: 'var(--color-error-600)',
+    errorColorSuppl: 'var(--color-error-400)',
 
-    infoColor: '#60A5FA', // 天空蓝
-    infoColorHover: '#93C5FD',
-    infoColorPressed: '#3B82F6',
-    infoColorSuppl: '#60A5FA',
+    infoColor: 'var(--color-info-400)',
+    infoColorHover: 'var(--color-info-500)',
+    infoColorPressed: 'var(--color-info-600)',
+    infoColorSuppl: 'var(--color-info-400)',
 
-    // 文字颜色（提高对比度）
-    textColorBase: '#E2E8F0', // 基础文字更亮
-    textColor1: '#FFFFFF', // 标题纯白（最高对比度）
-    textColor2: '#E2E8F0', // 正文清晰可读
-    textColor3: '#94A3B8', // 次要文字
+    textColorBase: 'var(--color-dark-text-primary)',
+    textColor1: '#FFFFFF',
+    textColor2: 'var(--color-dark-text-primary)',
+    textColor3: 'var(--color-slate-400)',
 
-    borderColor: '#30363D', // GitHub暗色边框
-    dividerColor: '#21262D', // 更明显的分隔线
+    borderColor: 'var(--color-dark-border)',
+    dividerColor: '#21262D',
 
-    bodyColor: '#0D1117', // GitHub暗色背景
-    cardColor: '#161B22', // 柔和深灰
-    modalColor: '#161B22',
-    popoverColor: '#161B22',
+    bodyColor: 'var(--color-dark-bg)',
+    cardColor: 'var(--color-dark-card)',
+    modalColor: 'var(--color-dark-card)',
+    popoverColor: 'var(--color-dark-card)',
 
     borderRadius: '10px',
     borderRadiusSmall: '6px',
@@ -499,88 +501,88 @@ export const darkTheme: GlobalThemeOverrides = {
 
   // 布局组件（暗色主题）
   Layout: {
-    color: '#0D1117', // GitHub深色背景
-    siderColor: '#010409', // 极深侧边栏（接近纯黑但有层次）
-    headerColor: '#161B22', // 统一的卡片色
-    footerColor: '#161B22',
-    textColor: '#8B949E', // GitHub次要文字
-    textColorChild: '#6E7681', // 更浅的子项
-    textColorHover: '#C9D1D9', // GitHub hover色
-    dividerColor: 'rgba(48, 54, 61, 0.5)' // 更明显的分隔线
+    color: 'var(--color-dark-bg)',
+    siderColor: 'var(--color-dark-sider)',
+    headerColor: 'var(--color-dark-card)',
+    footerColor: 'var(--color-dark-card)',
+    textColor: 'var(--color-dark-text-secondary)',
+    textColorChild: 'var(--color-dark-text-tertiary)',
+    textColorHover: 'var(--color-dark-text-primary)',
+    dividerColor: 'rgba(48, 54, 61, 0.5)'
   },
 
   // 菜单组件（暗色主题）
   Menu: {
-    itemTextColor: '#C9D1D9', // GitHub菜单文字
-    itemTextColorHover: '#FFFFFF', // hover纯白
-    itemTextColorActive: '#FFFFFF', // active纯白
-    itemTextColorChildActive: '#A78BFA', // 电光紫高亮
-    itemIconColor: '#8B949E', // GitHub图标色
-    itemIconColorHover: '#C4B5FD', // 电光紫hover
-    itemIconColorActive: '#A78BFA', // 电光紫active
-    itemIconColorChildActive: '#A78BFA', // 子菜单激活时父节点高亮
-    itemColorActive: 'rgba(167, 139, 250, 0.15)', // 电光紫半透明背景（增强）
-    itemColorHover: 'rgba(255, 255, 255, 0.08)', // 更明显的hover效果
-    arrowColor: '#8B949E',
-    arrowColorHover: '#C9D1D9',
-    arrowColorChildActive: '#A78BFA',
+    itemTextColor: 'var(--color-dark-text-primary)',
+    itemTextColorHover: '#FFFFFF',
+    itemTextColorActive: '#FFFFFF',
+    itemTextColorChildActive: 'var(--color-primary-dark-500)',
+    itemIconColor: 'var(--color-dark-text-secondary)',
+    itemIconColorHover: 'var(--color-primary-dark-400)',
+    itemIconColorActive: 'var(--color-primary-dark-500)',
+    itemIconColorChildActive: 'var(--color-primary-dark-500)',
+    itemColorActive: 'rgba(167, 139, 250, 0.15)',
+    itemColorHover: 'var(--color-dark-hover)',
+    arrowColor: 'var(--color-dark-text-secondary)',
+    arrowColorHover: 'var(--color-dark-text-primary)',
+    arrowColorChildActive: 'var(--color-primary-dark-500)',
     dividerColor: 'rgba(48, 54, 61, 0.5)'
   },
 
   // 标签页（暗色）
   Tabs: {
-    tabTextColorBar: '#8B949E',
-    tabTextColorActiveBar: '#A78BFA', // 电光紫
-    tabTextColorHoverBar: '#C9D1D9',
+    tabTextColorBar: 'var(--color-dark-text-secondary)',
+    tabTextColorActiveBar: 'var(--color-primary-dark-500)',
+    tabTextColorHoverBar: 'var(--color-dark-text-primary)',
     tabBarColor: '#21262D',
-    tabColorBar: '#0D1117',
-    tabColorSegment: '#161B22',
-    tabColorSegmentActive: '#0D1117',
-    tabTextColorSegment: '#8B949E',
-    tabTextColorActiveSegment: '#A78BFA',
+    tabColorBar: 'var(--color-dark-bg)',
+    tabColorSegment: 'var(--color-dark-card)',
+    tabColorSegmentActive: 'var(--color-dark-bg)',
+    tabTextColorSegment: 'var(--color-dark-text-secondary)',
+    tabTextColorActiveSegment: 'var(--color-primary-dark-500)',
     tabGap: '12px',
     tabPaddingLarge: '12px 16px'
   },
 
   // 按钮（暗色）
   Button: {
-    textColor: '#C9D1D9', // GitHub按钮文字
+    textColor: 'var(--color-dark-text-primary)',
     textColorHover: '#FFFFFF',
     textColorPressed: '#FFFFFF',
     textColorFocus: '#FFFFFF',
     textColorDisabled: 'rgba(255, 255, 255, 0.35)',
-    border: '1px solid #30363D',
-    borderHover: '1px solid #8B949E',
-    borderPressed: '1px solid #A78BFA',
-    borderFocus: '1px solid #A78BFA',
+    border: '1px solid var(--color-dark-border)',
+    borderHover: '1px solid var(--color-dark-text-secondary)',
+    borderPressed: '1px solid var(--color-primary-dark-500)',
+    borderFocus: '1px solid var(--color-primary-dark-500)',
     borderRadius: '8px'
   },
 
   // 输入框（暗色）
   Input: {
-    color: '#0D1117', // 输入框背景
-    colorFocus: '#0D1117',
-    textColor: '#C9D1D9', // GitHub输入框文字
-    placeholderColor: '#6E7681', // GitHub占位符
-    border: '1px solid #30363D',
-    borderHover: '1px solid #8B949E',
-    borderFocus: '1px solid #A78BFA',
-    boxShadowFocus: '0 0 0 3px rgba(167, 139, 250, 0.2)', // 增强焦点效果
-    colorDisabled: '#161B22',
-    textColorDisabled: '#6E7681',
+    color: 'var(--color-dark-bg)',
+    colorFocus: 'var(--color-dark-bg)',
+    textColor: 'var(--color-dark-text-primary)',
+    placeholderColor: 'var(--color-dark-text-tertiary)',
+    border: '1px solid var(--color-dark-border)',
+    borderHover: '1px solid var(--color-dark-text-secondary)',
+    borderFocus: '1px solid var(--color-primary-dark-500)',
+    boxShadowFocus: '0 0 0 3px rgba(167, 139, 250, 0.2)',
+    colorDisabled: 'var(--color-dark-card)',
+    textColorDisabled: 'var(--color-dark-text-tertiary)',
     borderDisabled: '1px solid #21262D',
     placeholderColorDisabled: '#484F58',
-    colorActive: '#0D1117',
+    colorActive: 'var(--color-dark-bg)',
     borderRadius: '8px'
   },
 
   // 表格（暗色）
   DataTable: {
-    thColor: '#161B22', // 表头与卡片统一
-    thTextColor: '#C9D1D9',
+    thColor: 'var(--color-dark-card)',
+    thTextColor: 'var(--color-dark-text-primary)',
     thFontWeight: '600',
-    tdColor: '#0D1117', // 单元格与背景统一
-    tdTextColor: '#C9D1D9',
+    tdColor: 'var(--color-dark-bg)',
+    tdTextColor: 'var(--color-dark-text-primary)',
     tdTextColorHover: '#FFFFFF',
     borderColor: '#21262D',
     borderRadius: '10px',
@@ -590,32 +592,32 @@ export const darkTheme: GlobalThemeOverrides = {
 
   // 卡片（暗色）
   Card: {
-    color: '#161B22', // 统一卡片色
-    colorModal: '#161B22',
-    colorTarget: '#0D1117',
-    colorEmbedded: '#161B22',
-    colorEmbeddedModal: '#161B22',
-    borderColor: '#30363D',
+    color: 'var(--color-dark-card)',
+    colorModal: 'var(--color-dark-card)',
+    colorTarget: 'var(--color-dark-bg)',
+    colorEmbedded: 'var(--color-dark-card)',
+    colorEmbeddedModal: 'var(--color-dark-card)',
+    borderColor: 'var(--color-dark-border)',
     borderRadius: '12px'
   },
 
   // 弹窗（暗色）
   Modal: {
-    color: '#161B22',
-    textColor: '#C9D1D9',
+    color: 'var(--color-dark-card)',
+    textColor: 'var(--color-dark-text-primary)',
     borderRadius: '16px',
-    boxShadow: '0 25px 50px -12px rgb(0 0 0 / 0.7)' // 更深的阴影
+    boxShadow: '0 25px 50px -12px rgb(0 0 0 / 0.7)'
   },
 
   // 下拉菜单（暗色）
   Dropdown: {
-    color: '#161B22',
+    color: 'var(--color-dark-card)',
     optionColorHover: '#21262D',
-    optionTextColor: '#C9D1D9',
-    optionTextColorHover: '#A78BFA', // 电光紫高亮
-    optionIconColor: '#8B949E',
-    optionIconColorHover: '#A78BFA',
-    dividerColor: '#30363D',
+    optionTextColor: 'var(--color-dark-text-primary)',
+    optionTextColorHover: 'var(--color-primary-dark-500)',
+    optionIconColor: 'var(--color-dark-text-secondary)',
+    optionIconColorHover: 'var(--color-primary-dark-500)',
+    dividerColor: 'var(--color-dark-border)',
     borderRadius: '10px',
     boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.6), 0 4px 6px -4px rgb(0 0 0 / 0.6)',
     padding: '8px'
@@ -623,25 +625,25 @@ export const darkTheme: GlobalThemeOverrides = {
 
   // 通知（暗色）
   Notification: {
-    color: '#161B22',
-    textColor: '#C9D1D9',
+    color: 'var(--color-dark-card)',
+    textColor: 'var(--color-dark-text-primary)',
     borderRadius: '10px',
     boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.6)'
   },
 
   // 消息提示（暗色）
   Message: {
-    color: '#161B22',
-    textColor: '#C9D1D9',
+    color: 'var(--color-dark-card)',
+    textColor: 'var(--color-dark-text-primary)',
     borderRadius: '8px',
-    iconColor: '#8B949E',
+    iconColor: 'var(--color-dark-text-secondary)',
     boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.6)'
   },
 
   // 工具提示（暗色）
   Tooltip: {
-    color: '#161B22',
-    textColor: '#C9D1D9',
+    color: 'var(--color-dark-card)',
+    textColor: 'var(--color-dark-text-primary)',
     borderRadius: '8px',
     fontSize: '13px',
     boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.6)'
@@ -649,9 +651,9 @@ export const darkTheme: GlobalThemeOverrides = {
 
   // 加载条（暗色）
   LoadingBar: {
-    color: '#A78BFA', // 电光紫
-    colorError: '#F87171', // 柔和红
-    colorLoading: '#A78BFA',
+    color: 'var(--color-primary-dark-500)',
+    colorError: 'var(--color-error-400)',
+    colorLoading: 'var(--color-primary-dark-500)',
     height: '2px'
   }
 }

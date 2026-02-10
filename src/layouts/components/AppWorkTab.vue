@@ -176,7 +176,7 @@ const showTabs = computed(() => layoutStore.showTabs && layoutStore.tabs.length 
 <template>
   <div
     v-if="showTabs"
-    class="h-10 bg-white dark:bg-[#0D1117] border-b border-slate-200 dark:border-[#30363D] flex items-center px-2 flex-shrink-0"
+    class="h-10 bg-white dark:bg-dark-bg border-b border-slate-200 dark:border-dark-border flex items-center px-2 flex-shrink-0"
   >
     <!-- 标签项列表 -->
     <div class="flex items-center space-x-1 flex-1 overflow-hidden">
@@ -189,11 +189,11 @@ const showTabs = computed(() => layoutStore.showTabs && layoutStore.tabs.length 
         @select="(action: string) => handleContextMenuSelect(tab.key, action)"
       >
         <div
-          class="flex items-center space-x-2 px-3 py-1.5 text-sm text-slate-700 dark:text-[#C9D1D9] rounded-t-lg border transition-colors cursor-pointer group/tab"
+          class="flex items-center space-x-2 px-3 py-1.5 text-sm text-slate-700 dark:text-dark-text-primary rounded-t-lg border transition-colors cursor-pointer group/tab"
           :class="
             activeKey === tab.key
-              ? 'bg-white dark:bg-[#161B22] border-slate-200 dark:border-[#30363D] border-b-0 border-t-2 border-t-blue-600 dark:border-t-[#A78BFA]'
-              : 'bg-slate-50 dark:bg-[#0D1117] border-transparent hover:bg-slate-100 dark:hover:bg-white/5'
+              ? 'bg-white dark:bg-dark-card border-slate-200 dark:border-dark-border border-b-0 border-t-2 border-t-primary-500 dark:border-t-primary-dark-500'
+              : 'bg-slate-50 dark:bg-dark-bg border-transparent hover:bg-slate-100 dark:hover:bg-white/5'
           "
           @click="handleTabClick(tab.key)"
         >

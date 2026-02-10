@@ -1,1 +1,89 @@
 @import "tailwindcss";
+
+/**
+ * EzAdmin 统一颜色系统
+ *
+ * 设计理念：
+ * - 主色调：蓝紫色系 - 现代、专业、科技感
+ * - 语义色：标准语义 - 符合用户习惯
+ * - 中性色：slate 色系 - 柔和、层次清晰
+ * - 暗色模式：GitHub 风格 - 专业、护眼
+ *
+ * 使用规范：
+ * - ✅ 使用语义化类名：bg-primary-500、text-success-500
+ * - ❌ 禁止硬编码颜色：bg-[#5B6BF0]、color="#3b82f6"
+ * - ✅ 暗色模式用 dark: 前缀：dark:bg-primary-dark-500
+ */
+@theme {
+	/* ===== 主色调（蓝紫色系 - EzAdmin 品牌色） ===== */
+	--color-primary-50: #EEF2FF;
+	--color-primary-100: #E0E7FF;
+	--color-primary-200: #C7D2FE;
+	--color-primary-300: #A5B4FC;
+	--color-primary-400: #818CF8;
+	--color-primary-500: #5B6BF0; /* 主色 - 亮色模式 */
+	--color-primary-600: #4A57D9;
+	--color-primary-700: #4338CA;
+	--color-primary-800: #3730A3;
+	--color-primary-900: #312E81;
+
+	/* 暗色模式主色（电光紫 - 在暗色背景下更醒目） */
+	--color-primary-dark-400: #C4B5FD;
+	--color-primary-dark-500: #A78BFA; /* 主色 - 暗色模式 */
+	--color-primary-dark-600: #8B5CF6;
+	--color-primary-dark-700: #7C3AED;
+
+	/* ===== 语义色（标准语义） ===== */
+	/* 成功色 - 绿色（表示成功、完成） */
+	--color-success-50: #ECFDF5;
+	--color-success-400: #34D399;
+	--color-success-500: #10B981; /* 标准绿色 */
+	--color-success-600: #059669;
+	--color-success-700: #047857;
+
+	/* 警告色 - 琥珀色（表示警告、待处理） */
+	--color-warning-50: #FFFBEB;
+	--color-warning-400: #FBBF24;
+	--color-warning-500: #F59E0B;
+	--color-warning-600: #D97706;
+	--color-warning-700: #B45309;
+
+	/* 错误色 - 红色（表示错误、危险） */
+	--color-error-50: #FEF2F2;
+	--color-error-400: #F87171;
+	--color-error-500: #EF4444;
+	--color-error-600: #DC2626;
+	--color-error-700: #B91C1C;
+
+	/* 信息色 - 蓝色（表示提示、中性信息） */
+	--color-info-50: #EFF6FF;
+	--color-info-400: #60A5FA;
+	--color-info-500: #3B82F6;
+	--color-info-600: #2563EB;
+	--color-info-700: #1D4ED8;
+
+	/* ===== 中性色（slate 色系） ===== */
+	--color-slate-50: #F8FAFC;
+	--color-slate-100: #F1F5F9;
+	--color-slate-200: #E2E8F0;
+	--color-slate-300: #CBD5E1;
+	--color-slate-400: #94A3B8;
+	--color-slate-500: #64748B;
+	--color-slate-600: #475569;
+	--color-slate-700: #334155;
+	--color-slate-800: #1E293B;
+	--color-slate-900: #0F172A;
+
+	/* ===== 暗色模式专用色（GitHub 风格） ===== */
+	/* 背景色 */
+	--color-dark-bg: #0D1117; /* GitHub 深色背景 */
+	--color-dark-sider: #010409; /* 极深侧边栏 */
+	--color-dark-card: #161B22; /* 卡片背景 */
+	--color-dark-border: #30363D; /* 边框色 */
+	--color-dark-hover: rgba(255, 255, 255, 0.08); /* Hover 背景 */
+
+	/* 文字色 */
+	--color-dark-text-primary: #C9D1D9; /* 主要文字 */
+	--color-dark-text-secondary: #8B949E; /* 次要文字 */
+	--color-dark-text-tertiary: #6E7681; /* 辅助文字 */
+}
