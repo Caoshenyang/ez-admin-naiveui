@@ -5,43 +5,9 @@
 <script setup lang="ts">
 import { computed, type CSSProperties } from 'vue'
 import { NModal } from 'naive-ui'
-import type { ButtonProps } from 'naive-ui'
 import type { EzModalEmits, EzModalProps } from '@/types/modal'
 
-/**
- * EzModal 组件 Props
- * 只定义我们自定义的配置，其他 props 通过 $attrs 透传给 NModal
- */
-interface Props extends EzModalProps {
-  /** 弹窗标题 */
-  title?: string
-  /** 是否显示弹窗（v-model） */
-  show?: boolean
-  /** 弹窗宽度 */
-  width?: string | number
-  /** 弹窗尺寸预设 */
-  size?: 'small' | 'medium' | 'large' | 'huge'
-  /** 是否显示遮罩点击关闭 */
-  maskClosable?: boolean
-  /** 是否显示关闭图标 */
-  closable?: boolean
-  /** 确认按钮文本 */
-  positiveText?: string
-  /** 取消按钮文本 */
-  negativeText?: string
-  /** 是否显示底部操作按钮 */
-  showAction?: boolean
-  /** 确认按钮类型 */
-  positiveType?: ButtonProps['type']
-  /** 取消按钮类型 */
-  negativeType?: ButtonProps['type']
-  /** 弹窗容器类名 */
-  class?: string
-  /** 弹窗容器样式 */
-  style?: Record<string, string>
-}
-
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<EzModalProps>(), {
   show: false,
   maskClosable: true,
   closable: true,
