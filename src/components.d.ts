@@ -55,6 +55,7 @@ declare module 'vue' {
     NSpin: typeof import('naive-ui')['NSpin']
     NSwitch: typeof import('naive-ui')['NSwitch']
     NTextarea: typeof import('naive-ui')['NTextarea']
+    NThemeEditor: typeof import('naive-ui')['NThemeEditor']
     NTimePicker: typeof import('naive-ui')['NTimePicker']
     NTooltip: typeof import('naive-ui')['NTooltip']
     RouterLink: typeof import('vue-router')['RouterLink']
