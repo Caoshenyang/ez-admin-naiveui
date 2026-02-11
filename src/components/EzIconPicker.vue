@@ -84,12 +84,12 @@ function handleClear() {
           <div
             v-for="icon in filteredIcons"
             :key="icon.name"
-            class="icon-item"
-            :class="{ 'is-selected': currentIcon === icon.name }"
+            class="flex flex-col items-center justify-center p-3 border border-slate-200 rounded cursor-pointer transition-all duration-200 hover:bg-slate-100 hover:border-slate-300"
+            :class="{ 'bg-info-50 border-info-500': currentIcon === icon.name }"
             @click="handleSelectIcon(icon.name)"
           >
             <EzIcon :icon="icon.name" :size="24" />
-            <div class="icon-label">{{ icon.label }}</div>
+            <div class="mt-2 text-xs text-slate-500 text-center break-anywhere leading-tight">{{ icon.label }}</div>
           </div>
         </div>
         <NEmpty v-else description="暂无匹配的图标" size="small" />
@@ -108,36 +108,5 @@ function handleClear() {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   gap: 8px;
-}
-
-.icon-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 12px;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.icon-item:hover {
-  background-color: #f3f4f6;
-  border-color: #d1d5db;
-}
-
-.icon-item.is-selected {
-  background-color: #eff6ff;
-  border-color: #3b82f6;
-}
-
-.icon-label {
-  margin-top: 8px;
-  font-size: 12px;
-  color: #6b7280;
-  text-align: center;
-  word-break: break-all;
-  line-height: 1.4;
 }
 </style>

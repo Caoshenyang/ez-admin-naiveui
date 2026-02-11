@@ -28,9 +28,9 @@ const handleLoginClick = async () => {
 <template>
   <div class="p-6 space-y-6">
     <!-- 欢迎标题 -->
-    <div class="bg-linear-to-r from-blue-500 to-purple-600 rounded-lg p-6 text-white" v-once>
+    <div class="bg-gradient-primary-to-br rounded-lg p-6 text-white" v-once>
       <h1 class="text-3xl font-bold">欢迎使用 Ez Admin</h1>
-      <p class="mt-2 text-blue-100">基于 Vue 3 + NaiveUI + Tailwind CSS 的高效率后台管理系统</p>
+      <p class="mt-2 text-primary-100">基于 Vue 3 + NaiveUI + Tailwind CSS 的高效率后台管理系统</p>
     </div>
     <!-- 加一个去登录页的按钮 -->
     <div class="flex justify-end">
@@ -50,23 +50,23 @@ const handleLoginClick = async () => {
           <p class="text-sm font-medium text-gray-700 mb-2">不同尺寸：</p>
           <div class="flex gap-4 items-center">
             <div class="flex flex-col items-center gap-1">
-              <EzIcon icon="mdi:home-outline" :size="16" color="#5B6BF0" />
+              <EzIcon icon="mdi:home-outline" :size="16" color="var(--ez-primary-light)" />
               <span class="text-xs text-gray-500">16px</span>
             </div>
             <div class="flex flex-col items-center gap-1">
-              <EzIcon icon="mdi:home-outline" :size="20" color="#5B6BF0" />
+              <EzIcon icon="mdi:home-outline" :size="20" color="var(--ez-primary-light)" />
               <span class="text-xs text-gray-500">20px</span>
             </div>
             <div class="flex flex-col items-center gap-1">
-              <EzIcon icon="mdi:home-outline" :size="24" color="#5B6BF0" />
+              <EzIcon icon="mdi:home-outline" :size="24" color="var(--ez-primary-light)" />
               <span class="text-xs text-gray-500">24px</span>
             </div>
             <div class="flex flex-col items-center gap-1">
-              <EzIcon icon="mdi:home-outline" :size="32" color="#5B6BF0" />
+              <EzIcon icon="mdi:home-outline" :size="32" color="var(--ez-primary-light)" />
               <span class="text-xs text-gray-500">32px</span>
             </div>
             <div class="flex flex-col items-center gap-1">
-              <EzIcon icon="mdi:home-outline" :size="48" color="#5B6BF0" />
+              <EzIcon icon="mdi:home-outline" :size="48" color="var(--ez-primary-light)" />
               <span class="text-xs text-gray-500">48px</span>
             </div>
           </div>
@@ -76,11 +76,11 @@ const handleLoginClick = async () => {
         <div>
           <p class="text-sm font-medium text-gray-700 mb-2">不同颜色：</p>
           <div class="flex gap-4 items-center">
-            <EzIcon icon="mdi:account-outline" :size="28" color="#EF4444" />
-            <EzIcon icon="mdi:account-group-outline" :size="28" color="#F59E0B" />
-            <EzIcon icon="mdi:cog-outline" :size="28" color="#10B981" />
-            <EzIcon icon="mdi:shield-outline" :size="28" color="#5B6BF0" />
-            <EzIcon icon="mdi:star-outline" :size="28" color="#A78BFA" />
+            <EzIcon icon="mdi:account-outline" :size="28" color="var(--ez-error-500)" />
+            <EzIcon icon="mdi:account-group-outline" :size="28" color="var(--ez-warning-500)" />
+            <EzIcon icon="mdi:cog-outline" :size="28" color="var(--ez-success-500)" />
+            <EzIcon icon="mdi:shield-outline" :size="28" color="var(--ez-info-500)" />
+            <EzIcon icon="mdi:star-outline" :size="28" color="var(--ez-primary-light)" />
           </div>
         </div>
 
@@ -89,43 +89,43 @@ const handleLoginClick = async () => {
           <p class="text-sm font-medium text-gray-700 mb-2">常用图标：</p>
           <div class="flex flex-wrap gap-3">
             <div class="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded">
-              <EzIcon icon="mdi:home-outline" :size="20" color="#5B6BF0" />
+              <EzIcon icon="mdi:home-outline" :size="20" color="var(--ez-primary-light)" />
               <span class="text-xs text-gray-600">首页</span>
             </div>
             <div class="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded">
-              <EzIcon icon="mdi:account-outline" :size="20" color="#5B6BF0" />
+              <EzIcon icon="mdi:account-outline" :size="20" color="var(--ez-primary-light)" />
               <span class="text-xs text-gray-600">用户</span>
             </div>
             <div class="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded">
-              <EzIcon icon="mdi:cog-outline" :size="20" color="#5B6BF0" />
+              <EzIcon icon="mdi:cog-outline" :size="20" color="var(--ez-primary-light)" />
               <span class="text-xs text-gray-600">设置</span>
             </div>
             <div class="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded">
-              <EzIcon icon="mdi:file-document-outline" :size="20" color="#5B6BF0" />
+              <EzIcon icon="mdi:file-document-outline" :size="20" color="var(--ez-primary-light)" />
               <span class="text-xs text-gray-600">文档</span>
             </div>
             <div class="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded">
-              <EzIcon icon="mdi:chart-bar" :size="20" color="#5B6BF0" />
+              <EzIcon icon="mdi:chart-bar" :size="20" color="var(--ez-primary-light)" />
               <span class="text-xs text-gray-600">图表</span>
             </div>
             <div class="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded">
-              <EzIcon icon="mdi:database-outline" :size="20" color="#5B6BF0" />
+              <EzIcon icon="mdi:database-outline" :size="20" color="var(--ez-primary-light)" />
               <span class="text-xs text-gray-600">数据</span>
             </div>
             <div class="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded">
-              <EzIcon icon="mdi:pencil-outline" :size="20" color="#5B6BF0" />
+              <EzIcon icon="mdi:pencil-outline" :size="20" color="var(--ez-primary-light)" />
               <span class="text-xs text-gray-600">编辑</span>
             </div>
             <div class="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded">
-              <EzIcon icon="mdi:delete-outline" :size="20" color="#5B6BF0" />
+              <EzIcon icon="mdi:delete-outline" :size="20" color="var(--ez-primary-light)" />
               <span class="text-xs text-gray-600">删除</span>
             </div>
             <div class="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded">
-              <EzIcon icon="mdi:search" :size="20" color="#5B6BF0" />
+              <EzIcon icon="mdi:search" :size="20" color="var(--ez-primary-light)" />
               <span class="text-xs text-gray-600">搜索</span>
             </div>
             <div class="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded">
-              <EzIcon icon="mdi:refresh" :size="20" color="#5B6BF0" />
+              <EzIcon icon="mdi:refresh" :size="20" color="var(--ez-primary-light)" />
               <span class="text-xs text-gray-600">刷新</span>
             </div>
           </div>
@@ -135,7 +135,7 @@ const handleLoginClick = async () => {
         <div>
           <p class="text-sm font-medium text-gray-700 mb-2">旋转动画：</p>
           <div class="flex gap-4 items-center">
-            <EzIcon icon="mdi:refresh" :size="24" :spin="true" color="#5B6BF0" />
+            <EzIcon icon="mdi:refresh" :size="24" :spin="true" color="var(--ez-success-500)" />
             <span class="text-xs text-gray-500">加载中...</span>
           </div>
         </div>
@@ -154,7 +154,7 @@ const handleLoginClick = async () => {
       <div v-if="selectedIcon" class="mt-4 p-4 bg-gray-50 rounded">
         <p class="text-sm font-medium text-gray-700 mb-2">当前选中图标：</p>
         <div class="flex items-center gap-4">
-          <EzIcon :icon="selectedIcon" :size="48" color="#5B6BF0" />
+          <EzIcon :icon="selectedIcon" :size="48" color="var(--ez-primary-light)" />
           <div>
             <code class="text-xs bg-gray-200 px-2 py-1 rounded block">{{ selectedIcon }}</code>
             <p class="text-xs text-gray-500 mt-2">可直接用于菜单配置、表单等场景</p>

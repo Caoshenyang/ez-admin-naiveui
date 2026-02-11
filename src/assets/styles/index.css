@@ -6,7 +6,8 @@
  *
  * 颜色变量来源：@import './colors.css'
  * - 所有颜色值定义在 colors.css 中
- * - 此文件只负责变量引用和主题切换
+ * - 此文件只负责变量引用
+ * - CSS 级联自动处理亮暗切换
  *
  * 设计理念：
  * - 亮色模式：蓝紫色系 (#5B6BF0) - 现代、科技感、优雅
@@ -22,7 +23,7 @@
 
 /* ========== Tailwind CSS @theme 配置 ========== */
 @theme {
-	/* ----- 主色调（亮色模式：蓝紫色系） ----- */
+	/* ----- 主色调（亮色模式） ----- */
 	--color-primary-50: var(--ez-primary-50-light);
 	--color-primary-100: var(--ez-primary-100-light);
 	--color-primary-200: var(--ez-primary-200-light);
@@ -33,6 +34,7 @@
 	--color-primary-700: var(--ez-primary-700-light);
 	--color-primary-800: var(--ez-primary-800-light);
 	--color-primary-900: var(--ez-primary-900-light);
+	--color-primary-950: var(--ez-primary-950-light);
 
 	/* 主色透明度变体（用于 focus shadow、hover bg 等） */
 	--color-primary-500/05: var(--ez-primary-light-opacity-5);
@@ -45,31 +47,51 @@
 	/* ----- 语义色（标准语义） ----- */
 	/* 成功色 - 绿色（表示成功、完成） */
 	--color-success-50: var(--ez-success-50);
+	--color-success-100: var(--ez-success-100);
+	--color-success-200: var(--ez-success-200);
+	--color-success-300: var(--ez-success-300);
 	--color-success-400: var(--ez-success-400);
 	--color-success-500: var(--ez-success-500); /* 标准绿色 */
 	--color-success-600: var(--ez-success-600);
 	--color-success-700: var(--ez-success-700);
+	--color-success-800: var(--ez-success-800);
+	--color-success-950: var(--ez-success-950);
 
 	/* 警告色 - 琥珀色（表示警告、待处理） */
 	--color-warning-50: var(--ez-warning-50);
+	--color-warning-100: var(--ez-warning-100);
+	--color-warning-200: var(--ez-warning-200);
+	--color-warning-300: var(--ez-warning-300);
 	--color-warning-400: var(--ez-warning-400);
 	--color-warning-500: var(--ez-warning-500);
 	--color-warning-600: var(--ez-warning-600);
 	--color-warning-700: var(--ez-warning-700);
+	--color-warning-800: var(--ez-warning-800);
+	--color-warning-950: var(--ez-warning-950);
 
 	/* 错误色 - 红色（表示错误、危险） */
 	--color-error-50: var(--ez-error-50);
+	--color-error-100: var(--ez-error-100);
+	--color-error-200: var(--ez-error-200);
+	--color-error-300: var(--ez-error-300);
 	--color-error-400: var(--ez-error-400);
 	--color-error-500: var(--ez-error-500);
 	--color-error-600: var(--ez-error-600);
 	--color-error-700: var(--ez-error-700);
+	--color-error-800: var(--ez-error-800);
+	--color-error-950: var(--ez-error-950);
 
 	/* 信息色 - 蓝色（表示提示、中性信息） */
 	--color-info-50: var(--ez-info-50);
+	--color-info-100: var(--ez-info-100);
+	--color-info-200: var(--ez-info-200);
+	--color-info-300: var(--ez-info-300);
 	--color-info-400: var(--ez-info-400);
 	--color-info-500: var(--ez-info-500);
 	--color-info-600: var(--ez-info-600);
 	--color-info-700: var(--ez-info-700);
+	--color-info-800: var(--ez-info-800);
+	--color-info-950: var(--ez-info-950);
 
 	/* ----- 中性色（slate 色系） ----- */
 	--color-slate-50: var(--ez-slate-50);
@@ -82,6 +104,7 @@
 	--color-slate-700: var(--ez-slate-700);
 	--color-slate-800: var(--ez-slate-800);
 	--color-slate-900: var(--ez-slate-900);
+	--color-slate-950: var(--ez-slate-950);
 
 	/* ----- 亮色模式功能色 ----- */
 	--color-white: var(--ez-white); /* 纯白色（卡片、输入框、模态框等） */
@@ -98,17 +121,44 @@
 	--color-dark-card: var(--ez-body-bg-dark); /* 卡片背景（复用 body-bg） */
 	--color-dark-border: var(--ez-border-dark); /* 边框色 */
 	--color-dark-divider: var(--ez-divider-dark); /* 分割线 */
-	--color-dark-hover: var(--ez-hover-dark); /* Hover 背景 */
+	--color-dark-hover: rgba(255, 255, 255, 0.08); /* Hover 背景 */
 	--color-dark-disabled: var(--ez-disabled-dark); /* 禁用状态文字 */
 	--color-dark-text-primary: var(--ez-text-primary-dark); /* 主要文字 */
 	--color-dark-text-secondary: var(--ez-text-secondary-dark); /* 次要文字 */
 	--color-dark-text-tertiary: var(--ez-text-tertiary-dark); /* 辅助文字 */
+
+	/* ----- 渐变系统 ----- */
+	/* 主色渐变（品牌色系） */
+	--gradient-primary-to-r: linear-gradient(to right, var(--ez-primary-light), var(--ez-primary-600-light));
+	--gradient-primary-to-br: linear-gradient(to bottom right, var(--ez-primary-light), var(--ez-primary-600-light));
+	--gradient-primary-to-bl: linear-gradient(to bottom left, var(--ez-primary-light), var(--ez-primary-400-light));
+
+	/* 语义渐变 */
+	--gradient-success: linear-gradient(135deg, var(--ez-success-500), var(--ez-success-600));
+	--gradient-warning: linear-gradient(135deg, var(--ez-warning-500), var(--ez-warning-600));
+	--gradient-error: linear-gradient(135deg, var(--ez-error-500), var(--ez-error-600));
+	--gradient-info: linear-gradient(135deg, var(--ez-info-500), var(--ez-info-600));
+
+	/* 特殊渐变 */
+	--gradient-sunset: linear-gradient(135deg, var(--ez-warning-500), var(--ez-error-500));
+	--gradient-ocean: linear-gradient(135deg, var(--ez-info-500), #06B6D4);
+
+	/* ----- 阴影系统 ----- */
+	--shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+	--shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+	--shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+	--shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+	--shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15), 0 10px 10px rgba(0, 0, 0, 0.04);
+
+	/* 主色阴影（彩色阴影效果） */
+	--shadow-primary-sm: 0 1px 3px rgba(91, 107, 240, 0.2);
+	--shadow-primary-md: 0 4px 6px rgba(91, 107, 240, 0.25);
 }
 
 /* ========== 暗色模式配置 ========== */
 .dark {
 	@theme {
-		/* ----- 主色调（暗色模式：亮紫系） ----- */
+		/* ----- 主色调（暗色模式） ----- */
 		--color-primary-50: var(--ez-primary-50-dark);
 		--color-primary-100: var(--ez-primary-100-dark);
 		--color-primary-200: var(--ez-primary-200-dark);
@@ -119,6 +169,7 @@
 		--color-primary-700: var(--ez-primary-700-dark);
 		--color-primary-800: var(--ez-primary-800-dark);
 		--color-primary-900: var(--ez-primary-900-dark);
+		--color-primary-950: var(--ez-primary-950-dark);
 
 		/* 主色透明度变体（暗色模式） */
 		--color-primary-500/05: var(--ez-primary-dark-opacity-5);
@@ -128,7 +179,20 @@
 		--color-primary-500/20: var(--ez-primary-dark-opacity-20);
 		--color-primary-500/50: var(--ez-primary-dark-opacity-50);
 
-    --color-slate-300: var(--ez-slate-300);
+		/* 主色渐变（暗色模式） */
+		--gradient-primary-to-r: linear-gradient(to right, var(--ez-primary-dark), var(--ez-primary-600-dark));
+		--gradient-primary-to-br: linear-gradient(to bottom right, var(--ez-primary-dark), var(--ez-primary-600-dark));
+		--gradient-primary-to-bl: linear-gradient(to bottom left, var(--ez-primary-dark), var(--ez-primary-400-dark));
+
+		/* 阴影系统（暗色模式 - 更强的对比度） */
+		--shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
+		--shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+		--shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
+		--shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.4), 0 4px 6px rgba(0, 0, 0, 0.3);
+		--shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.5), 0 10px 10px rgba(0, 0, 0, 0.3);
+
+		/* 主色阴影（暗色模式） */
+		--shadow-primary-sm: 0 1px 3px rgba(167, 139, 250, 0.3);
+		--shadow-primary-md: 0 4px 6px rgba(167, 139, 250, 0.35);
 	}
 }
-
