@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { NBreadcrumb, NBreadcrumbItem } from 'naive-ui'
 import { useLayoutStore } from '@/stores/modules/layout'
 
 // 面包屑项类型定义

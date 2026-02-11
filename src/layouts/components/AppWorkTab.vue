@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, watch, h } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { NDropdown, NButton, NIcon } from 'naive-ui'
+import { NDropdown, NButton, NIcon, NSpace, NEl } from 'naive-ui'
 import type { DropdownProps } from 'naive-ui'
 import {
   CloseOutlined,
@@ -171,15 +171,22 @@ watch(
 
 // 是否显示标签页
 const showTabs = computed(() => layoutStore.showTabs && layoutStore.tabs.length > 0)
+
+// 标签页样式类（提取为 computed，减少模板中的重复计算）
+const getTabClass = (isActive: boolean) => {
+  return [
+    'flex items-center space-x-2 px-3 py-1.5 text-sm rounded-t-lg border transition-colors cursor-pointer group/tab',
+    isActive
+      ? 'bg-white border-slate-200 border-b-0 border-t-2 border-t-primary-500'
+      : 'bg-slate-50 border-transparent hover:bg-slate-100 text-slate-700'
+  ]
+}
 </script>
 
 <template>
-  <div
-    v-if="showTabs"
-    class="h-10 bg-white dark:bg-dark-bg border-b border-slate-200 dark:border-dark-border flex items-center px-2 flex-shrink-0"
-  >
+  <n-el v-if="showTabs" tag="div" class="h-10 flex items-center px-2 flex-shrink-0 border-b border-slate-200">
     <!-- 标签项列表 -->
-    <div class="flex items-center space-x-1 flex-1 overflow-hidden">
+    <n-space :size="4" class="flex-1 overflow-hidden">
       <n-dropdown
         v-for="tab in tabs"
         :key="tab.key"
@@ -188,42 +195,31 @@ const showTabs = computed(() => layoutStore.showTabs && layoutStore.tabs.length 
         placement="bottom-start"
         @select="(action: string) => handleContextMenuSelect(tab.key, action)"
       >
-        <div
-          class="flex items-center space-x-2 px-3 py-1.5 text-sm text-slate-700 dark:text-dark-text-primary rounded-t-lg border transition-colors cursor-pointer group/tab"
-          :class="
-            activeKey === tab.key
-              ? 'bg-white dark:bg-dark-card border-slate-200 dark:border-dark-border border-b-0 border-t-2 border-t-primary-500 dark:border-t-primary-dark-500'
-              : 'bg-slate-50 dark:bg-dark-bg border-transparent hover:bg-slate-100 dark:hover:bg-white/5'
-          "
-          @click="handleTabClick(tab.key)"
-        >
-          <span class="whitespace-nowrap">{{ tab.label }}</span>
+        <n-el tag="div" :class="getTabClass(activeKey === tab.key)" @click="handleTabClick(tab.key)">
+          <n-el tag="span" class="whitespace-nowrap">{{ tab.label }}</n-el>
           <button
             v-if="tab.closable"
-            class="w-4 h-4 rounded-full hover:bg-red-100 dark:hover:bg-red-900/30 flex items-center justify-center opacity-0 group-hover/tab:opacity-100 transition-opacity"
+            class="w-4 h-4 rounded-full hover:bg-red-100 flex items-center justify-center opacity-0 group-hover/tab:opacity-100 transition-opacity"
             @click.stop="handleClose(tab.key)"
           >
-            <span class="text-slate-400 opacity-60 hover:text-red-500 text-xs">×</span>
+            <n-el tag="span" class="text-slate-400 opacity-60 hover:text-red-500 text-xs">×</n-el>
           </button>
-        </div>
+        </n-el>
       </n-dropdown>
-    </div>
+    </n-space>
 
     <!-- 右侧操作按钮 -->
-    <div class="flex items-center ml-2 flex-shrink-0">
+    <n-space :size="0" align="center" class="ml-2 flex-shrink-0">
       <n-dropdown :options="actionsDropdownOptions" placement="bottom-end" @select="handleActionSelect" trigger="click">
-        <n-button
-          text
-          size="small"
-          class="h-7 w-7 px-0 hover:bg-slate-100 dark:hover:bg-white/10 rounded transition-all duration-200"
-        >
+        <n-button text size="small" class="h-7 w-7 px-0">
           <template #icon>
-            <n-icon :size="16" class="text-slate-500 dark:text-slate-400">
+            <n-icon :size="16">
               <MoreOutlined />
             </n-icon>
           </template>
         </n-button>
       </n-dropdown>
-    </div>
-  </div>
+    </n-space>
+  </n-el>
 </template>
+

@@ -68,5 +68,3 @@ const handleMenuUpdate = (key: string) => {
     />
   </n-layout-sider>
 </template>
-
-<style scoped></style>

@@ -13,11 +13,11 @@ function goBack() {
 </script>
 
 <template>
-  <div class="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 px-4">
+  <div class="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 px-4">
     <div class="text-center">
       <!-- 404 大数字 -->
       <div class="relative mb-8">
-        <div class="text-[180px] font-bold text-slate-200 dark:text-slate-700 select-none leading-none">
+        <div class="text-[180px] font-bold text-slate-200 select-none leading-none">
           404
         </div>
         <!-- 漂浮的元素装饰 -->
@@ -31,10 +31,10 @@ function goBack() {
       </div>
 
       <!-- 提示信息 -->
-      <h1 class="text-2xl font-semibold text-slate-700 dark:text-slate-200 mb-3">
+      <h1 class="text-2xl font-semibold text-slate-700 mb-3">
         页面走丢了
       </h1>
-      <p class="text-slate-500 dark:text-slate-400 mb-8 max-w-md mx-auto">
+      <p class="text-slate-500 mb-8 max-w-md mx-auto">
         抱歉，您访问的页面不存在或已被移除。
         <br>
         请检查URL是否正确，或返回首页重新开始。
@@ -64,8 +64,8 @@ function goBack() {
       </div>
 
       <!-- 额外提示 -->
-      <div class="mt-12 pt-8 border-t border-slate-200 dark:border-slate-700">
-        <p class="text-sm text-slate-400 dark:text-slate-500">
+      <div class="mt-12 pt-8 border-t border-slate-200">
+        <p class="text-sm text-slate-400">
           需要帮助？请联系管理员或查看文档
         </p>
       </div>

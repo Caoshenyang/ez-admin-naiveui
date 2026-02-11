@@ -63,7 +63,7 @@ export function useTheme(): UseThemeReturn {
 		themeOverrides.value = createTheme(newMode) // 运行时提取颜色值
 		localStorage.set(THEME_STORAGE_KEY, newMode)
 
-		// 同步切换 Tailwind CSS 的 dark 类
+		// 同步切换 CSS 变量的 dark 类（用于 getColor() 提取正确的颜色值）
 		const html = document.documentElement
 		if (newMode === 'dark') {
 			html.classList.add('dark')
@@ -81,3 +81,4 @@ export function useTheme(): UseThemeReturn {
 		setTheme
 	}
 }
+

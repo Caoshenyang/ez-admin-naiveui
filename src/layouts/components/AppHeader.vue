@@ -13,6 +13,7 @@ import {
 } from '@vicons/ionicons5'
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@vicons/antd'
 import { useFullscreen } from '@vueuse/core'
+import { NLayoutHeader, NTooltip, NButton, NIcon, NSpace, NBadge, NDropdown, NAvatar, NEl } from 'naive-ui'
 import { useLayoutStore } from '@/stores/modules/layout'
 import { useUserStore } from '@/stores/modules/user'
 import { dialog, message } from '@/hooks/useNaiveApi'
@@ -122,10 +123,10 @@ const handleNotification = () => {
 <template>
   <n-layout-header
     bordered
-    class="h-14 px-4 flex items-center justify-between bg-white dark:bg-dark-card border-b border-slate-200 dark:border-dark-border shrink-0"
+    class="h-14 px-4 flex items-center justify-between bg-white border-b border-slate-200 shrink-0"
   >
     <!-- 左侧：折叠按钮 + 刷新按钮 + 面包屑 -->
-    <div class="flex items-center space-x-4 flex-1 min-w-0">
+    <n-space :size="4" class="flex-1 min-w-0">
       <!-- 折叠按钮 -->
       <n-tooltip placement="bottom">
         <template #trigger>
@@ -156,25 +157,27 @@ const handleNotification = () => {
 
       <!-- 面包屑 -->
       <app-breadcrumb />
-    </div>
+    </n-space>
 
     <!-- 右侧：功能按钮 -->
     <n-space :size="8" class="items-center">
       <!-- 搜索框（Tailwind 响应式：平板及以上显示） -->
-      <div
-        class="hidden md:flex items-center h-8 px-3 space-x-2 text-slate-700 dark:text-dark-text-primary bg-slate-50 dark:bg-dark-bg rounded-lg border border-slate-200 dark:border-dark-border hover:border-slate-300 dark:hover:border-dark-text-secondary transition-colors cursor-pointer"
+      <n-space
+        :size="8"
+        class="hidden md:flex h-8 px-3 text-slate-700 bg-slate-50 rounded-lg border border-slate-200 hover:border-slate-300 transition-colors cursor-pointer"
         @click="handleSearch"
       >
         <n-icon class="text-slate-400 opacity-60">
           <SearchOutline />
         </n-icon>
-        <input
+        <n-el
+          tag="input"
           type="text"
           placeholder="搜索..."
-          class="bg-transparent border-none outline-none text-sm placeholder-slate-400 dark:placeholder-dark-text-tertiary w-32 lg:w-40 h-full"
+          class="bg-transparent border-none outline-none text-sm placeholder-slate-400 w-32 lg:w-40"
           readonly
         />
-      </div>
+      </n-space>
 
       <!-- 通知按钮 -->
       <n-button quaternary circle size="small" :focusable="false" @click="handleNotification">
@@ -217,17 +220,18 @@ const handleNotification = () => {
 
       <!-- 用户下拉菜单 -->
       <n-dropdown :options="userDropdownOptions" @select="handleUserDropdownClick">
-        <div
-          class="flex items-center h-8 px-3 space-x-2 text-slate-700 dark:text-dark-text-primary rounded-lg hover:bg-slate-50 dark:hover:bg-dark-hover cursor-pointer transition-colors"
+        <n-space
+          :size="8"
+          class="h-8 px-3 text-slate-700 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors"
         >
           <n-avatar v-if="avatar" round :size="28" :src="avatar" />
           <n-avatar v-else round :size="28" class="bg-blue-600">
             {{ username.charAt(0).toUpperCase() }}
           </n-avatar>
-          <span class="text-sm font-medium hidden lg:block">
+          <n-el tag="span" class="text-sm font-medium hidden lg:block">
             {{ username }}
-          </span>
-        </div>
+          </n-el>
+        </n-space>
       </n-dropdown>
     </n-space>
   </n-layout-header>
