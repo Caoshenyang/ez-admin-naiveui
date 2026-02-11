@@ -2,73 +2,54 @@
  * 应用配置 Store
  * 使用 Setup Store 模式
  */
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
-import type { DeviceType } from '../types/app'
+import type { GlobalThemeOverrides } from 'naive-ui'
+import { darkTheme } from 'naive-ui'
+import { createDarkTheme, createLightTheme } from '@/settings/naiveui-theme'
 
 export const useAppStore = defineStore(
   'app',
   () => {
     // ========== State ==========
     const sidebarOpened = ref<boolean>(true)
-    const device = ref<DeviceType>('desktop')
+    const themeMode = ref<'light' | 'dark'>('light')
+
+    // ========== Computed ==========
+    /** NaiveUI 主题对象（用于 n-config-provider） */
+    const naiveTheme = computed(() => (themeMode.value === 'dark' ? darkTheme : null))
+
+    /** NaiveUI 主题覆盖配置（自定义颜色） */
+    const themeOverrides = computed<GlobalThemeOverrides>(() =>
+      themeMode.value === 'dark' ? createDarkTheme() : createLightTheme()
+    )
 
     // ========== Actions ==========
-    /**
-     * 切换侧边栏打开状态
-     */
     function toggleSidebar() {
       sidebarOpened.value = !sidebarOpened.value
     }
 
-    /**
-     * 设置侧边栏打开状态
-     * @param opened 打开状态
-     */
     function setSidebarOpened(opened: boolean) {
       sidebarOpened.value = opened
     }
 
-    /**
-     * 设置设备类型
-     * @param deviceValue 设备类型
-     */
-    function setDevice(deviceValue: DeviceType) {
-      device.value = deviceValue
-    }
-
-    /**
-     * 关闭侧边栏（移动端使用）
-     */
-    function closeSidebar() {
-      sidebarOpened.value = false
-    }
-
-    /**
-     * 打开侧边栏
-     */
-    function openSidebar() {
-      sidebarOpened.value = true
+    function toggleTheme() {
+      themeMode.value = themeMode.value === 'light' ? 'dark' : 'light'
     }
 
     return {
-      // State
       sidebarOpened,
-      device,
-      // Actions
+      themeMode,
+      naiveTheme,
+      themeOverrides,
       toggleSidebar,
       setSidebarOpened,
-      setDevice,
-      closeSidebar,
-      openSidebar
+      toggleTheme
     }
   },
   {
-    // ========== 持久化配置 ==========
     persist: {
       key: 'app-store',
       storage: localStorage,
-      pick: ['sidebarOpened'] // 只持久化侧边栏状态
+      pick: ['sidebarOpened', 'themeMode']
     }
   }
 )

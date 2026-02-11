@@ -1,665 +1,343 @@
+/**
+ * NaiveUI 主题配置
+ *
+ * 设计理念：
+ * - 从 CSS 变量中提取颜色值（通过 getColor 工具函数）
+ * - 确保 NaiveUI 组件与 Tailwind 颜色系统保持一致
+ * - 支持亮色/暗色两种主题模式
+ *
+ * 使用方式：
+ * - 在 App.vue 中通过 n-config-provider 应用主题
+ * - 主题切换由 stores/modules/app.ts 控制
+ */
 import type { GlobalThemeOverrides } from 'naive-ui'
 import { getColor } from '@/utils/color-vars'
 
 /**
- * NaiveUI 主题配置（运行时提取 CSS 变量）
+ * 创建亮色主题配置
  *
- * 设计理念: 现代优雅风格
- * 参考: Linear, Vercel, Notion 等现代 SaaS 产品
- *
- * 颜色策略:
- * - 主色调: 蓝紫色系 (#5B6BF0 亮色 + #A78BFA 暗色) - 现代、科技感
- * - 亮色主题: 纯白侧边栏 + 清爽配色 - 明亮、通透
- * - 暗色主题: GitHub 风格深色系 - 专业、护眼
- * - 语义色: 标准语义色（成功=绿、警告=橙、错误=红）- 符合用户习惯
- *
- * 技术实现:
- * - 运行时从 Tailwind CSS 定义的变量中提取实际颜色值
- * - 颜色定义在 src/assets/styles/index.css（单一真相源）
- * - 解决 seemly/rgba 无法解析 var() 的问题
- * - 修改颜色只需修改 index.css，NaiveUI 自动同步
- */
-
-/**
- * 亮色主题配置
- *
- * 使用函数形式确保在 DOM 加载后运行
- * 运行时从 CSS 变量中提取实际颜色值
+ * 颜色来源：src/assets/styles/colors.css
+ * 主色系：#5B6BF0（蓝紫色） - 现代、科技感
  */
 export function createLightTheme(): GlobalThemeOverrides {
   return {
-    // 通用配置
+    // ===== 全局通用配置 =====
     common: {
-      // 主色调
-      primaryColor: getColor('--color-primary-500'),
-      primaryColorHover: getColor('--color-primary-600'),
-      primaryColorPressed: getColor('--color-primary-700'),
-      primaryColorSuppl: getColor('--color-primary-500'),
+      primaryColor: getColor('--ez-primary-light'), // 主色：#5B6BF0
+      primaryColorHover: getColor('--ez-primary-600-light'), // 主色悬停：#4F46E5
+      primaryColorPressed: getColor('--ez-primary-700-light'), // 主色按下：#4338CA
+      primaryColorSuppl: getColor('--ez-primary-200-light'), // 主色补充：#C7D2FE
 
       // 语义色
-      successColor: getColor('--color-success-500'),
-      successColorHover: getColor('--color-success-400'),
-      successColorPressed: getColor('--color-success-600'),
-      successColorSuppl: getColor('--color-success-500'),
+      successColor: getColor('--ez-success-500'), // 成功色：#10B981
+      successColorHover: getColor('--ez-success-600'), // 成功悬停：#059669
+      successColorPressed: getColor('--ez-success-700'), // 成功按下：#047857
+      successColorSuppl: getColor('--ez-success-50'), // 成功补充：#ECFDF5
 
-      warningColor: getColor('--color-warning-500'),
-      warningColorHover: getColor('--color-warning-400'),
-      warningColorPressed: getColor('--color-warning-600'),
-      warningColorSuppl: getColor('--color-warning-500'),
+      warningColor: getColor('--ez-warning-500'), // 警告色：#F59E0B
+      warningColorHover: getColor('--ez-warning-600'), // 警告悬停：#D97706
+      warningColorPressed: getColor('--ez-warning-700'), // 警告按下：#B45309
+      warningColorSuppl: getColor('--ez-warning-50'), // 警告补充：#FFFBEB
 
-      errorColor: getColor('--color-error-500'),
-      errorColorHover: getColor('--color-error-400'),
-      errorColorPressed: getColor('--color-error-600'),
-      errorColorSuppl: getColor('--color-error-500'),
+      errorColor: getColor('--ez-error-500'), // 错误色：#EF4444
+      errorColorHover: getColor('--ez-error-600'), // 错误悬停：#DC2626
+      errorColorPressed: getColor('--ez-error-700'), // 错误按下：#B91C1C
+      errorColorSuppl: getColor('--ez-error-50'), // 错误补充：#FEF2F2
 
-      infoColor: getColor('--color-info-500'),
-      infoColorHover: getColor('--color-info-400'),
-      infoColorPressed: getColor('--color-info-600'),
-      infoColorSuppl: getColor('--color-info-500'),
+      infoColor: getColor('--ez-info-500'), // 信息色：#3B82F6
+      infoColorHover: getColor('--ez-info-600'), // 信息悬停：#2563EB
+      infoColorPressed: getColor('--ez-info-700'), // 信息按下：#1D4ED8
+      infoColorSuppl: getColor('--ez-info-50'), // 信息补充：#EFF6FF
 
-      // 中性色
-      textColorBase: getColor('--color-slate-500'),
-      textColor1: getColor('--color-slate-900'),
-      textColor2: getColor('--color-slate-600'),
-      textColor3: getColor('--color-slate-400'),
+      // 文本色
+      textColorBase: getColor('--ez-slate-900'), // 主要文字：#0F172A
+      textColor1: getColor('--ez-slate-800'), // 一级文字：#1E293B
+      textColor2: getColor('--ez-slate-700'), // 二级文字：#334155
+      textColor3: getColor('--ez-slate-500'), // 三级文字：#64748B
+      textColorDisabled: getColor('--ez-slate-300'), // 禁用文字：#CBD5E1
 
-      borderColor: getColor('--color-slate-200'),
-      dividerColor: getColor('--color-slate-100'),
+      // 边框色
+      borderColor: getColor('--ez-border-light'), // 边框：#E2E8F0
 
-      bodyColor: getColor('--color-slate-50'),
-      cardColor: '#FFFFFF',
-      modalColor: '#FFFFFF',
-      popoverColor: '#FFFFFF',
+      // 分割线
+      dividerColor: getColor('--ez-slate-200'), // 分割线：#E2E8F0
 
-      borderRadius: '10px',
-      borderRadiusSmall: '6px',
-      boxShadow1: '0 1px 2px 0 rgb(0 0 0 / 0.03)',
-      boxShadow2: '0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05)',
-      boxShadow3: '0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05)'
+      // 背景色
+      bodyColor: getColor('--ez-body-bg-light'), // 页面背景：#F8FAFC
+      cardColor: getColor('--ez-white'), // 卡片背景：#FFFFFF
+      modalColor: getColor('--ez-white'), // 模态框背景：#FFFFFF
+      popoverColor: getColor('--ez-white'), // 气泡背景：#FFFFFF
+
+      // 禁用状态
+      placeholderColor: getColor('--ez-slate-400') // 占位符：#94A3B8
     },
 
-    // 布局组件（亮色主题 - 纯白侧边栏）
+    // ===== 布局组件 =====
     Layout: {
-      color: '#F8FAFC',
-      siderColor: '#FFFFFF',
-      headerColor: '#FFFFFF',
-      footerColor: '#FFFFFF',
-      textColor: getColor('--color-slate-500'),
-      textColorChild: getColor('--color-slate-400'),
-      textColorHover: getColor('--color-primary-500'),
-      dividerColor: getColor('--color-slate-100')
+      siderColor: getColor('--ez-sider-bg'), // 侧边栏背景：#FFFFFF
+      headerColor: getColor('--ez-header-bg'), // 顶部栏背景：#FFFFFF
+      color: getColor('--ez-body-bg-light') // 内容区背景：#F8FAFC
     },
 
-    // 菜单组件（亮色主题）
-    Menu: {
-      itemTextColor: getColor('--color-slate-600'),
-      itemTextColorHover: getColor('--color-primary-500'),
-      itemTextColorActive: getColor('--color-primary-500'),
-      itemTextColorChildActive: getColor('--color-primary-500'),
-      itemIconColor: getColor('--color-slate-500'),
-      itemIconColorHover: getColor('--color-primary-500'),
-      itemIconColorActive: getColor('--color-primary-500'),
-      itemIconColorChildActive: getColor('--color-primary-500'),
-      itemColorActive: getColor('--color-primary-50'),
-      itemColorHover: getColor('--color-slate-50'),
-      arrowColor: getColor('--color-slate-500'),
-      arrowColorHover: getColor('--color-primary-500'),
-      arrowColorChildActive: getColor('--color-primary-500'),
-      dividerColor: getColor('--color-slate-100')
-    },
-
-    // 标签页组件
-    Tabs: {
-      tabTextColorBar: getColor('--color-slate-400'),
-      tabTextColorActiveBar: getColor('--color-primary-500'),
-      tabTextColorHoverBar: getColor('--color-slate-500'),
-      tabBarColor: getColor('--color-slate-200'),
-      tabColorBar: '#FFFFFF',
-      tabColorSegment: getColor('--color-slate-100'),
-      tabColorSegmentActive: '#FFFFFF',
-      tabTextColorSegment: getColor('--color-slate-500'),
-      tabTextColorActiveSegment: getColor('--color-primary-500'),
-      tabGap: '12px',
-      tabPaddingLarge: '12px 16px'
-    },
-
-    // 按钮组件
+    // ===== 按钮组件 =====
     Button: {
-      textColor: getColor('--color-slate-600'),
-      textColorHover: getColor('--color-primary-500'),
-      textColorPressed: getColor('--color-primary-600'),
-      textColorFocus: getColor('--color-primary-500'),
-      textColorDisabled: getColor('--color-slate-300'),
-      border: '1px solid #E2E8F0',
-      borderHover: '1px solid #5B6BF0',
-      borderPressed: '1px solid #4338CA',
-      borderFocus: '1px solid #5B6BF0',
-      textColorPrimary: '#FFFFFF',
-      textColorHoverPrimary: '#FFFFFF',
-      textColorPressedPrimary: '#FFFFFF',
-      textColorFocusPrimary: '#FFFFFF',
-      borderRadius: '8px',
-      paddingLarge: '10px 20px',
-      colorDisabled: getColor('--color-slate-100'),
-      colorDisabledPrimary: 'rgba(91, 107, 240, 0.5)'
+      textColor: getColor('--ez-primary-light'), // 文本按钮主色
+      textColorHover: getColor('--ez-primary-600-light'),
+      textColorPressed: getColor('--ez-primary-700-light'),
+      textColorFocus: getColor('--ez-primary-600-light'),
+      textColorDisabled: getColor('--ez-slate-300')
     },
 
-    // 输入框组件
+    // ===== 输入框组件 =====
     Input: {
-      color: '#FFFFFF',
-      colorFocus: '#FFFFFF',
-      textColor: getColor('--color-slate-800'),
-      placeholderColor: getColor('--color-slate-400'),
-      border: '1px solid #E2E8F0',
-      borderHover: '1px solid #CBD5E1',
-      borderFocus: '1px solid #5B6BF0',
-      boxShadowFocus: `0 0 0 3px ${getColor('--color-primary-500/08')}`,
-      colorDisabled: getColor('--color-slate-50'),
-      textColorDisabled: getColor('--color-slate-400'),
-      borderDisabled: '1px solid #E2E8F0',
-      placeholderColorDisabled: getColor('--color-slate-300'),
-      colorActive: '#FFFFFF',
-      borderRadius: '8px'
+      color: getColor('--ez-white'), // 输入框背景
+      colorFocus: getColor('--ez-white'), // 聚焦背景
+      colorDisabled: getColor('--ez-slate-50'), // 禁用背景
+      borderColor: getColor('--ez-border-light'), // 边框
+      borderColorFocus: getColor('--ez-primary-light'), // 聚焦边框
+      placeholderColor: getColor('--ez-slate-400') // 占位符
     },
 
-    // 表格组件
+    // ===== 表格组件 =====
     DataTable: {
-      thColor: getColor('--color-slate-50'),
-      thTextColor: getColor('--color-slate-600'),
-      thFontWeight: '600',
-      tdColor: '#FFFFFF',
-      tdTextColor: getColor('--color-slate-800'),
-      tdTextColorHover: getColor('--color-slate-600'),
-      borderColor: getColor('--color-slate-100'),
-      borderRadius: '10px',
-      thPadding: '12px 16px',
-      tdPadding: '12px 16px'
+      thColor: getColor('--ez-slate-50'), // 表头背景：#F8FAFC
+      thTextColor: getColor('--ez-slate-700'), // 表头文字：#334155
+      tdColor: getColor('--ez-white'), // 单元格背景
+      tdTextColor: getColor('--ez-slate-700'), // 单元格文字
+      tdColorHover: getColor('--ez-slate-50'), // 单元格悬停
+      borderColor: getColor('--ez-slate-200'), // 边框
+      thColorModal: getColor('--ez-slate-50'),
+      tdColorModal: getColor('--ez-white'),
+      tdColorStriped: getColor('--ez-slate-50') // 斑马纹
     },
 
-    // 卡片组件
-    Card: {
-      color: '#FFFFFF',
-      colorModal: '#FFFFFF',
-      colorTarget: getColor('--color-slate-50'),
-      colorEmbedded: '#FFFFFF',
-      colorEmbeddedModal: '#FFFFFF',
-      borderColor: getColor('--color-slate-100'),
-      borderRadius: '12px'
-    },
-
-    // 弹窗组件
-    Modal: {
-      color: '#FFFFFF',
-      textColor: getColor('--color-slate-800'),
-      borderRadius: '16px',
-      boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.08), 0 8px 10px -6px rgb(0 0 0 / 0.08)'
-    },
-
-    // 下拉菜单
-    Dropdown: {
-      color: '#FFFFFF',
-      optionColorHover: getColor('--color-slate-50'),
-      optionTextColor: getColor('--color-slate-600'),
-      optionTextColorHover: getColor('--color-primary-500'),
-      optionIconColor: getColor('--color-slate-400'),
-      optionIconColorHover: getColor('--color-primary-500'),
-      dividerColor: getColor('--color-slate-100'),
-      borderRadius: '10px',
-      boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.08)',
-      padding: '8px'
-    },
-
-    // 选择器
+    // ===== 选择器组件 =====
     Select: {
+      colors: getColor('--ez-white'),
+      colorsModal: getColor('--ez-white'),
       peers: {
         InternalSelection: {
-          color: '#FFFFFF',
-          colorActive: '#FFFFFF',
-          textColor: getColor('--color-slate-800'),
-          placeholderColor: getColor('--color-slate-400'),
-          border: '1px solid #E2E8F0',
-          borderHover: '1px solid #CBD5E1',
-          borderFocus: '1px solid #5B6BF0',
-          borderActive: '1px solid #5B6BF0',
-          boxShadowFocus: `0 0 0 3px ${getColor('--color-primary-500/08')}`,
-          arrowColor: getColor('--color-slate-400'),
-          colorDisabled: getColor('--color-slate-50'),
-          borderRadius: '8px'
+          color: getColor('--ez-white'),
+          colorActive: getColor('--ez-primary-50-light'),
+          textColor: getColor('--ez-slate-700'),
+          placeholderColor: getColor('--ez-slate-400')
         }
       }
     },
 
-    // 日期选择器
-    DatePicker: {
-      panelColor: '#FFFFFF',
-      panelTextColor: getColor('--color-slate-800'),
-      panelHeaderColor: '#FFFFFF',
-      panelActionColor: getColor('--color-slate-50'),
-      panelActionHoverColor: getColor('--color-slate-100'),
-      calendarDaysTextColor: getColor('--color-slate-600'),
-      calendarDaysTextColorHover: getColor('--color-primary-500'),
-      calendarDaysTextColorCurrent: getColor('--color-primary-500'),
-      calendarDaysColorCurrent: getColor('--color-primary-50'),
-      calendarDaysTextColorSelected: '#FFFFFF',
-      calendarDaysColorSelected: getColor('--color-primary-500'),
-      borderRadius: '10px'
+    // ===== 标签页组件 =====
+    Tabs: {
+      tabTextColorBar: getColor('--ez-slate-600'), // 标签文字
+      tabTextColorActiveBar: getColor('--ez-primary-light'), // 激活标签
+      tabTextColorHoverBar: getColor('--ez-primary-light'),
+      barColor: getColor('--ez-primary-light'), // 指示条颜色
+      paneColor: getColor('--ez-white') // 内容区背景
     },
 
-    // 通知组件
-    Notification: {
-      color: '#FFFFFF',
-      textColor: getColor('--color-slate-600'),
-      borderRadius: '10px',
-      boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.08)'
+    // ===== 菜单组件 =====
+    Menu: {
+      itemTextColor: getColor('--ez-slate-700'), // 菜单项文字
+      itemTextColorHover: getColor('--ez-primary-light'), // 悬停文字
+      itemTextColorActive: getColor('--ez-primary-light'), // 激活文字
+      itemIconColor: getColor('--ez-slate-500'), // 图标颜色
+      itemIconColorHover: getColor('--ez-primary-light'),
+      itemIconColorActive: getColor('--ez-primary-light'),
+      itemColorActive: getColor('--ez-primary-50-light'), // 激活背景
+      itemColorHover: getColor('--ez-slate-50'), // 悬停背景
+      itemColorActiveCollapsed: getColor('--ez-primary-50-light'),
+      arrowColor: getColor('--ez-slate-400'), // 箭头颜色
+      arrowColorHover: getColor('--ez-primary-light'),
+      arrowColorActive: getColor('--ez-primary-light'),
+      dropdownColor: getColor('--ez-white') // 下拉菜单背景
     },
 
-    // 消息提示
+    // ===== 消息组件 =====
     Message: {
-      color: '#FFFFFF',
-      textColor: getColor('--color-slate-600'),
-      borderRadius: '8px',
-      iconColor: getColor('--color-slate-400'),
-      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.08)'
+      color: getColor('--ez-white'),
+      iconColor: getColor('--ez-primary-light')
     },
 
-    // 标签
-    Tag: {
-      borderRadius: '6px'
-    },
-
-    // 徽标
-    Badge: {
-      color: getColor('--color-error-500'),
-      textColor: '#FFFFFF',
-      borderRadius: '12px'
-    },
-
-    // 进度条
-    Progress: {
-      borderRadius: '4px',
-      railColor: getColor('--color-slate-100'),
-      fillColor: getColor('--color-primary-500'),
-      fillColorSuccess: getColor('--color-success-500'),
-      fillColorWarning: getColor('--color-warning-500'),
-      fillColorError: getColor('--color-error-500')
-    },
-
-    // 开关
-    Switch: {
-      railColor: getColor('--color-slate-200'),
-      railColorActive: getColor('--color-primary-500'),
-      buttonColor: '#FFFFFF',
-      buttonBoxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.08)'
-    },
-
-    // 复选框
-    Checkbox: {
-      borderColor: getColor('--color-slate-300'),
-      borderColorChecked: getColor('--color-primary-500'),
-      borderColorDisabled: getColor('--color-slate-100'),
-      checkMarkColor: '#FFFFFF',
-      color: '#FFFFFF',
-      colorDisabled: getColor('--color-slate-50'),
-      borderRadius: '6px'
-    },
-
-    // 单选框
-    Radio: {
-      buttonColorActive: getColor('--color-primary-500'),
-      buttonBorderColor: getColor('--color-slate-300'),
-      buttonBorderColorActive: getColor('--color-primary-500'),
-      buttonBorderColorHover: getColor('--color-slate-400'),
-      buttonBoxShadow: `0 0 0 4px ${getColor('--color-primary-500/08')}`,
-      buttonBoxShadowActive: `0 0 0 4px ${getColor('--color-primary-500/15')}`,
-      buttonBoxShadowHover: `0 0 0 4px ${getColor('--color-primary-500/10')}`,
-      colorDisabled: getColor('--color-slate-50')
-    },
-
-    // 滑块
-    Slider: {
-      railColor: getColor('--color-slate-100'),
-      railColorHover: getColor('--color-slate-200'),
-      fillColor: getColor('--color-primary-500'),
-      fillColorHover: getColor('--color-primary-400'),
-      handleColor: '#FFFFFF',
-      handleBoxShadow: '0 2px 6px 0 rgb(0 0 0 / 0.1), 0 1px 3px 0 rgb(0 0 0 / 0.08)',
-      dotColor: '#FFFFFF',
-      dotBorderColor: getColor('--color-primary-500')
-    },
-
-    // 步骤条
-    Steps: {
-      stepHeaderTextColor: getColor('--color-slate-500'),
-      stepHeaderTextColorActive: getColor('--color-primary-500'),
-      stepHeaderTextColorFinished: getColor('--color-primary-500'),
-      stepIconColor: getColor('--color-slate-200'),
-      stepIconColorActive: getColor('--color-primary-500'),
-      stepIconColorFinished: getColor('--color-primary-500'),
-      stepBorderColor: getColor('--color-slate-100'),
-      stepBorderColorActive: getColor('--color-primary-500'),
-      stepBorderColorFinished: getColor('--color-primary-500')
-    },
-
-    // 面包屑
-    Breadcrumb: {
-      textColor: getColor('--color-slate-500'),
-      textColorHover: getColor('--color-primary-500'),
-      textColorActive: getColor('--color-primary-500'),
-      separatorColor: getColor('--color-slate-300'),
-      fontSize: '14px'
-    },
-
-    // 分页
-    Pagination: {
-      itemColor: '#FFFFFF',
-      itemColorHover: getColor('--color-slate-50'),
-      itemColorPressed: getColor('--color-slate-100'),
-      itemColorActive: getColor('--color-primary-500'),
-      itemTextColor: getColor('--color-slate-600'),
-      itemTextColorHover: getColor('--color-primary-500'),
-      itemTextColorActive: '#FFFFFF',
-      itemBorder: '1px solid #E2E8F0',
-      itemBorderHover: '1px solid #CBD5E1',
-      itemBorderActive: '1px solid #5B6BF0',
-      itemDisabledOpacity: 0.5,
-      itemSizeLarge: '36px',
-      borderRadius: '8px'
-    },
-
-    // 空状态
-    Empty: {
-      textColor: getColor('--color-slate-500'),
-      iconColor: getColor('--color-slate-200'),
-      extraTextColor: getColor('--color-slate-400')
-    },
-
-    // 加载中
-    Spin: {
-      color: getColor('--color-primary-500'),
-      textColor: getColor('--color-slate-500')
-    },
-
-    // 结果页
-    Result: {
-      textColor: getColor('--color-slate-600'),
-      titleTextColor: getColor('--color-slate-800'),
-      iconColorInfo: getColor('--color-info-500'),
-      iconColorSuccess: getColor('--color-success-500'),
-      iconColorWarning: getColor('--color-warning-500'),
-      iconColorError: getColor('--color-error-500')
-    },
-
-    // 统计
-    Statistic: {
-      labelTextColor: getColor('--color-slate-500'),
-      valueTextColor: getColor('--color-slate-900')
-    },
-
-    // 时间轴
-    Timeline: {
-      titleTextColor: getColor('--color-slate-800'),
-      contentTextColor: getColor('--color-slate-500'),
-      lineColor: getColor('--color-slate-100'),
-      iconColor: getColor('--color-primary-500'),
-      iconSize: '18px'
-    },
-
-    // 工具提示
-    Tooltip: {
-      color: getColor('--color-slate-800'),
-      textColor: getColor('--color-slate-50'),
-      borderRadius: '8px',
-      fontSize: '13px',
-      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.08)'
-    },
-
-    // 气泡确认框
+    // ===== 气泡确认框 =====
     Popconfirm: {
-      color: '#FFFFFF',
-      textColor: getColor('--color-slate-600'),
-      actionColor: getColor('--color-slate-50'),
-      borderRadius: '10px',
-      boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.08)'
+      color: getColor('--ez-white')
     },
 
-    LoadingBar: {
-      color: getColor('--color-primary-500'),
-      colorError: getColor('--color-error-500'),
-      colorLoading: getColor('--color-primary-500'),
-      height: '2px'
+    // ===== 抽屉组件 =====
+    Drawer: {
+      color: getColor('--ez-white'),
+      bodyColor: getColor('--ez-white')
+    },
+
+    // ===== 进度条 =====
+    Progress: {
+      railColor: getColor('--ez-slate-200') // 轨道颜色
     }
   }
 }
 
 /**
- * 暗色主题配置
+ * 创建暗色主题配置
  *
- * 设计理念: GitHub 风格深色系
- * - 侧边栏: 极深色 (#010409) - 接近纯黑但有层次
- * - 内容区: GitHub 深色背景 (#0D1117) - 专业、护眼
- * - 卡片: 柔和深灰 (#161B22) - 清晰的视觉层次
- * - 主色调: 电光紫 (#A78BFA) - 暗色下更醒目
- *
- * 优化重点:
- * - 提高文字对比度，确保可读性
- * - 增加微妙的光泽感和层次感
- * - 柔和的深色背景，避免纯黑
- * - 强化交互状态的视觉反馈
- *
- * 技术实现:
- * - 运行时从 CSS 变量中提取实际颜色值
- * - 颜色定义在 src/assets/styles/index.css（单一真相源）
+ * 颜色来源：src/assets/styles/colors.css
+ * 主色系：#A78BFA（亮紫色） - 醒目、优雅
+ * 背景色：GitHub 深色风格
  */
 export function createDarkTheme(): GlobalThemeOverrides {
   return {
+    // ===== 全局通用配置 =====
     common: {
-      primaryColor: getColor('--color-primary-500'),
-      primaryColorHover: getColor('--color-primary-600'),
-      primaryColorPressed: getColor('--color-primary-700'),
-      primaryColorSuppl: getColor('--color-primary-500'),
+      primaryColor: getColor('--ez-primary-dark'), // 主色：#A78BFA
+      primaryColorHover: getColor('--ez-primary-600-dark'), // 主色悬停：#9333EA
+      primaryColorPressed: getColor('--ez-primary-700-dark'), // 主色按下：#7E22CE
+      primaryColorSuppl: getColor('--ez-primary-200-dark'), // 主色补充：#E9D5FF
 
-      successColor: getColor('--color-success-500'),
-      successColorHover: getColor('--color-success-400'),
-      successColorPressed: getColor('--color-success-600'),
-      successColorSuppl: getColor('--color-success-500'),
+      // 语义色（保持与亮色一致）
+      successColor: getColor('--ez-success-500'),
+      successColorHover: getColor('--ez-success-600'),
+      successColorPressed: getColor('--ez-success-700'),
+      successColorSuppl: getColor('--ez-success-50'),
 
-      warningColor: getColor('--color-warning-500'),
-      warningColorHover: getColor('--color-warning-400'),
-      warningColorPressed: getColor('--color-warning-600'),
-      warningColorSuppl: getColor('--color-warning-500'),
+      warningColor: getColor('--ez-warning-500'),
+      warningColorHover: getColor('--ez-warning-600'),
+      warningColorPressed: getColor('--ez-warning-700'),
+      warningColorSuppl: getColor('--ez-warning-50'),
 
-      errorColor: getColor('--color-error-500'),
-      errorColorHover: getColor('--color-error-400'),
-      errorColorPressed: getColor('--color-error-600'),
-      errorColorSuppl: getColor('--color-error-500'),
+      errorColor: getColor('--ez-error-500'),
+      errorColorHover: getColor('--ez-error-600'),
+      errorColorPressed: getColor('--ez-error-700'),
+      errorColorSuppl: getColor('--ez-error-50'),
 
-      infoColor: getColor('--color-info-500'),
-      infoColorHover: getColor('--color-info-400'),
-      infoColorPressed: getColor('--color-info-600'),
-      infoColorSuppl: getColor('--color-info-500'),
+      infoColor: getColor('--ez-info-500'),
+      infoColorHover: getColor('--ez-info-600'),
+      infoColorPressed: getColor('--ez-info-700'),
+      infoColorSuppl: getColor('--ez-info-50'),
 
-      textColorBase: getColor('--color-dark-text-primary'),
-      textColor1: '#FFFFFF',
-      textColor2: getColor('--color-dark-text-primary'),
-      textColor3: getColor('--color-slate-400'),
+      // 文本色（GitHub 风格）
+      textColorBase: getColor('--ez-text-primary-dark'), // 主要文字：#C9D1D9
+      textColor1: getColor('--ez-text-primary-dark'), // 一级文字：#C9D1D9
+      textColor2: getColor('--ez-text-secondary-dark'), // 二级文字：#8B949E
+      textColor3: getColor('--ez-text-tertiary-dark'), // 三级文字：#6E7681
+      textColorDisabled: getColor('--ez-text-disabled-transparent-dark'), // 禁用文字：rgba(255,255,255,0.35)
 
-      borderColor: getColor('--color-dark-border'),
-      dividerColor: '#21262D',
+      // 边框色
+      borderColor: getColor('--ez-border-dark'), // 边框：#30363D
 
-      bodyColor: getColor('--color-dark-bg'),
-      cardColor: getColor('--color-dark-card'),
-      modalColor: getColor('--color-dark-card'),
-      popoverColor: getColor('--color-dark-card'),
+      // 分割线
+      dividerColor: getColor('--ez-divider-dark'), // 分割线：#21262D
 
-      borderRadius: '10px',
-      borderRadiusSmall: '6px',
+      // 背景色（GitHub 风格）
+      bodyColor: getColor('--ez-body-bg-dark'), // 页面背景：#0D1117
+      cardColor: getColor('--ez-body-bg-dark'), // 卡片背景：#0D1117
+      modalColor: getColor('--ez-body-bg-dark'), // 模态框背景：#0D1117
+      popoverColor: getColor('--ez-body-bg-dark'), // 气泡背景：#0D1117
 
-      boxShadow1: '0 1px 3px 0 rgb(0 0 0 / 0.5)',
-      boxShadow2: '0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5)',
-      boxShadow3: '0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5)'
+      // 禁用状态
+      placeholderColor: getColor('--ez-text-tertiary-dark') // 占位符：#6E7681
     },
 
-    // 布局组件（暗色主题）
+    // ===== 布局组件 =====
     Layout: {
-      color: getColor('--color-dark-bg'),
-      siderColor: getColor('--color-dark-sider'),
-      headerColor: getColor('--color-dark-card'),
-      footerColor: getColor('--color-dark-card'),
-      textColor: getColor('--color-dark-text-secondary'),
-      textColorChild: getColor('--color-dark-text-tertiary'),
-      textColorHover: getColor('--color-dark-text-primary'),
-      dividerColor: 'rgba(48, 54, 61, 0.5)'
+      siderColor: getColor('--color-dark-sider'), // 侧边栏背景：#010409（极深）
+      headerColor: getColor('--color-dark-sider'), // 顶部栏背景：#010409
+      color: getColor('--ez-body-bg-dark') // 内容区背景：#0D1117
     },
 
-    // 菜单组件（暗色主题）
-    Menu: {
-      itemTextColor: getColor('--color-dark-text-primary'),
-      itemTextColorHover: '#FFFFFF',
-      itemTextColorActive: '#FFFFFF',
-      itemTextColorChildActive: getColor('--color-primary-500'),
-      itemIconColor: getColor('--color-dark-text-secondary'),
-      itemIconColorHover: getColor('--color-primary-400'),
-      itemIconColorActive: getColor('--color-primary-500'),
-      itemIconColorChildActive: getColor('--color-primary-500'),
-      itemColorActive: 'rgba(167, 139, 250, 0.15)',
-      itemColorHover: getColor('--color-dark-hover'),
-      arrowColor: getColor('--color-dark-text-secondary'),
-      arrowColorHover: getColor('--color-dark-text-primary'),
-      arrowColorChildActive: getColor('--color-primary-500'),
-      dividerColor: 'rgba(48, 54, 61, 0.5)'
-    },
-
-    // 标签页（暗色）
-    Tabs: {
-      tabTextColorBar: getColor('--color-dark-text-secondary'),
-      tabTextColorActiveBar: getColor('--color-primary-500'),
-      tabTextColorHoverBar: getColor('--color-dark-text-primary'),
-      tabBarColor: '#21262D',
-      tabColorBar: getColor('--color-dark-bg'),
-      tabColorSegment: getColor('--color-dark-card'),
-      tabColorSegmentActive: getColor('--color-dark-bg'),
-      tabTextColorSegment: getColor('--color-dark-text-secondary'),
-      tabTextColorActiveSegment: getColor('--color-primary-500'),
-      tabGap: '12px',
-      tabPaddingLarge: '12px 16px'
-    },
-
-    // 按钮（暗色）
+    // ===== 按钮组件 =====
     Button: {
-      textColor: getColor('--color-dark-text-primary'),
-      textColorHover: '#FFFFFF',
-      textColorPressed: '#FFFFFF',
-      textColorFocus: '#FFFFFF',
-      textColorDisabled: 'rgba(255, 255, 255, 0.35)',
-      border: '1px solid #30363D',
-      borderHover: '1px solid #8B949E',
-      borderPressed: '1px solid #A78BFA',
-      borderFocus: '1px solid #A78BFA',
-      borderRadius: '8px'
+      textColor: getColor('--ez-primary-dark'), // 文本按钮主色
+      textColorHover: getColor('--ez-primary-600-dark'),
+      textColorPressed: getColor('--ez-primary-700-dark'),
+      textColorFocus: getColor('--ez-primary-600-dark'),
+      textColorDisabled: getColor('--ez-text-disabled-transparent-dark')
     },
 
-    // 输入框（暗色）
+    // ===== 输入框组件 =====
     Input: {
-      color: getColor('--color-dark-bg'),
-      colorFocus: getColor('--color-dark-bg'),
-      textColor: getColor('--color-dark-text-primary'),
-      placeholderColor: getColor('--color-dark-text-tertiary'),
-      border: '1px solid #30363D',
-      borderHover: '1px solid #8B949E',
-      borderFocus: '1px solid #A78BFA',
-      boxShadowFocus: `0 0 0 3px ${getColor('--color-primary-500/08')}`,
-      colorDisabled: getColor('--color-dark-card'),
-      textColorDisabled: getColor('--color-dark-text-tertiary'),
-      borderDisabled: '1px solid #21262D',
-      placeholderColorDisabled: '#484F58',
-      colorActive: getColor('--color-dark-bg'),
-      borderRadius: '8px'
+      color: getColor('--ez-body-bg-dark'), // 输入框背景
+      colorFocus: getColor('--ez-body-bg-dark'), // 聚焦背景
+      colorDisabled: getColor('--ez-divider-dark'), // 禁用背景
+      borderColor: getColor('--ez-border-dark'), // 边框
+      borderColorFocus: getColor('--ez-primary-dark'), // 聚焦边框
+      placeholderColor: getColor('--ez-text-tertiary-dark') // 占位符
     },
 
-    // 表格（暗色）
+    // ===== 表格组件 =====
     DataTable: {
-      thColor: getColor('--color-dark-card'),
-      thTextColor: getColor('--color-dark-text-primary'),
-      thFontWeight: '600',
-      tdColor: getColor('--color-dark-bg'),
-      tdTextColor: getColor('--color-dark-text-primary'),
-      tdTextColorHover: '#FFFFFF',
-      borderColor: '#21262D',
-      borderRadius: '10px',
-      thPadding: '12px 16px',
-      tdPadding: '12px 16px'
+      thColor: getColor('--color-dark-sider'), // 表头背景：#010409
+      thTextColor: getColor('--ez-text-primary-dark'), // 表头文字：#C9D1D9
+      tdColor: getColor('--ez-body-bg-dark'), // 单元格背景：#0D1117
+      tdTextColor: getColor('--ez-text-primary-dark'), // 单元格文字：#C9D1D9
+      tdColorHover: getColor('--color-dark-hover'), // 单元格悬停：rgba(255,255,255,0.08)
+      borderColor: getColor('--ez-border-dark'), // 边框：#30363D
+      thColorModal: getColor('--color-dark-sider'),
+      tdColorModal: getColor('--ez-body-bg-dark'),
+      tdColorStriped: getColor('--ez-divider-dark') // 斑马纹：#21262D
     },
 
-    // 卡片（暗色）
-    Card: {
-      color: getColor('--color-dark-card'),
-      colorModal: getColor('--color-dark-card'),
-      colorTarget: getColor('--color-dark-bg'),
-      colorEmbedded: getColor('--color-dark-card'),
-      colorEmbeddedModal: getColor('--color-dark-card'),
-      borderColor: getColor('--color-dark-border'),
-      borderRadius: '12px'
+    // ===== 选择器组件 =====
+    Select: {
+      colors: getColor('--ez-body-bg-dark'), // 下拉框背景
+      colorsModal: getColor('--ez-body-bg-dark'),
+      peers: {
+        InternalSelection: {
+          color: getColor('--ez-body-bg-dark'),
+          colorActive: getColor('--color-dark-hover'),
+          textColor: getColor('--ez-text-primary-dark'),
+          placeholderColor: getColor('--ez-text-tertiary-dark')
+        }
+      }
     },
 
-    // 弹窗（暗色）
-    Modal: {
-      color: getColor('--color-dark-card'),
-      textColor: getColor('--color-dark-text-primary'),
-      borderRadius: '16px',
-      boxShadow: '0 25px 50px -12px rgb(0 0 0 / 0.7)'
+    // ===== 标签页组件 =====
+    Tabs: {
+      tabTextColorBar: getColor('--ez-text-secondary-dark'), // 标签文字：#8B949E
+      tabTextColorActiveBar: getColor('--ez-primary-dark'), // 激活标签：#A78BFA
+      tabTextColorHoverBar: getColor('--ez-primary-dark'),
+      barColor: getColor('--ez-primary-dark'), // 指示条颜色
+      paneColor: getColor('--ez-body-bg-dark') // 内容区背景：#0D1117
     },
 
-    // 下拉菜单（暗色）
-    Dropdown: {
-      color: getColor('--color-dark-card'),
-      optionColorHover: '#21262D',
-      optionTextColor: getColor('--color-dark-text-primary'),
-      optionTextColorHover: getColor('--color-primary-500'),
-      optionIconColor: getColor('--color-dark-text-secondary'),
-      optionIconColorHover: getColor('--color-primary-500'),
-      dividerColor: getColor('--color-dark-border'),
-      borderRadius: '10px',
-      boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.6), 0 4px 6px -4px rgb(0 0 0 / 0.6)',
-      padding: '8px'
+    // ===== 菜单组件 =====
+    Menu: {
+      itemTextColor: getColor('--ez-text-secondary-dark'), // 菜单项文字：#8B949E
+      itemTextColorHover: getColor('--ez-primary-dark'), // 悬停文字：#A78BFA
+      itemTextColorActive: getColor('--ez-primary-dark'), // 激活文字
+      itemIconColor: getColor('--ez-text-tertiary-dark'), // 图标颜色：#6E7681
+      itemIconColorHover: getColor('--ez-primary-dark'),
+      itemIconColorActive: getColor('--ez-primary-dark'),
+      itemColorActive: getColor('--color-dark-hover'), // 激活背景：rgba(255,255,255,0.08)
+      itemColorHover: getColor('--color-dark-hover'), // 悬停背景
+      itemColorActiveCollapsed: getColor('--color-dark-hover'),
+      arrowColor: getColor('--ez-text-tertiary-dark'), // 箭头颜色
+      arrowColorHover: getColor('--ez-primary-dark'),
+      arrowColorActive: getColor('--ez-primary-dark'),
+      dropdownColor: getColor('--color-dark-card') // 下拉菜单背景：#0D1117
     },
 
-    // 通知（暗色）
-    Notification: {
-      color: getColor('--color-dark-card'),
-      textColor: getColor('--color-dark-text-primary'),
-      borderRadius: '10px',
-      boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.6)'
-    },
-
-    // 消息提示（暗色）
+    // ===== 消息组件 =====
     Message: {
-      color: getColor('--color-dark-card'),
-      textColor: getColor('--color-dark-text-primary'),
-      borderRadius: '8px',
-      iconColor: getColor('--color-dark-text-secondary'),
-      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.6)'
+      color: getColor('--color-dark-card'), // 消息背景
+      iconColor: getColor('--ez-primary-dark')
     },
 
-    // 工具提示（暗色）
-    Tooltip: {
-      color: getColor('--color-dark-card'),
-      textColor: getColor('--color-dark-text-primary'),
-      borderRadius: '8px',
-      fontSize: '13px',
-      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.6)'
+    // ===== 气泡确认框 =====
+    Popconfirm: {
+      color: getColor('--color-dark-card')
     },
 
-    // 加载条（暗色）
-    LoadingBar: {
-      color: getColor('--color-primary-500'),
-      colorError: getColor('--color-error-500'),
-      colorLoading: getColor('--color-primary-500'),
-      height: '2px'
+    // ===== 抽屉组件 =====
+    Drawer: {
+      color: getColor('--color-dark-card'),
+      bodyColor: getColor('--color-dark-card')
+    },
+
+    // ===== 进度条 =====
+    Progress: {
+      railColor: getColor('--ez-border-dark') // 轨道颜色：#30363D
     }
   }
 }
 
-// 为了向后兼容，导出默认主题对象
-// 注意：这些对象在模块加载时创建，可能需要在 DOM 加载后重新创建
+// 导出主题配置实例
 export const lightTheme = createLightTheme()
 export const darkTheme = createDarkTheme()
