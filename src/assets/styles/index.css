@@ -9,37 +9,43 @@
  * - 透明度变体预定义（解决 seemly/rgba 兼容性）
  *
  * 设计理念：
- * - 主色调：蓝紫色系 - 现代、专业、科技感
+ * - 亮色模式：深海蓝系 - 清新、专业、商务
+ * - 暗色模式：霓虹紫系 - 科技感、未来感、赛博朋克
  * - 语义色：标准语义 - 符合用户习惯
  * - 中性色：slate 色系 - 柔和、层次清晰
- * - 暗色模式：GitHub 风格 - 专业、护眼
+ * - 暗色背景：GitHub 风格 - 专业、护眼
+ *
+ * 明暗主题区分：
+ * - 亮色主色：#2563EB（深海蓝）- 稳重、可靠
+ * - 暗色主色：#A78BFA（霓虹紫）- 醒目、科技感
+ * - 视觉效果：两种模式有明显的色调差异
  *
  * 使用规范：
  * - ✅ 使用语义化类名：bg-primary-500、text-success-500
- * - ❌ 禁止硬编码颜色：bg-[#5B6BF0]、color="#3b82f6"
- * - ✅ 暗色模式用 dark: 前缀：dark:bg-primary-500
+ * - ❌ 禁止硬编码颜色：bg-[#2563EB]、color="#A78BFA"
+ * - ✅ 暗色模式自动切换：HTML dark 类触发
  *
  * 修改主题：只需修改此文件，Tailwind 和 NaiveUI 自动同步
  */
 @theme {
-	/* ===== 主色调（蓝紫色系 - EzAdmin 品牌色） ===== */
-	--color-primary-50: #EEF2FF;
-	--color-primary-100: #E0E7FF;
-	--color-primary-200: #C7D2FE;
-	--color-primary-300: #A5B4FC;
-	--color-primary-400: #818CF8;
-	--color-primary-500: #5B6BF0; /* 主色 - 亮色模式 */
-	--color-primary-600: #4A57D9;
-	--color-primary-700: #4338CA;
-	--color-primary-800: #3730A3;
-	--color-primary-900: #312E81;
+	/* ===== 主色调（亮色模式：深海蓝系） ===== */
+	--color-primary-50: #EFF6FF;
+	--color-primary-100: #DBEAFE;
+	--color-primary-200: #BFDBFE;
+	--color-primary-300: #93C5FD;
+	--color-primary-400: #60A5FA;
+	--color-primary-500: #2563EB; /* 主色 - 亮色模式（深海蓝） */
+	--color-primary-600: #1D4ED8;
+	--color-primary-700: #1E40AF;
+	--color-primary-800: #1E3A8A;
+	--color-primary-900: #1E3A8A;
 
 	/* 主色透明度变体（用于 focus shadow、hover bg 等） */
-	--color-primary-500/05: rgba(91, 107, 240, 0.05);
-	--color-primary-500/08: rgba(91, 107, 240, 0.08);
-	--color-primary-500/10: rgba(91, 107, 240, 0.10);
-	--color-primary-500/15: rgba(91, 107, 240, 0.15);
-	--color-primary-500/20: rgba(91, 107, 240, 0.20);
+	--color-primary-500/05: rgba(37, 99, 235, 0.05);
+	--color-primary-500/08: rgba(37, 99, 235, 0.08);
+	--color-primary-500/10: rgba(37, 99, 235, 0.10);
+	--color-primary-500/15: rgba(37, 99, 235, 0.15);
+	--color-primary-500/20: rgba(37, 99, 235, 0.20);
 
 	/* ===== 语义色（标准语义） ===== */
 	/* 成功色 - 绿色（表示成功、完成） */
@@ -99,20 +105,24 @@
 /* 暗色模式覆盖（当 html 或 body 有 .dark 类时生效） */
 .dark {
 	@theme {
-		/* 覆盖主色为暗色版本 */
-		--color-primary-400: #C4B5FD;
-		--color-primary-500: #A78BFA; /* 主色 - 暗色模式 */
-		--color-primary-600: #8B5CF6;
-		--color-primary-700: #7C3AED;
-		--color-primary-800: #6D28D9;
-		--color-primary-900: #5B21B6;
+		/* ===== 主色调（暗色模式：霓虹紫系） ===== */
+		--color-primary-50: #F5F3FF;
+		--color-primary-100: #EDE9FE;
+		--color-primary-200: #DDD6FE;
+		--color-primary-300: #C4B5FD;
+		--color-primary-400: #A78BFA;
+		--color-primary-500: #8B5CF6; /* 主色 - 暗色模式（霓虹紫） */
+		--color-primary-600: #7C3AED;
+		--color-primary-700: #6D28D9;
+		--color-primary-800: #5B21B6;
+		--color-primary-900: #4C1D95;
 
 		/* 覆盖主色透明度变体 */
-		--color-primary-500/05: rgba(167, 139, 250, 0.05);
-		--color-primary-500/08: rgba(167, 139, 250, 0.08);
-		--color-primary-500/10: rgba(167, 139, 250, 0.10);
-		--color-primary-500/15: rgba(167, 139, 250, 0.15);
-		--color-primary-500/20: rgba(167, 139, 250, 0.20);
+		--color-primary-500/05: rgba(139, 92, 246, 0.05);
+		--color-primary-500/08: rgba(139, 92, 246, 0.08);
+		--color-primary-500/10: rgba(139, 92, 246, 0.10);
+		--color-primary-500/15: rgba(139, 92, 246, 0.15);
+		--color-primary-500/20: rgba(139, 92, 246, 0.20);
 
 		/* 覆盖语义色（稍亮版本，确保可读性） */
 		--color-success-400: #34D399;

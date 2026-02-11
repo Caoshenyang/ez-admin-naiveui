@@ -32,7 +32,7 @@
 
 ### 问题背景
 
-NaiveUI 的 `themeOverrides` 需要实际的颜色值（如 `#5B6BF0`），而不是 CSS 变量引用（如 `var(--color-primary-500)`）。这是因为 NaiveUI 内部使用 `seemly/rgba` 库处理颜色透明度，该库无法解析 `var()` 语法。
+NaiveUI 的 `themeOverrides` 需要实际的颜色值（如 `#2563EB`），而不是 CSS 变量引用（如 `var(--color-primary-500)`）。这是因为 NaiveUI 内部使用 `seemly/rgba` 库处理颜色透明度，该库无法解析 `var()` 语法。
 
 ### 解决方案
 
@@ -48,19 +48,73 @@ export function getColor(variable: string): string {
 	const value = getComputedStyle(document.documentElement)
 		.getPropertyValue(variable)
 		.trim()
-	return value // 返回 '#5B6BF0' 而非 'var(--color-primary-500)'
+	return value // 返回 '#2563EB' 而非 'var(--color-primary-500)'
 }
 
 // naiveui-theme.ts - 使用示例
 export function createLightTheme(): GlobalThemeOverrides {
 	return {
 		common: {
-			primaryColor: getColor('--color-primary-500'), // 提取为 '#5B6BF0'
-			primaryColorHover: getColor('--color-primary-600') // 提取为 '#4A57D9'
+			primaryColor: getColor('--color-primary-500'), // 提取为 '#2563EB'（亮色模式）
+			primaryColorHover: getColor('--color-primary-600') // 提取为 '#1D4ED8'
 		}
 	}
 }
 ```
+
+---
+
+## 配色方案
+
+### 设计理念
+
+**明暗主题明确区分**，营造完全不同的视觉体验：
+
+| 主题 | 主色系 | 主色值 | 视觉感受 | 适用场景 |
+|------|--------|--------|----------|----------|
+| **亮色模式** | 深海蓝系 | `#2563EB` | 清新、专业、商务 | 日常办公、企业应用 |
+| **暗色模式** | 霓虹紫系 | `#8B5CF6` | 科技感、未来感、赛博朋克 | 夜间使用、开发者工具 |
+
+### 亮色模式（深海蓝）
+
+```
+主色调：#2563EB - 稳重、可靠的深海蓝
+├─ 背景色系：纯白 + 浅灰 - 明亮通透
+├─ 文字色系：深灰 - 清晰易读
+└─ 交互色：蓝色渐变 - 专业商务
+```
+
+**特点**：
+- ✅ 清新明亮，适合长时间工作
+- ✅ 商务专业，符合企业应用定位
+- ✅ 高对比度，内容可读性强
+
+### 暗色模式（霓虹紫）
+
+```
+主色调：#8B5CF6 - 醒目、科技的霓虹紫
+├─ 背景色系：GitHub 深色 - 沉稳护眼
+├─ 文字色系：浅灰 - 柔和不刺眼
+└─ 交互色：紫色渐变 - 未来科技感
+```
+
+**特点**：
+- ✅ 霓虹紫色在深色背景下非常醒目
+- ✅ 科技感十足，适合开发者和高级用户
+- ✅ 减少蓝光，夜间使用更舒适
+
+### 视觉对比
+
+```
+亮色模式主色：#2563EB（深海蓝）
+暗色模式主色：#8B5CF6（霓虹紫）
+
+色相差异：蓝色(217°) vs 紫色(258°) - 相差 41°
+明度差异：47% vs 54% - 暗色更醒目
+饱和度差异：86% vs 89% - 都比较鲜艳
+```
+
+**效果**：两种模式的色调差异明显，用户可以清晰分辨当前主题。
 
 ---
 
