@@ -105,5 +105,30 @@
 	--color-dark-text-tertiary: var(--ez-text-tertiary-dark); /* 辅助文字 */
 }
 
+/* ========== 暗色模式配置 ========== */
+.dark {
+	@theme {
+		/* ----- 主色调（暗色模式：亮紫系） ----- */
+		--color-primary-50: var(--ez-primary-50-dark);
+		--color-primary-100: var(--ez-primary-100-dark);
+		--color-primary-200: var(--ez-primary-200-dark);
+		--color-primary-300: var(--ez-primary-300-dark);
+		--color-primary-400: var(--ez-primary-400-dark);
+		--color-primary-500: var(--ez-primary-dark); /* 主色 - 暗色模式（亮紫） */
+		--color-primary-600: var(--ez-primary-600-dark);
+		--color-primary-700: var(--ez-primary-700-dark);
+		--color-primary-800: var(--ez-primary-800-dark);
+		--color-primary-900: var(--ez-primary-900-dark);
 
+		/* 主色透明度变体（暗色模式） */
+		--color-primary-500/05: var(--ez-primary-dark-opacity-5);
+		--color-primary-500/08: var(--ez-primary-dark-opacity-8);
+		--color-primary-500/10: var(--ez-primary-dark-opacity-10);
+		--color-primary-500/15: var(--ez-primary-dark-opacity-15);
+		--color-primary-500/20: var(--ez-primary-dark-opacity-20);
+		--color-primary-500/50: var(--ez-primary-dark-opacity-50);
+
+    --color-slate-300: var(--ez-slate-300);
+	}
+}
 

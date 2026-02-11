@@ -27,6 +27,12 @@ export const useAppStore = defineStore(
 
     function toggleTheme() {
       isDark.value = !isDark.value
+      // 同步主题状态到 HTML class（Tailwind dark: 修饰符需要）
+      if (isDark.value) {
+        document.documentElement.classList.add('dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
     }
 
     return {
