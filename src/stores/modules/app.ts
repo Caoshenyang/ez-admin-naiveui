@@ -11,37 +11,30 @@ export const useAppStore = defineStore(
   () => {
     // ========== State ==========
     const sidebarOpened = ref<boolean>(true)
-    const themeMode = ref<'light' | 'dark'>('light')
+    const isDark = ref<boolean>(false)
 
     // ========== Computed ==========
     /** NaiveUI 主题对象（用于 n-config-provider） */
-    const naiveTheme = computed(() => (themeMode.value === 'dark' ? darkTheme : null))
+    const naiveTheme = computed(() => (isDark.value ? darkTheme : null))
 
     /** NaiveUI 主题覆盖配置（自定义颜色） */
-    const themeOverrides = computed<GlobalThemeOverrides>(() =>
-      themeMode.value === 'dark' ? createDarkTheme() : createLightTheme()
-    )
+    const themeOverrides = computed<GlobalThemeOverrides>(() => (isDark.value ? createDarkTheme() : createLightTheme()))
 
     // ========== Actions ==========
     function toggleSidebar() {
       sidebarOpened.value = !sidebarOpened.value
     }
 
-    function setSidebarOpened(opened: boolean) {
-      sidebarOpened.value = opened
-    }
-
     function toggleTheme() {
-      themeMode.value = themeMode.value === 'light' ? 'dark' : 'light'
+      isDark.value = !isDark.value
     }
 
     return {
       sidebarOpened,
-      themeMode,
+      isDark,
       naiveTheme,
       themeOverrides,
       toggleSidebar,
-      setSidebarOpened,
       toggleTheme
     }
   },
@@ -49,7 +42,7 @@ export const useAppStore = defineStore(
     persist: {
       key: 'app-store',
       storage: localStorage,
-      pick: ['sidebarOpened', 'themeMode']
+      pick: ['sidebarOpened', 'isDark']
     }
   }
 )

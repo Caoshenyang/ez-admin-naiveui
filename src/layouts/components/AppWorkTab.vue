@@ -184,7 +184,7 @@ const getTabClass = (isActive: boolean) => {
 </script>
 
 <template>
-  <n-el v-if="showTabs" tag="div" class="h-10 flex items-center px-2 flex-shrink-0 border-b border-slate-200">
+  <n-el v-if="showTabs" tag="div" class="h-10 flex items-center px-2 shrink-0 border-b border-slate-200">
     <!-- 标签项列表 -->
     <n-space :size="4" class="flex-1 overflow-hidden">
       <n-dropdown

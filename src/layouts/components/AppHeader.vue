@@ -210,12 +210,12 @@ const handleNotification = () => {
           <n-button quaternary circle size="small" :focusable="false" @click="appStore.toggleTheme()">
             <template #icon>
               <n-icon>
-                <component :is="appStore.themeMode === 'dark' ? SunnyOutline : MoonOutline" />
+                <component :is="appStore.isDark ? SunnyOutline : MoonOutline" />
               </n-icon>
             </template>
           </n-button>
         </template>
-        {{ appStore.themeMode === 'dark' ? '切换到亮色模式' : '切换到暗色模式' }}
+        {{ appStore.isDark ? '切换到亮色模式' : '切换到暗色模式' }}
       </n-tooltip>
 
       <!-- 用户下拉菜单 -->

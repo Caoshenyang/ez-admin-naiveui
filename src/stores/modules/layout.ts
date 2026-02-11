@@ -38,8 +38,7 @@ export const useLayoutStore = defineStore(
       showTabs: true,
       showBreadcrumb: true,
       showFooter: true,
-      layoutMode: 'sidebar',
-      themeMode: 'light'
+      layoutMode: 'sidebar'
     }
 
     const layoutConfig = ref<LayoutConfig>({ ...defaultConfig })
@@ -54,7 +53,6 @@ export const useLayoutStore = defineStore(
     const showBreadcrumb = computed(() => layoutConfig.value.showBreadcrumb) // 是否显示面包屑
     const showFooter = computed(() => layoutConfig.value.showFooter) // 是否显示页脚
     const layoutMode = computed(() => layoutConfig.value.layoutMode) // 布局模式
-    const themeMode = computed(() => layoutConfig.value.themeMode) // 主题模式
 
     // ==================== Actions ====================
     // 切换侧边栏折叠状态
@@ -218,7 +216,6 @@ export const useLayoutStore = defineStore(
       showBreadcrumb,
       showFooter,
       layoutMode,
-      themeMode,
 
       // Actions
       toggleSidebar,

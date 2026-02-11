@@ -92,6 +92,4 @@ export interface LayoutConfig {
   showFooter: boolean
   /** 布局模式 */
   layoutMode: 'sidebar' | 'top-menu' | 'mix-menu'
-  /** 主题模式 */
-  themeMode: 'light' | 'dark' | 'auto'
 }
