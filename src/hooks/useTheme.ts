@@ -10,6 +10,16 @@ const THEME_STORAGE_KEY = 'app-theme-mode'
 const savedTheme = localStorage.get<'light' | 'dark'>(THEME_STORAGE_KEY) || 'light'
 const mode = ref<'light' | 'dark'>(savedTheme)
 
+// 初始化时同步 HTML 的 dark 类（确保 getColor() 能提取到正确的颜色值）
+if (typeof document !== 'undefined') {
+	const html = document.documentElement
+	if (savedTheme === 'dark') {
+		html.classList.add('dark')
+	} else {
+		html.classList.remove('dark')
+	}
+}
+
 // NaiveUI 内置基础主题（控制基础模式）
 const theme = ref<GlobalTheme>(mode.value === 'dark' ? naiveDarkTheme : naiveLightTheme)
 
@@ -52,6 +62,14 @@ export function useTheme(): UseThemeReturn {
 		theme.value = newMode === 'dark' ? naiveDarkTheme : naiveLightTheme
 		themeOverrides.value = createTheme(newMode) // 运行时提取颜色值
 		localStorage.set(THEME_STORAGE_KEY, newMode)
+
+		// 同步切换 Tailwind CSS 的 dark 类
+		const html = document.documentElement
+		if (newMode === 'dark') {
+			html.classList.add('dark')
+		} else {
+			html.classList.remove('dark')
+		}
 	}
 
 	return {
