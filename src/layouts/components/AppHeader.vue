@@ -9,23 +9,23 @@ import {
   LogOutOutline,
   ExpandOutline,
   ContractOutline,
-  RefreshOutline
+  RefreshOutline,
+  SunnyOutline,
+  MoonOutline
 } from '@vicons/ionicons5'
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@vicons/antd'
 import { useFullscreen } from '@vueuse/core'
 import { NLayoutHeader, NTooltip, NButton, NIcon, NSpace, NBadge, NDropdown, NAvatar, NEl } from 'naive-ui'
 import { useLayoutStore } from '@/stores/modules/layout'
 import { useUserStore } from '@/stores/modules/user'
+import { useAppStore } from '@/stores/modules/app'
 import { dialog, message } from '@/hooks/useNaiveApi'
-import { useTheme } from '@/hooks/useTheme'
 import AppBreadcrumb from './AppBreadcrumb.vue'
 
 const router = useRouter()
 const layoutStore = useLayoutStore()
 const userStore = useUserStore()
-
-// 使用主题 Hook
-const { themeIcon, isDark, toggleTheme } = useTheme()
+const appStore = useAppStore()
 
 // 使用全屏功能（VueUse）
 const { isFullscreen, toggle: toggleFullscreen } = useFullscreen(document.documentElement)
@@ -207,15 +207,15 @@ const handleNotification = () => {
       <!-- 主题切换 -->
       <n-tooltip placement="bottom">
         <template #trigger>
-          <n-button quaternary circle size="small" :focusable="false" @click="toggleTheme">
+          <n-button quaternary circle size="small" :focusable="false" @click="appStore.toggleTheme()">
             <template #icon>
               <n-icon>
-                <component :is="themeIcon" />
+                <component :is="appStore.themeMode === 'dark' ? SunnyOutline : MoonOutline" />
               </n-icon>
             </template>
           </n-button>
         </template>
-        {{ isDark ? '切换到亮色模式' : '切换到暗色模式' }}
+        {{ appStore.themeMode === 'dark' ? '切换到亮色模式' : '切换到暗色模式' }}
       </n-tooltip>
 
       <!-- 用户下拉菜单 -->

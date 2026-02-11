@@ -187,6 +187,15 @@
 
 ---
 
+## 参考文档
+
+- [Vue 3 开发最佳实践](./vue-best-practices.md) - Vue 3 核心编码规范和常见陷阱
+- [Pinia Store 对比](./pinia-store-comparison.md) - Options Store vs Setup Store 对比
+- [Tailwind CSS 4.x 指南](./tailwind-v4-guide.md) - Tailwind CSS 4.x 使用指南
+- [Axios 请求封装指南](./request-module-guide.md) - 请求模块使用说明
+
+---
+
 ## 常见问题
 
 ### Q: 为什么选择 NaiveUI 而不是 Element Plus？

@@ -18,12 +18,9 @@ const handleClick = () => {
     class="h-15 flex items-center justify-center px-4 border-b border-slate-200 cursor-pointer active:scale-[0.98] transition-transform duration-150"
     @click="handleClick"
   >
-    <n-space :size="8" class="overflow-hidden">
+    <n-space :size="8" class="overflow-hidden items-center">
       <!-- Logo 图标 -->
-      <n-el
-        tag="div"
-        class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-primary-500 shadow-sm"
-      >
+      <n-el tag="div" class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-primary-500 shadow-sm">
         <n-el tag="span" class="text-white font-bold text-lg">E</n-el>
       </n-el>
 

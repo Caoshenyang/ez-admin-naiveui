@@ -1,144 +1,109 @@
 @import "tailwindcss";
+@import "./colors.css";
 
 /**
- * EzAdmin 统一颜色系统（行业标准方案）
+ * EzAdmin 主题配置（Tailwind + NaiveUI）
  *
- * 架构：
- * - Tailwind CSS @theme 定义所有颜色（唯一真相源）
- * - NaiveUI 通过 CSS 变量引用（自动同步）
- * - 透明度变体预定义（解决 seemly/rgba 兼容性）
+ * 颜色变量来源：@import './colors.css'
+ * - 所有颜色值定义在 colors.css 中
+ * - 此文件只负责变量引用和主题切换
  *
  * 设计理念：
- * - 亮色模式：深海蓝系 - 清新、专业、商务
- * - 暗色模式：霓虹紫系 - 科技感、未来感、赛博朋克
+ * - 亮色模式：蓝紫色系 (#5B6BF0) - 现代、科技感、优雅
+ * - 暗色模式：亮紫系 (#A78BFA) - 醒目、优雅
  * - 语义色：标准语义 - 符合用户习惯
  * - 中性色：slate 色系 - 柔和、层次清晰
- * - 暗色背景：GitHub 风格 - 专业、护眼
- *
- * 明暗主题区分：
- * - 亮色主色：#2563EB（深海蓝）- 稳重、可靠
- * - 暗色主色：#A78BFA（霓虹紫）- 醒目、科技感
- * - 视觉效果：两种模式有明显的色调差异
  *
  * 使用规范：
- * - ✅ 使用语义化类名：bg-primary-500、text-success-500
- * - ❌ 禁止硬编码颜色：bg-[#2563EB]、color="#A78BFA"
+ * - ✅ 使用 Tailwind 类名：bg-primary-500、text-success-500
+ * - ✅ NaiveUI 通过 themeOverrides 自动应用
  * - ✅ 暗色模式自动切换：HTML dark 类触发
- *
- * 修改主题：只需修改此文件，Tailwind 和 NaiveUI 自动同步
  */
+
+/* ========== Tailwind CSS @theme 配置 ========== */
 @theme {
-	/* ===== 主色调（亮色模式：深海蓝系） ===== */
-	--color-primary-50: #EFF6FF;
-	--color-primary-100: #DBEAFE;
-	--color-primary-200: #BFDBFE;
-	--color-primary-300: #93C5FD;
-	--color-primary-400: #60A5FA;
-	--color-primary-500: #2563EB; /* 主色 - 亮色模式（深海蓝） */
-	--color-primary-600: #1D4ED8;
-	--color-primary-700: #1E40AF;
-	--color-primary-800: #1E3A8A;
-	--color-primary-900: #1E3A8A;
+	/* ----- 主色调（亮色模式：蓝紫色系） ----- */
+	--color-primary-50: var(--ez-primary-50-light);
+	--color-primary-100: var(--ez-primary-100-light);
+	--color-primary-200: var(--ez-primary-200-light);
+	--color-primary-300: var(--ez-primary-300-light);
+	--color-primary-400: var(--ez-primary-400-light);
+	--color-primary-500: var(--ez-primary-light); /* 主色 - 亮色模式（蓝紫） */
+	--color-primary-600: var(--ez-primary-600-light);
+	--color-primary-700: var(--ez-primary-700-light);
+	--color-primary-800: var(--ez-primary-800-light);
+	--color-primary-900: var(--ez-primary-900-light);
 
 	/* 主色透明度变体（用于 focus shadow、hover bg 等） */
-	--color-primary-500/05: rgba(37, 99, 235, 0.05);
-	--color-primary-500/08: rgba(37, 99, 235, 0.08);
-	--color-primary-500/10: rgba(37, 99, 235, 0.10);
-	--color-primary-500/15: rgba(37, 99, 235, 0.15);
-	--color-primary-500/20: rgba(37, 99, 235, 0.20);
+	--color-primary-500/05: var(--ez-primary-light-opacity-5);
+	--color-primary-500/08: var(--ez-primary-light-opacity-8);
+	--color-primary-500/10: var(--ez-primary-light-opacity-10);
+	--color-primary-500/15: var(--ez-primary-light-opacity-15);
+	--color-primary-500/20: var(--ez-primary-light-opacity-20);
+	--color-primary-500/50: var(--ez-primary-light-opacity-50); /* 禁用状态 */
 
-	/* ===== 语义色（标准语义） ===== */
+	/* ----- 语义色（标准语义） ----- */
 	/* 成功色 - 绿色（表示成功、完成） */
-	--color-success-50: #ECFDF5;
-	--color-success-400: #34D399;
-	--color-success-500: #10B981; /* 标准绿色 */
-	--color-success-600: #059669;
-	--color-success-700: #047857;
+	--color-success-50: var(--ez-success-50);
+	--color-success-400: var(--ez-success-400);
+	--color-success-500: var(--ez-success-500); /* 标准绿色 */
+	--color-success-600: var(--ez-success-600);
+	--color-success-700: var(--ez-success-700);
 
 	/* 警告色 - 琥珀色（表示警告、待处理） */
-	--color-warning-50: #FFFBEB;
-	--color-warning-400: #FBBF24;
-	--color-warning-500: #F59E0B;
-	--color-warning-600: #D97706;
-	--color-warning-700: #B45309;
+	--color-warning-50: var(--ez-warning-50);
+	--color-warning-400: var(--ez-warning-400);
+	--color-warning-500: var(--ez-warning-500);
+	--color-warning-600: var(--ez-warning-600);
+	--color-warning-700: var(--ez-warning-700);
 
 	/* 错误色 - 红色（表示错误、危险） */
-	--color-error-50: #FEF2F2;
-	--color-error-400: #F87171;
-	--color-error-500: #EF4444;
-	--color-error-600: #DC2626;
-	--color-error-700: #B91C1C;
+	--color-error-50: var(--ez-error-50);
+	--color-error-400: var(--ez-error-400);
+	--color-error-500: var(--ez-error-500);
+	--color-error-600: var(--ez-error-600);
+	--color-error-700: var(--ez-error-700);
 
 	/* 信息色 - 蓝色（表示提示、中性信息） */
-	--color-info-50: #EFF6FF;
-	--color-info-400: #60A5FA;
-	--color-info-500: #3B82F6;
-	--color-info-600: #2563EB;
-	--color-info-700: #1D4ED8;
+	--color-info-50: var(--ez-info-50);
+	--color-info-400: var(--ez-info-400);
+	--color-info-500: var(--ez-info-500);
+	--color-info-600: var(--ez-info-600);
+	--color-info-700: var(--ez-info-700);
 
-	/* ===== 中性色（slate 色系） ===== */
-	--color-slate-50: #F8FAFC;
-	--color-slate-100: #F1F5F9;
-	--color-slate-200: #E2E8F0;
-	--color-slate-300: #CBD5E1;
-	--color-slate-400: #94A3B8;
-	--color-slate-500: #64748B;
-	--color-slate-600: #475569;
-	--color-slate-700: #334155;
-	--color-slate-800: #1E293B;
-	--color-slate-900: #0F172A;
+	/* ----- 中性色（slate 色系） ----- */
+	--color-slate-50: var(--ez-slate-50);
+	--color-slate-100: var(--ez-slate-100);
+	--color-slate-200: var(--ez-slate-200);
+	--color-slate-300: var(--ez-slate-300);
+	--color-slate-400: var(--ez-slate-400);
+	--color-slate-500: var(--ez-slate-500);
+	--color-slate-600: var(--ez-slate-600);
+	--color-slate-700: var(--ez-slate-700);
+	--color-slate-800: var(--ez-slate-800);
+	--color-slate-900: var(--ez-slate-900);
 
-	/* ===== 暗色模式专用色（GitHub 风格） ===== */
+	/* ----- 亮色模式功能色 ----- */
+	--color-white: var(--ez-white); /* 纯白色（卡片、输入框、模态框等） */
+	--color-body-bg: var(--ez-body-bg-light); /* 页面背景（slate-50） */
+	--color-sider-bg: var(--ez-sider-bg); /* 侧边栏背景 */
+	--color-header-bg: var(--ez-header-bg); /* 顶部栏背景 */
+	--color-border: var(--ez-border-light); /* 边框色（slate-200） */
+	--color-border-hover: var(--ez-border-hover-light); /* 边框悬停色（slate-300） */
+
+	/* ----- 暗色模式专用色（GitHub 风格） ----- */
 	/* 背景色 */
-	--color-dark-bg: #0D1117; /* GitHub 深色背景 */
-	--color-dark-sider: #010409; /* 极深侧边栏 */
-	--color-dark-card: #161B22; /* 卡片背景 */
-	--color-dark-border: #30363D; /* 边框色 */
-	--color-dark-hover: rgba(255, 255, 255, 0.08); /* Hover 背景 */
-
-	/* 文字色 */
-	--color-dark-text-primary: #C9D1D9; /* 主要文字 */
-	--color-dark-text-secondary: #8B949E; /* 次要文字 */
-	--color-dark-text-tertiary: #6E7681; /* 辅助文字 */
+	--color-dark-bg: var(--ez-body-bg-dark); /* GitHub 深色背景 */
+	--color-dark-sider: #010409; /* 极深侧边栏（硬编码，不变） */
+	--color-dark-card: var(--ez-body-bg-dark); /* 卡片背景（复用 body-bg） */
+	--color-dark-border: var(--ez-border-dark); /* 边框色 */
+	--color-dark-divider: var(--ez-divider-dark); /* 分割线 */
+	--color-dark-hover: var(--ez-hover-dark); /* Hover 背景 */
+	--color-dark-disabled: var(--ez-disabled-dark); /* 禁用状态文字 */
+	--color-dark-text-primary: var(--ez-text-primary-dark); /* 主要文字 */
+	--color-dark-text-secondary: var(--ez-text-secondary-dark); /* 次要文字 */
+	--color-dark-text-tertiary: var(--ez-text-tertiary-dark); /* 辅助文字 */
 }
 
-/* 暗色模式覆盖（当 html 或 body 有 .dark 类时生效） */
-.dark {
-	@theme {
-		/* ===== 主色调（暗色模式：霓虹紫系） ===== */
-		--color-primary-50: #F5F3FF;
-		--color-primary-100: #EDE9FE;
-		--color-primary-200: #DDD6FE;
-		--color-primary-300: #C4B5FD;
-		--color-primary-400: #A78BFA;
-		--color-primary-500: #8B5CF6; /* 主色 - 暗色模式（霓虹紫） */
-		--color-primary-600: #7C3AED;
-		--color-primary-700: #6D28D9;
-		--color-primary-800: #5B21B6;
-		--color-primary-900: #4C1D95;
 
-		/* 覆盖主色透明度变体 */
-		--color-primary-500/05: rgba(139, 92, 246, 0.05);
-		--color-primary-500/08: rgba(139, 92, 246, 0.08);
-		--color-primary-500/10: rgba(139, 92, 246, 0.10);
-		--color-primary-500/15: rgba(139, 92, 246, 0.15);
-		--color-primary-500/20: rgba(139, 92, 246, 0.20);
 
-		/* 覆盖语义色（稍亮版本，确保可读性） */
-		--color-success-400: #34D399;
-		--color-success-500: #10B981;
-		--color-success-600: #059669;
-
-		--color-warning-400: #FBBF24;
-		--color-warning-500: #F59E0B;
-		--color-warning-600: #D97706;
-
-		--color-error-400: #F87171;
-		--color-error-500: #EF4444;
-		--color-error-600: #DC2626;
-
-		--color-info-400: #60A5FA;
-		--color-info-500: #3B82F6;
-		--color-info-600: #2563EB;
-	}
-}
