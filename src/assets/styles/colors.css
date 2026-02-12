@@ -1,152 +1,38 @@
 /**
- * EzAdmin 颜色变量（单一真相源）
+ * EzAdmin 颜色变量（精简版）
  *
  * 设计理念：
- * - 亮色主色：#5B6BF0（蓝紫）- 现代、科技感
- * - 暗色主色：#A78BFA（亮紫）- 醒目、优雅
- * - 语义化命名：一眼看出用途
+ * - 只定义需要暗色切换的核心变量
+ * - 删除所有 Tailwind 默认值的重复定义
+ * - 简化变量命名（去除冗余前缀）
  *
  * 使用方式：
- * 1. 在此文件修改颜色值
- * 2. index.css 自动引用这些变量
- * 3. Tailwind 和 NaiveUI 自动同步
+ * - 1. 在此文件修改颜色值
+ * - 2. index.css 自动引用这些变量
+ * - 3. NaiveUI 通过 getColor() 提取
  */
 
-/* ========== 颜色变量定义 ========== */
+/* ========== 核心变量定义 ========== */
 :root {
-	/* ----- 主色调 ----- */
-	--ez-primary-light: #5B6BF0; /* 亮色模式主色 */
-	--ez-primary-dark: #A78BFA; /* 暗色模式主色 */
+	/* ----- 品牌主色（需要暗色切换） ----- */
+	--primary: #5B6BF0; /* 亮色模式主色：蓝紫色 */
 
-	/* 主色衍生色 - 亮色 */
-	--ez-primary-50-light: #EEF2FF;
-	--ez-primary-100-light: #E0E7FF;
-	--ez-primary-200-light: #C7D2FE;
-	--ez-primary-300-light: #A5B4FC;
-	--ez-primary-400-light: #818CF8;
-	--ez-primary-600-light: #4F46E5;
-	--ez-primary-700-light: #4338CA;
-	--ez-primary-800-light: #3730A3;
-	--ez-primary-900-light: #312E81;
-	--ez-primary-950-light: #312E81;
+	/* ----- 功能背景色（需要暗色切换） ----- */
+	--page-bg: #F8FAFC; /* 页面背景（亮色）：slate-50 */
+	--card-bg: #FFFFFF; /* 卡片背景（亮暗统一）：纯白色 */
 
-	/* 主色衍生色 - 暗色 */
-	--ez-primary-50-dark: #FAF5FF;
-	--ez-primary-100-dark: #F3E8FF;
-	--ez-primary-200-dark: #E9D5FF;
-	--ez-primary-300-dark: #D8B4FE;
-	--ez-primary-400-dark: #C084FC;
-	--ez-primary-600-dark: #9333EA;
-	--ez-primary-700-dark: #7E22CE;
-	--ez-primary-800-dark: #6B21A8;
-	--ez-primary-900-dark: #581C87;
-	--ez-primary-950-dark: #3B0764;
+	/* ----- 语义色（固定值，不变） ----- */
+	--success: #10B981; /* 成功色：绿色 */
+	--warning: #F59E0B; /* 警告色：琥珀色 */
+	--error: #EF4444; /* 错误色：红色 */
+	--info: #3B82F6; /* 信息色：蓝色 */
+}
 
-	/* 主色透明度变体 - 亮色 */
-	--ez-primary-light-opacity-5: rgba(91, 107, 240, 0.05);
-	--ez-primary-light-opacity-8: rgba(91, 107, 240, 0.08);
-	--ez-primary-light-opacity-10: rgba(91, 107, 240, 0.10);
-	--ez-primary-light-opacity-15: rgba(91, 107, 240, 0.15);
-	--ez-primary-light-opacity-20: rgba(91, 107, 240, 0.20);
-	--ez-primary-light-opacity-50: rgba(91, 107, 240, 0.50);
+/* ========== 暗色模式变量覆盖 ========== */
+.dark {
+	/* ----- 品牌主色（暗色模式） ----- */
+	--primary: #A78BFA; /* 暗色模式主色：亮紫色 */
 
-	/* 主色透明度变体 - 暗色 */
-	--ez-primary-dark-opacity-5: rgba(167, 139, 250, 0.05);
-	--ez-primary-dark-opacity-8: rgba(167, 139, 250, 0.08);
-	--ez-primary-dark-opacity-10: rgba(167, 139, 250, 0.10);
-	--ez-primary-dark-opacity-15: rgba(167, 139, 250, 0.15);
-	--ez-primary-dark-opacity-20: rgba(167, 139, 250, 0.20);
-	--ez-primary-dark-opacity-50: rgba(167, 139, 250, 0.50);
-
-	/* ----- 语义色（亮暗统一） ----- */
-	/* 成功色 */
-	--ez-success-50: #ECFDF5;
-	--ez-success-100: #D1FAE5;
-	--ez-success-200: #A7F3D0;
-	--ez-success-300: #6EE7B7;
-	--ez-success-400: #34D399;
-	--ez-success-500: #10B981;
-	--ez-success-600: #059669;
-	--ez-success-700: #047857;
-	--ez-success-800: #065F46;
-	--ez-success-950: #022C22;
-
-	/* 警告色 */
-	--ez-warning-50: #FFFBEB;
-	--ez-warning-100: #FEF3C7;
-	--ez-warning-200: #FDE68A;
-	--ez-warning-300: #FCD34D;
-	--ez-warning-400: #FBBF24;
-	--ez-warning-500: #F59E0B;
-	--ez-warning-600: #D97706;
-	--ez-warning-700: #B45309;
-	--ez-warning-800: #92400E;
-	--ez-warning-950: #451A03;
-
-	/* 错误色 */
-	--ez-error-50: #FEF2F2;
-	--ez-error-100: #FEE2E2;
-	--ez-error-200: #FECACA;
-	--ez-error-300: #FCA5A5;
-	--ez-error-400: #F87171;
-	--ez-error-500: #EF4444;
-	--ez-error-600: #DC2626;
-	--ez-error-700: #B91C1C;
-	--ez-error-800: #991B1B;
-	--ez-error-950: #450A0A;
-
-	/* 信息色 */
-	--ez-info-50: #EFF6FF;
-	--ez-info-100: #DBEAFE;
-	--ez-info-200: #BFDBFE;
-	--ez-info-300: #93C5FD;
-	--ez-info-400: #60A5FA;
-	--ez-info-500: #3B82F6;
-	--ez-info-600: #2563EB;
-	--ez-info-700: #1D4ED8;
-	--ez-info-800: #1E40AF;
-	--ez-info-950: #1E3A8A;
-
-	/* ----- 中性色（slate 色系） ----- */
-	--ez-slate-50: #F8FAFC;
-	--ez-slate-100: #F1F5F9;
-	--ez-slate-200: #E2E8F0;
-	--ez-slate-300: #CBD5E1;
-	--ez-slate-400: #94A3B8;
-	--ez-slate-500: #64748B;
-	--ez-slate-600: #475569;
-	--ez-slate-700: #334155;
-	--ez-slate-800: #1E293B;
-	--ez-slate-900: #0F172A;
-	--ez-slate-950: #020617;
-
-	/* ----- 功能色 ----- */
-	/* 纯色 */
-	--ez-white: #FFFFFF;
-
-	/* 背景色 */
-	--ez-body-bg-light: #F8FAFC;
-	--ez-body-bg-dark: #0D1117;
-	--ez-sider-bg: #FFFFFF;
-	--ez-header-bg: #FFFFFF;
-
-	/* 边框色 */
-	--ez-border-light: #E2E8F0;
-	--ez-border-hover-light: #CBD5E1;
-	--ez-border-dark: #30363D;
-	--ez-border-hover-dark: #8B949E;
-
-	/* 分割线 */
-	--ez-divider-dark: #21262D;
-	--ez-divider-transparent-dark: rgba(48, 54, 61, 0.50);
-
-	/* 交互状态 */
-	--ez-hover-dark: rgba(255, 255, 255, 0.08);
-	--ez-disabled-dark: #484F58;
-	--ez-text-disabled-transparent-dark: rgba(255, 255, 255, 0.35);
-
-	/* 暗色文字色 */
-	--ez-text-primary-dark: #C9D1D9;
-	--ez-text-secondary-dark: #8B949E;
-	--ez-text-tertiary-dark: #6E7681;
+	/* ----- 功能背景色（暗色模式） ----- */
+	--page-bg: #0D1117; /* 页面背景（暗色）：GitHub 深色 */
 }
