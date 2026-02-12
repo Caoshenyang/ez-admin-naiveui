@@ -45,7 +45,7 @@ watch(
 </script>
 
 <template>
-  <div class="h-screen w-screen overflow-hidden bg-slate-50">
+  <div class="h-screen w-screen overflow-hidden bg-page-bg">
     <n-layout has-sider class="h-full w-full">
       <!-- 侧边栏（桌面端固定显示） -->
       <app-sidebar class="hidden md:block shrink-0" />

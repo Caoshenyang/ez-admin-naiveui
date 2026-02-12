@@ -2,12 +2,15 @@
  * NaiveUI 离散式 API 封装
  * 使用 createDiscreteApi 创建独立的消息、对话框等组件
  * 无需在 Provider 内部使用，可在任何地方调用
+ *
+ * 主题说明：
+ * 离散式 API 会自动继承全局 n-config-provider 的主题配置
+ * 因此无需在此处手动指定主题，避免模块加载时 CSS 变量未就绪的问题
  */
 import { createDiscreteApi } from 'naive-ui'
-import { lightTheme } from '@/settings/naiveui-theme'
 
 /**
- * 创建离散式 API（注入亮色主题配置）
+ * 创建离散式 API（自动继承全局主题）
  */
 const {
   message: naiveMessage,
@@ -15,11 +18,7 @@ const {
   dialog,
   loadingBar,
   modal
-} = createDiscreteApi(['message', 'dialog', 'notification', 'loadingBar', 'modal'], {
-  configProviderProps: {
-    themeOverrides: lightTheme
-  }
-})
+} = createDiscreteApi(['message', 'dialog', 'notification', 'loadingBar', 'modal'])
 
 /**
  * 环境检测

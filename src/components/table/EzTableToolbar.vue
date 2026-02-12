@@ -48,11 +48,11 @@ const handleFullscreen = () => {
 </script>
 
 <template>
-  <div v-if="showToolbar" class="ez-table-toolbar flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-gray-50">
+  <div v-if="showToolbar" class="ez-table-toolbar flex items-center justify-between px-4 py-3 border-b border-slate-200 bg-slate-50">
     <!-- 左侧：标题和自定义内容 -->
     <div class="toolbar-left flex items-center gap-3">
       <slot name="left">
-        <h3 v-if="toolbar.title" class="text-base font-semibold text-gray-700">
+        <h3 v-if="toolbar.title" class="text-base font-semibold text-slate-700">
           {{ toolbar.title }}
         </h3>
         <component v-if="toolbar.left" :is="toolbar.left()" />

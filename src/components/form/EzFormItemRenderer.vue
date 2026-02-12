@@ -357,7 +357,7 @@ const iconPickerValue = computed({
 
     <!-- 提示文本 -->
     <template v-if="item.tip" #feedback>
-      <span class="text-gray-400 text-xs">{{ item.tip }}</span>
+      <span class="text-slate-400 text-xs">{{ item.tip }}</span>
     </template>
   </NFormItem>
 </template>
