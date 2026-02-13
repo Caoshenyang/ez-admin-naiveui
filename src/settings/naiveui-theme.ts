@@ -13,39 +13,12 @@
 import type { GlobalThemeOverrides } from 'naive-ui'
 import { getColor } from '@/utils/color-vars'
 
-/**
- * 创建亮色主题配置
- *
- * 颜色来源：src/assets/styles/colors.css
- * - 只定义 7 个核心变量（primary, page-bg, card-bg, success 等）
- * - 删除所有 Tailwind 默认值的重复定义
- */
-export function createLightTheme(): GlobalThemeOverrides {
+export function createNaiveTheme(): GlobalThemeOverrides {
   return {
     // ===== 全局通用配置 =====
     common: {
       // 主色
       primaryColor: getColor('--primary') // 主色：#5B6BF0
-    }
-  }
-}
-
-/**
- * 创建暗色主题配置
- *
- * 颜色来源：src/assets/styles/colors.css
- * - 主色系：#C4B5FD（亮紫色） - 满足 WCAG AA 标准
- * - 背景色：GitHub 深色风格
- *
- * ✅ 修复：使用 --primary 而非 --primary-dark
- * CSS 变量由 .dark 类自动覆盖
- */
-export function createDarkTheme(): GlobalThemeOverrides {
-  return {
-    // ===== 全局通用配置 =====
-    common: {
-      // 主色（暗色）：#C4B5FD（优化后，对比度 6.8:1）
-      primaryColor: getColor('--primary')
     }
   }
 }

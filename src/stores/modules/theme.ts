@@ -1,9 +1,8 @@
 /**
  * 主题管理 Store - 极简版
  */
-import type { GlobalThemeOverrides } from 'naive-ui'
-import { darkTheme } from 'naive-ui'
-import { createLightTheme, createDarkTheme } from '@/settings/naiveui-theme'
+import { createNaiveTheme } from '@/settings/naiveui-theme'
+import { darkTheme, type GlobalThemeOverrides } from 'naive-ui'
 
 export const useThemeStore = defineStore(
   'theme',
@@ -13,9 +12,13 @@ export const useThemeStore = defineStore(
 
     // NaiveUI 主题配置
     const naiveTheme = computed(() => (isDark.value ? darkTheme : null))
-    const themeOverrides = computed<GlobalThemeOverrides>(() =>
-      isDark.value ? createDarkTheme() : createLightTheme()
-    )
+
+    // 主题覆盖配置（亮色和暗色都使用相同的颜色变量）
+    const themeOverrides = computed<GlobalThemeOverrides>(() => {
+      // 显式依赖 isDark 以触发重新计算
+      void isDark.value
+      return createNaiveTheme()
+    })
 
     // 切换主题（带 300ms 过渡动画）
     function toggleTheme() {
