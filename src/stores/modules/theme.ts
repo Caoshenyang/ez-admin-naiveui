@@ -1,11 +1,5 @@
 /**
- * 主题管理 Store
- *
- * 核心功能：
- * - 双态主题模式（light/dark）
- * - 平滑的过渡动画（300ms）
- * - 持久化到 localStorage
- * - 防闪烁初始化（index.html 预加载脚本）
+ * 主题管理 Store - 极简版
  */
 import type { GlobalThemeOverrides } from 'naive-ui'
 import { darkTheme } from 'naive-ui'
@@ -14,71 +8,25 @@ import { createLightTheme, createDarkTheme } from '@/settings/naiveui-theme'
 export const useThemeStore = defineStore(
   'theme',
   () => {
-    // ========== State ==========
-    const isDark = ref<boolean>(false)
+    // 直接从 DOM 读取初始状态，与 index.html 预加载脚本保持一致
+    const isDark = ref(document.documentElement.classList.contains('dark'))
 
-    // ========== Computed ==========
+    // NaiveUI 主题配置
     const naiveTheme = computed(() => (isDark.value ? darkTheme : null))
+    const themeOverrides = computed<GlobalThemeOverrides>(() =>
+      isDark.value ? createDarkTheme() : createLightTheme()
+    )
 
-    const themeOverrides = computed<GlobalThemeOverrides>(() => {
-      return isDark.value ? createDarkTheme() : createLightTheme()
-    })
-
-    // ========== Internal Methods ==========
-    /**
-     * 应用主题到 DOM（带过渡动画）
-     */
-    function applyThemeToDOM() {
-      const html = document.documentElement
-
-      // 添加过渡类
-      html.classList.add('theme-transitioning')
-
-      // 切换 dark 类
-      if (isDark.value) {
-        html.classList.add('dark')
-      } else {
-        html.classList.remove('dark')
-      }
-
-      // 300ms 后移除过渡类
-      setTimeout(() => {
-        html.classList.remove('theme-transitioning')
-      }, 300)
-    }
-
-    // ========== Public Actions ==========
-    /**
-     * 切换主题（light ↔ dark）
-     */
+    // 切换主题（带 300ms 过渡动画）
     function toggleTheme() {
       isDark.value = !isDark.value
-      applyThemeToDOM()
+      const html = document.documentElement
+      html.classList.add('theme-transitioning')
+      html.classList.toggle('dark', isDark.value)
+      setTimeout(() => html.classList.remove('theme-transitioning'), 300)
     }
 
-    /**
-     * 设置主题模式
-     */
-    function setTheme(dark: boolean) {
-      if (isDark.value !== dark) {
-        isDark.value = dark
-        applyThemeToDOM()
-      }
-    }
-
-    // ========== Return ==========
-    return {
-      // State
-      isDark,
-
-      // Computed
-      naiveTheme,
-      themeOverrides,
-
-      // Actions
-      toggleTheme,
-      setTheme
-    }
+    return { isDark, naiveTheme, themeOverrides, toggleTheme }
   },
   {
     persist: {

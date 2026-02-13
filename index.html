@@ -9,22 +9,8 @@
     <!-- ========== 主题预加载脚本 ========== -->
     <!-- 在页面渲染前执行，防止首次加载闪烁 -->
     <script>
-      (function() {
-        try {
-          // 读取用户选择
-          const themeStore = localStorage.getItem('theme-store')
-          if (themeStore) {
-            const { isDark } = JSON.parse(themeStore)
-
-            // 在 CSS 加载前添加 dark 类
-            if (isDark) {
-              document.documentElement.classList.add('dark')
-            }
-          }
-        } catch (e) {
-          console.error('Failed to restore theme:', e)
-        }
-      })()
+      const isDark = JSON.parse(localStorage.getItem('theme-store') || '{}')?.isDark
+      if (isDark) document.documentElement.classList.add('dark')
     </script>
   </head>
   <body>
