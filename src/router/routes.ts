@@ -28,16 +28,6 @@ export const constantRoutes: RouteRecordRaw[] = [
           title: '首页',
           affix: true
         }
-      },
-      // 主题测试页面
-      {
-        path: 'theme-test',
-        name: 'ThemeTest',
-        component: () => import('@/views/examples/ThemeTestView.vue'),
-        meta: {
-          title: '主题测试',
-          hidden: false
-        }
       }
     ]
   },

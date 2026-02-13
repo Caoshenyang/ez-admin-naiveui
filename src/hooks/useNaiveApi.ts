@@ -1,16 +1,29 @@
 /**
  * NaiveUI 离散式 API 封装
- * 使用 createDiscreteApi 创建独立的消息、对话框等组件
- * 无需在 Provider 内部使用，可在任何地方调用
  *
- * 主题说明：
- * 离散式 API 会自动继承全局 n-config-provider 的主题配置
- * 因此无需在此处手动指定主题，避免模块加载时 CSS 变量未就绪的问题
+ * 主题支持：
+ * - 使用 createDiscreteApi 创建独立的消息、对话框等组件
+ * - 复用 naiveui-theme.ts 的完整主题配置
+ * - 支持亮色/暗色模式自动切换
  */
-import { createDiscreteApi } from 'naive-ui'
+import { computed } from 'vue'
+import { createDiscreteApi, darkTheme } from 'naive-ui'
+import { createNaiveTheme } from '@/settings/naiveui-theme'
 
 /**
- * 创建离散式 API（自动继承全局主题）
+ * 创建响应式的主题配置
+ * 直接复用 naiveui-theme.ts 的配置
+ */
+const themeConfig = computed(() => {
+  const isDark = document.documentElement.classList.contains('dark')
+  return {
+    theme: isDark ? darkTheme : null,
+    themeOverrides: createNaiveTheme()
+  }
+})
+
+/**
+ * 创建离散式 API（带动态主题支持）
  */
 const {
   message: naiveMessage,
@@ -18,7 +31,9 @@ const {
   dialog,
   loadingBar,
   modal
-} = createDiscreteApi(['message', 'dialog', 'notification', 'loadingBar', 'modal'])
+} = createDiscreteApi(['message', 'dialog', 'notification', 'loadingBar', 'modal'], {
+  configProviderProps: themeConfig
+})
 
 /**
  * 环境检测
@@ -30,7 +45,7 @@ const isDevelopment = import.meta.env.MODE === 'development'
  */
 export const message = {
   /**
-   * 成功消息（开发环境自动打印日志）
+   * 成功消息（开发环境自动打印日志)
    */
   success: (content: string, duration = 3000) => {
     if (isDevelopment) {
@@ -40,7 +55,7 @@ export const message = {
   },
 
   /**
-   * 信息消息（开发环境自动打印日志）
+   * 信息消息（开发环境自动打印日志)
    */
   info: (content: string, duration = 3000) => {
     if (isDevelopment) {
@@ -50,7 +65,7 @@ export const message = {
   },
 
   /**
-   * 警告消息（开发环境自动打印日志）
+   * 警告消息（开发环境自动打印日志)
    */
   warning: (content: string, duration = 3000) => {
     if (isDevelopment) {
@@ -60,7 +75,7 @@ export const message = {
   },
 
   /**
-   * 错误消息（开发环境自动打印日志）
+   * 错误消息（开发环境自动打印日志)
    */
   error: (content: string, duration = 3000) => {
     if (isDevelopment) {
@@ -78,11 +93,11 @@ export const message = {
 }
 
 /**
- * 日志工具（与 message 集成）
+ * 日志工具（与 message 集成)
  */
 export const logger = {
   /**
-   * 普通日志（开发环境可见）
+   * 普通日志（开发环境可见)
    */
   log: (...args: unknown[]) => {
     if (isDevelopment) {
@@ -91,7 +106,7 @@ export const logger = {
   },
 
   /**
-   * 信息日志（开发环境可见）
+   * 信息日志（开发环境可见)
    */
   info: (...args: unknown[]) => {
     if (isDevelopment) {
@@ -136,7 +151,7 @@ export const logger = {
 export { notification, dialog, loadingBar, modal }
 
 /**
- * 默认导出（便于批量导入）
+ * 默认导出（便于批量导入)
  */
 export default {
   message,

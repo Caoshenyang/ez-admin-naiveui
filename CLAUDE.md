@@ -173,6 +173,13 @@
   - ✅ 持久化到 localStorage
   - ✅ 清理旧的主题代码（app.ts）
 
+- [x] **NaiveUI 企业级主题扩展** (2026-02-13)
+  - ✅ 扩展 CSS 变量定义（完整色阶 50-900、语义色、中性色、圆角、阴影）
+  - ✅ 扩展 NaiveUI 主题配置（15+ 种组件精细化控制）
+  - ✅ 更新 Tailwind 主题配置（颜色映射到 utility classes）
+  - ✅ 支持完整交互状态（hover、pressed、active、disabled）
+  - ✅ 满足 WCAG AA 对比度标准
+
 ### 待办任务
 
 - [ ] 完成工具函数库封装（storage、string、array、object、index）
