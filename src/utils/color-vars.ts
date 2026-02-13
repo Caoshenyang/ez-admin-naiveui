@@ -20,13 +20,9 @@
  * getColor('--primary-500') // '#5B6BF0'
  * getColor('--radius-md') // '6px'
  */
-export function getColor(
-	variable: string,
-	element: HTMLElement = document.documentElement
-): string {
-	const value = getComputedStyle(element).getPropertyValue(variable).trim()
-	console.log(`[getColor] ${variable} =`, value) // 调试日志
-	return value
+export function getColor(variable: string, element: HTMLElement = document.documentElement): string {
+  const value = getComputedStyle(element).getPropertyValue(variable).trim()
+  return value
 }
 
 /**
@@ -41,24 +37,20 @@ export function getColor(
  * // 有 -- 前缀
  * getDarkColor('--primary-500') // '#A78BFA'（读取 --primary-dark-500）
  */
-export function getDarkColor(
-	variable: string,
-	element: HTMLElement = document.documentElement
-): string {
-	// 移除 -- 前缀
-	const cleanVar = variable.replace(/^--/, '')
+export function getDarkColor(variable: string, element: HTMLElement = document.documentElement): string {
+  // 移除 -- 前缀
+  const cleanVar = variable.replace(/^--/, '')
 
-	// 分离 base 和 scale
-	// 'primary-500' → ['primary', '500']
-	// 'text-tertiary' → ['text', 'tertiary']
-	const parts = cleanVar.split('-')
-	const base = parts[0]  // 'primary' 或 'text'
-	const scale = parts.slice(1).join('-')  // '500' 或 'tertiary'
+  // 分离 base 和 scale
+  // 'primary-500' → ['primary', '500']
+  // 'text-tertiary' → ['text', 'tertiary']
+  const parts = cleanVar.split('-')
+  const base = parts[0] // 'primary' 或 'text'
+  const scale = parts.slice(1).join('-') // '500' 或 'tertiary'
 
-	// 构建中缀式暗色变量名：--{base}-dark-{scale}
-	const darkVariable = `--${base}-dark-${scale}`
+  // 构建中缀式暗色变量名：--{base}-dark-{scale}
+  const darkVariable = `--${base}-dark-${scale}`
 
-	const value = getComputedStyle(element).getPropertyValue(darkVariable).trim()
-	console.log(`[getDarkColor] ${variable} → ${darkVariable} =`, value) // 调试日志
-	return value
+  const value = getComputedStyle(element).getPropertyValue(darkVariable).trim()
+  return value
 }

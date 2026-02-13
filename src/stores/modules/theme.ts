@@ -13,20 +13,17 @@ export const useThemeStore = defineStore(
     // NaiveUI 主题配置
     const naiveTheme = computed(() => (isDark.value ? darkTheme : null))
 
-    // 主题覆盖配置（根据主题状态传递参数）
+    // 主题覆盖配置（依赖 isDark 以响应主题切换）
     const themeOverrides = computed<GlobalThemeOverrides>(() => {
-      // 显式依赖 isDark 以触发重新计算，并传递给 createNaiveTheme
-      void isDark.value
-      return createNaiveTheme(isDark.value)
+      // 显式依赖 isDark，触发 computed 重新计算
+      return createNaiveTheme(isDark.value ? 'dark' : 'light')
     })
 
     // 切换主题（带 300ms 过渡动画）
     function toggleTheme() {
       isDark.value = !isDark.value
       const html = document.documentElement
-      html.classList.add('theme-transitioning')
       html.classList.toggle('dark', isDark.value)
-      setTimeout(() => html.classList.remove('theme-transitioning'), 300)
     }
 
     return { isDark, naiveTheme, themeOverrides, toggleTheme }

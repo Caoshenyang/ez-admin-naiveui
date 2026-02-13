@@ -10,11 +10,17 @@
  * 使用方式：
  * - 在 App.vue 中通过 n-config-provider 应用主题
  * - 主题切换由 stores/modules/theme.ts 控制
+ * - 支持传入 mode 参数或自动判断当前主题状态
  */
 import type { GlobalThemeOverrides } from 'naive-ui'
 import { getColor, getDarkColor } from '@/utils/color-vars'
 
-export function createNaiveTheme(isDark: boolean): GlobalThemeOverrides {
+type ThemeMode = 'light' | 'dark'
+
+export function createNaiveTheme(mode?: ThemeMode): GlobalThemeOverrides {
+  // 优先使用传入的 mode，否则自动判断
+  const isDark = mode === 'dark' || document.documentElement.classList.contains('dark')
+
   return {
     common: {
       // 主色调（根据主题自动选择）
