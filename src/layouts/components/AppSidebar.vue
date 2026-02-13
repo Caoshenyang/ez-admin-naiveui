@@ -5,6 +5,7 @@ import { NMenu } from 'naive-ui'
 import type { MenuOption } from 'naive-ui'
 import { useLayoutStore } from '@/stores/modules/layout'
 import { useMenuStore } from '@/stores/modules/menu'
+import { MenuWidthEnum } from '@/enums/menu'
 import AppLogo from './AppLogo.vue'
 
 const router = useRouter()
@@ -60,7 +61,7 @@ const handleMenuUpdate = (key: string) => {
     <n-menu
       accordion
       :collapsed="isCollapsed"
-      :collapsed-width="64"
+      :collapsed-width="MenuWidthEnum.CLOSE"
       :collapsed-icon-size="22"
       :options="menuOptions"
       :value="activeKey"
