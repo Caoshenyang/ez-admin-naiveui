@@ -6,6 +6,7 @@ import AppSidebar from './components/AppSidebar.vue'
 import AppHeader from './components/AppHeader.vue'
 import AppWorkTab from './components/AppWorkTab.vue'
 import { useLayoutStore } from '@/stores/modules/layout'
+import { MenuWidthEnum } from '@/enums/menu'
 
 const route = useRoute()
 const layoutStore = useLayoutStore()
@@ -32,8 +33,8 @@ watch(
     <n-layout-sider
       bordered
       :collapsed="layoutStore.isSidebarCollapsed"
-      :collapsed-width="64"
-      :width="240"
+      :collapsed-width="MenuWidthEnum.CLOSE"
+      :width="MenuWidthEnum.OPEN"
       collapse-mode="width"
     >
       <app-sidebar />
