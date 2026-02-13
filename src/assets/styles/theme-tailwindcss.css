@@ -1,0 +1,6 @@
+@theme {
+  --color-primary-500: var(--primary-500);
+  --color-primary-dark-500: var(--primary-dark-500);
+}
+
+@custom-variant dark (&:where(.dark, .dark *));

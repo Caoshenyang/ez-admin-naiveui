@@ -209,7 +209,14 @@ const handleNotification = () => {
       <!-- 主题切换 -->
       <n-tooltip placement="bottom">
         <template #trigger>
-          <n-button quaternary circle size="small" :focusable="false" :aria-label="themeTooltip" @click="themeStore.toggleTheme">
+          <n-button
+            quaternary
+            circle
+            size="small"
+            :focusable="false"
+            :aria-label="themeTooltip"
+            @click="themeStore.toggleTheme"
+          >
             <template #icon>
               <n-icon>
                 <component :is="themeIcon" />
