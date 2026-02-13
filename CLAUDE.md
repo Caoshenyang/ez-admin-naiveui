@@ -180,6 +180,16 @@
   - ✅ 支持完整交互状态（hover、pressed、active、disabled）
   - ✅ 满足 WCAG AA 对比度标准
 
+- [x] **主题架构重构 - 极简化方案** (2026-02-13)
+  - ✅ 简化 NaiveUI 主题配置（300+ 行 → 60 行，核心配置 ~40 行）
+  - ✅ 移除所有组件级配置，只保留 common 核心颜色
+  - ✅ 直接使用 CSS 变量引用（`var(--primary-500)`）
+  - ✅ 创建容器组件库（EzPage、EzCard、EzContainer、EzFlex、EzButtonGroup）
+  - ✅ 更新颜色系统使用指南（`docs/color-system-guide.md`）
+  - ✅ 创建容器组件使用示例（`src/views/ContainerComponentsExample.vue`）
+  - ✅ 确立技术栈分工：NaiveUI（交互组件）+ Tailwind（布局工具）+ 容器组件（封装）
+  - ✅ 验证架构方案：NaiveUI 主题为主，Tailwind 正常使用
+
 ### 待办任务
 
 - [ ] 完成工具函数库封装（storage、string、array、object、index）

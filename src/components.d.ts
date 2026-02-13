@@ -12,12 +12,17 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AppSetup: typeof import('./components/AppSetup.vue')['default']
+    EzButtonGroup: typeof import('./components/EzButtonGroup.vue')['default']
+    EzCard: typeof import('./components/EzCard.vue')['default']
+    EzContainer: typeof import('./components/EzContainer.vue')['default']
+    EzFlex: typeof import('./components/EzFlex.vue')['default']
     EzForm: typeof import('./components/EzForm.vue')['default']
     EzFormItemRenderer: typeof import('./components/form/EzFormItemRenderer.vue')['default']
     EzIcon: typeof import('./components/EzIcon.vue')['default']
     EzIconPicker: typeof import('./components/EzIconPicker.vue')['default']
     EzLoadingBar: typeof import('./components/EzLoadingBar.vue')['default']
     EzModal: typeof import('./components/EzModal.vue')['default']
+    EzPage: typeof import('./components/EzPage.vue')['default']
     EzTable: typeof import('./components/EzTable.vue')['default']
     EzTableColumnSetting: typeof import('./components/table/EzTableColumnSetting.vue')['default']
     EzTableToolbar: typeof import('./components/table/EzTableToolbar.vue')['default']

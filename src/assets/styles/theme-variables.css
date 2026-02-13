@@ -1,0 +1,79 @@
+/**
+ * 主题变量定义
+ *
+ * 命名规范（中缀式）：
+ * - 亮色模式：--{name}-{scale}，如 --primary-500
+ * - 暗色模式：--{name}-dark-{scale}，如 --primary-dark-500
+ * - 固定值：无需 dark 后缀，如 --success-500
+ *
+ * 使用方式：
+ * - CSS 中引用：var(--primary-500)
+ * - JS 运行时提取：getColor('--primary-500')
+ */
+
+:root {
+  /* ========== 主色调 ========== */
+
+  /* 亮色模式 */
+  --primary-400: #8B9BF5;
+  --primary-500: #5B6BF0;
+  --primary-600: #4A57D9;
+  --primary-700: #4338CA;
+
+  /* 暗色模式（中缀式 -dark） */
+  --primary-dark-400: #B4A5FA;
+  --primary-dark-500: #A78BFA;
+  --primary-dark-600: #C4B5FD;
+  --primary-dark-700: #DDD6FE;
+
+  /* ========== 语义色（固定值，不分亮暗） ========== */
+  --success-500: #10B981;
+  --success-600: #059669;
+  --success-700: #047857;
+  --warning-500: #F59E0B;
+  --warning-600: #D97706;
+  --warning-700: #B45309;
+  --error-500: #EF4444;
+  --error-600: #DC2626;
+  --error-700: #B91C1C;
+  --info-500: #3B82F6;
+  --info-600: #2563EB;
+  --info-700: #1D4ED8;
+
+  /* ========== 中性色（文字颜色） ========== */
+
+  /* 亮色模式 */
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-tertiary: #94A3B8;
+  --text-disabled: #CBD5E1;
+
+  /* 暗色模式（中缀式 -dark） */
+  --text-primary-dark: #F0F6FC;
+  --text-secondary-dark: #8B949E;
+  --text-tertiary-dark: #6E7681;
+  --text-disabled-dark: #484F58;
+
+  /* ========== 中性色（边框颜色） ========== */
+
+  /* 亮色模式 */
+  --border-default: #CBD5E1;
+  --border-light: #E2E8F0;
+  --border-dark: #94A3B8;
+
+  /* 暗色模式（中缀式 -dark） */
+  --border-default-dark: #484F58;
+  --border-light-dark: #30363D;
+  --border-dark-dark: #6E7681;
+
+  /* ========== 圆角系统 ========== */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+
+  /* ========== 阴影系统 ========== */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}

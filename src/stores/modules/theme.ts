@@ -13,11 +13,11 @@ export const useThemeStore = defineStore(
     // NaiveUI 主题配置
     const naiveTheme = computed(() => (isDark.value ? darkTheme : null))
 
-    // 主题覆盖配置（亮色和暗色都使用相同的颜色变量）
+    // 主题覆盖配置（根据主题状态传递参数）
     const themeOverrides = computed<GlobalThemeOverrides>(() => {
-      // 显式依赖 isDark 以触发重新计算
+      // 显式依赖 isDark 以触发重新计算，并传递给 createNaiveTheme
       void isDark.value
-      return createNaiveTheme()
+      return createNaiveTheme(isDark.value)
     })
 
     // 切换主题（带 300ms 过渡动画）
