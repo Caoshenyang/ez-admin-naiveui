@@ -15,7 +15,7 @@ import {
 } from '@vicons/ionicons5'
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@vicons/antd'
 import { useFullscreen } from '@vueuse/core'
-import { NLayoutHeader, NTooltip, NButton, NIcon, NSpace, NBadge, NDropdown, NAvatar, NEl } from 'naive-ui'
+import { NTooltip, NButton, NIcon, NSpace, NBadge, NDropdown, NAvatar } from 'naive-ui'
 import { useLayoutStore } from '@/stores/modules/layout'
 import { useUserStore } from '@/stores/modules/user'
 import { useAppStore } from '@/stores/modules/app'
@@ -127,10 +127,7 @@ const handleNotification = () => {
 </script>
 
 <template>
-  <n-layout-header
-    bordered
-    class="h-14 px-4 flex items-center justify-between bg-white border-b border-slate-200 shrink-0"
-  >
+  <div class="h-14 px-4 flex items-center justify-between bg-white border-b border-slate-200">
     <!-- 左侧：折叠按钮 + 刷新按钮 + 面包屑 -->
     <n-space :size="4" class="flex-1 min-w-0">
       <!-- 折叠按钮 -->
@@ -167,20 +164,19 @@ const handleNotification = () => {
 
     <!-- 右侧：功能按钮 -->
     <n-space :size="8" class="items-center">
-      <!-- 搜索框（Tailwind 响应式：平板及以上显示） -->
+      <!-- 搜索框 -->
       <n-space
         :size="8"
-        class="hidden md:flex h-8 px-3 text-slate-700 bg-slate-50 rounded-lg border border-slate-200 hover:border-slate-300 transition-colors cursor-pointer"
+        class="flex h-8 px-3 text-slate-700 bg-slate-50 rounded-lg border border-slate-200 hover:border-slate-300 transition-colors cursor-pointer"
         @click="handleSearch"
       >
         <n-icon class="text-slate-400 opacity-60">
           <SearchOutline />
         </n-icon>
-        <n-el
-          tag="input"
+        <input
           type="text"
           placeholder="搜索..."
-          class="bg-transparent border-none outline-none text-sm placeholder-slate-400 w-32 lg:w-40"
+          class="bg-transparent border-none outline-none text-sm placeholder-slate-400 w-40"
           readonly
         />
       </n-space>
@@ -234,11 +230,11 @@ const handleNotification = () => {
           <n-avatar v-else round :size="28" class="bg-blue-600">
             {{ username.charAt(0).toUpperCase() }}
           </n-avatar>
-          <n-el tag="span" class="text-sm font-medium hidden lg:block">
+          <span class="text-sm font-medium">
             {{ username }}
-          </n-el>
+          </span>
         </n-space>
       </n-dropdown>
     </n-space>
-  </n-layout-header>
+  </div>
 </template>

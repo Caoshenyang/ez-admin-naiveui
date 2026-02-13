@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, watch, h } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { NDropdown, NButton, NIcon, NSpace, NEl } from 'naive-ui'
+import { NDropdown, NButton, NIcon, NSpace } from 'naive-ui'
 import type { DropdownProps } from 'naive-ui'
 import {
   CloseOutlined,
@@ -184,7 +184,7 @@ const getTabClass = (isActive: boolean) => {
 </script>
 
 <template>
-  <n-el v-if="showTabs" tag="div" class="h-10 flex items-center px-2 shrink-0 border-b border-slate-200">
+  <div v-if="showTabs" class="h-10 flex items-center px-2 shrink-0 border-b border-slate-200">
     <!-- 标签项列表 -->
     <n-space :size="4" class="flex-1 overflow-hidden">
       <n-dropdown
@@ -195,16 +195,16 @@ const getTabClass = (isActive: boolean) => {
         placement="bottom-start"
         @select="(action: string) => handleContextMenuSelect(tab.key, action)"
       >
-        <n-el tag="div" :class="getTabClass(activeKey === tab.key)" @click="handleTabClick(tab.key)">
-          <n-el tag="span" class="whitespace-nowrap">{{ tab.label }}</n-el>
+        <div :class="getTabClass(activeKey === tab.key)" @click="handleTabClick(tab.key)">
+          <span class="whitespace-nowrap">{{ tab.label }}</span>
           <button
             v-if="tab.closable"
             class="w-4 h-4 rounded-full hover:bg-red-100 flex items-center justify-center opacity-0 group-hover/tab:opacity-100 transition-opacity"
             @click.stop="handleClose(tab.key)"
           >
-            <n-el tag="span" class="text-slate-400 opacity-60 hover:text-red-500 text-xs">×</n-el>
+            <span class="text-slate-400 opacity-60 hover:text-red-500 text-xs">×</span>
           </button>
-        </n-el>
+        </div>
       </n-dropdown>
     </n-space>
 
@@ -220,6 +220,6 @@ const getTabClass = (isActive: boolean) => {
         </n-button>
       </n-dropdown>
     </n-space>
-  </n-el>
+  </div>
 </template>
 

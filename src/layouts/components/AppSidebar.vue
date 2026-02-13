@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { NLayoutSider, NMenu } from 'naive-ui'
+import { NMenu } from 'naive-ui'
 import type { MenuOption } from 'naive-ui'
 import { useLayoutStore } from '@/stores/modules/layout'
 import { useMenuStore } from '@/stores/modules/menu'
@@ -52,11 +52,11 @@ const handleMenuUpdate = (key: string) => {
 </script>
 
 <template>
-  <n-layout-sider bordered :collapsed="isCollapsed" :collapsed-width="64" :width="240" collapse-mode="width">
+  <div class="flex flex-col h-full">
     <!-- Logo 区域 -->
     <app-logo />
 
-    <!-- 菜单区域（NaiveUI NMenu + Tailwind 样式） -->
+    <!-- 菜单区域 -->
     <n-menu
       accordion
       :collapsed="isCollapsed"
@@ -66,5 +66,5 @@ const handleMenuUpdate = (key: string) => {
       :value="activeKey"
       @update:value="handleMenuUpdate"
     />
-  </n-layout-sider>
+  </div>
 </template>

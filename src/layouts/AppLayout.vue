@@ -1,32 +1,14 @@
 <script setup lang="ts">
-import { watch, computed } from 'vue'
+import { watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { NLayout, NLayoutContent, NDrawer } from 'naive-ui'
+import { NLayout, NLayoutSider, NLayoutHeader, NLayoutContent } from 'naive-ui'
 import AppSidebar from './components/AppSidebar.vue'
 import AppHeader from './components/AppHeader.vue'
 import AppWorkTab from './components/AppWorkTab.vue'
 import { useLayoutStore } from '@/stores/modules/layout'
-import { useResize } from '@/composables/useResize'
 
 const route = useRoute()
 const layoutStore = useLayoutStore()
-
-// 移动端侧边栏状态
-const mobileSidebarOpen = computed({
-  get: () => layoutStore.mobileSidebarOpen,
-  set: (val) => layoutStore.setMobileSidebarOpen(val)
-})
-
-// 响应式处理（使用 composable）
-useResize(() => {
-  const width = window.innerWidth
-  if (width < 768) {
-    layoutStore.setDevice('mobile')
-    layoutStore.setSidebarCollapsed(true)
-  } else {
-    layoutStore.setDevice('desktop')
-  }
-})
 
 // 监听路由变化，更新菜单状态
 watch(
@@ -45,41 +27,45 @@ watch(
 </script>
 
 <template>
-  <div class="h-screen w-screen overflow-hidden bg-page-bg">
-    <n-layout has-sider class="h-full w-full">
-      <!-- 侧边栏（桌面端固定显示） -->
-      <app-sidebar class="hidden md:block shrink-0" />
-
-      <!-- 主体区域 -->
-      <div class="flex flex-col h-full overflow-hidden flex-1 min-w-0">
-        <!-- 顶部导航 -->
-        <app-header />
-
-        <!-- 标签页 -->
-        <app-work-tab />
-
-        <!-- 内容区域 -->
-        <n-layout-content :native-scrollbar="false" class="flex-1">
-          <div class="p-6 min-h-full">
-            <router-view v-slot="{ Component, route: routeMeta }">
-              <transition name="fade-slide" mode="out-in">
-                <component :is="Component" :key="routeMeta.path" />
-              </transition>
-            </router-view>
-          </div>
-        </n-layout-content>
-      </div>
-    </n-layout>
-
-    <!-- 移动端抽屉式侧边栏 -->
-    <n-drawer v-model:show="mobileSidebarOpen" :width="240" placement="left" class="md:hidden">
+  <n-layout has-sider class="h-screen">
+    <!-- 侧边栏 -->
+    <n-layout-sider
+      bordered
+      :collapsed="layoutStore.isSidebarCollapsed"
+      :collapsed-width="64"
+      :width="240"
+      collapse-mode="width"
+    >
       <app-sidebar />
-    </n-drawer>
-  </div>
+    </n-layout-sider>
+
+    <!-- 主体区域 -->
+    <div class="flex flex-col flex-1 min-w-0 overflow-hidden">
+      <!-- 顶部导航 -->
+      <n-layout-header bordered class="shrink-0">
+        <app-header />
+      </n-layout-header>
+
+      <!-- 标签页 -->
+      <n-layout-header bordered class="shrink-0">
+        <app-work-tab />
+      </n-layout-header>
+
+      <!-- 内容区域 -->
+      <n-layout-content :native-scrollbar="false" class="flex-1 overflow-hidden">
+        <div class="h-full overflow-auto p-6">
+          <router-view v-slot="{ Component }">
+            <transition name="fade-slide" mode="out-in">
+              <component :is="Component" :key="route.path" />
+            </transition>
+          </router-view>
+        </div>
+      </n-layout-content>
+    </div>
+  </n-layout>
 </template>
 
 <style scoped>
-/* 页面切换动画 - 已在 index.css 中定义，这里保留 scoped 以防未来需要 */
 .fade-slide-enter-active,
 .fade-slide-leave-active {
   transition: all 0.3s ease;
