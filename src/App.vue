@@ -1,22 +1,9 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import { zhCN, dateZhCN } from '@/settings/naiveui-locale'
-import { useAppStore } from '@/stores/modules/app'
+import { useThemeStore } from '@/stores/modules/theme'
 
-const appStore = useAppStore()
-
-// 初始化时同步主题状态到 HTML class（刷新页面后保持主题）
-watch(
-  () => appStore.isDark,
-  (isDark) => {
-    if (isDark) {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
-  },
-  { immediate: true } // 立即执行一次，确保刷新页面后状态正确
-)
+const themeStore = useThemeStore()
 
 // 全局 Loading 状态（预留接口，可用于特殊加载场景）
 const isGlobalLoading = ref(false)
@@ -25,8 +12,8 @@ const loadingText = ref('加载中...')
 
 <template>
   <n-config-provider
-    :theme="appStore.naiveTheme"
-    :theme-overrides="appStore.themeOverrides"
+    :theme="themeStore.naiveTheme"
+    :theme-overrides="themeStore.themeOverrides"
     :locale="zhCN"
     :date-locale="dateZhCN"
   >

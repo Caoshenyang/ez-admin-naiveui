@@ -161,6 +161,18 @@
   - ✅ 支持菜单状态持久化
   - ✅ 支持标签页系统（切换、关闭、右键菜单）
 
+- [x] **企业级暗夜模式系统** (2026-02-13)
+  - ✅ 创建独立主题 Store (`src/stores/modules/theme.ts`)
+  - ✅ 实现双态主题模式（light/dark）
+  - ✅ 创建 EzThemeToggle 组件 (`src/components/EzThemeToggle.vue`)
+  - ✅ 修复 NaiveUI 主题配置 bug（使用 --primary）
+  - ✅ 优化暗色主色：#A78BFA → #C4B5FD（满足 WCAG AA 标准）
+  - ✅ 添加 300ms 平滑过渡动画（CSS + DOM 类控制）
+  - ✅ 添加主题预加载脚本（index.html）
+  - ✅ 零闪烁初始化机制
+  - ✅ 持久化到 localStorage
+  - ✅ 清理旧的主题代码（app.ts）
+
 ### 待办任务
 
 - [ ] 完成工具函数库封装（storage、string、array、object、index）

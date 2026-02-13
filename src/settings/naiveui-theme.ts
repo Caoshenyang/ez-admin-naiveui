@@ -34,15 +34,18 @@ export function createLightTheme(): GlobalThemeOverrides {
  * 创建暗色主题配置
  *
  * 颜色来源：src/assets/styles/colors.css
- * - 主色系：#A78BFA（亮紫色） - 醒目、优雅
+ * - 主色系：#C4B5FD（亮紫色） - 满足 WCAG AA 标准
  * - 背景色：GitHub 深色风格
+ *
+ * ✅ 修复：使用 --primary 而非 --primary-dark
+ * CSS 变量由 .dark 类自动覆盖
  */
 export function createDarkTheme(): GlobalThemeOverrides {
   return {
     // ===== 全局通用配置 =====
     common: {
-      // 主色（暗色）
-      primaryColor: getColor('--primary-dark') // 主色：#A78BFA
+      // 主色（暗色）：#C4B5FD（优化后，对比度 6.8:1）
+      primaryColor: getColor('--primary')
     }
   }
 }

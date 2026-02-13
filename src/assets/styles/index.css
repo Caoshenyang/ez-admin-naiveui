@@ -28,3 +28,22 @@
   /* ----- 主色调（亮色模式） ----- */
   --color-primary-500: var(--primary);
 }
+
+/* ========== 主题过渡动画 ========== */
+/**
+ * 主题切换时的平滑过渡效果
+ *
+ * 使用方式：
+ * - 由 stores/modules/theme.ts 自动管理
+ * - 切换主题时添加 'theme-transitioning' 类到 html 元素
+ * - 300ms 后自动移除
+ */
+.theme-transitioning,
+.theme-transitioning * {
+  transition: background-color 300ms ease,
+              color 300ms ease,
+              border-color 300ms ease,
+              box-shadow 300ms ease,
+              fill 300ms ease,
+              stroke 300ms ease !important;
+}
