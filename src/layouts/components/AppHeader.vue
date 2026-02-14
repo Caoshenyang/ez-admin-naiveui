@@ -20,17 +20,13 @@ import { useLayoutStore } from '@/stores/modules/layout'
 import { useUserStore } from '@/stores/modules/user'
 import { useThemeStore } from '@/stores/modules/theme'
 import { dialog, message } from '@/hooks/useNaiveApi'
+import { renderIcon } from '@/utils/icon'
 import AppBreadcrumb from './AppBreadcrumb.vue'
 
 const router = useRouter()
 const layoutStore = useLayoutStore()
 const userStore = useUserStore()
 const themeStore = useThemeStore()
-
-// 图标渲染工具
-function renderIcon(icon: Component) {
-  return () => h(NIcon, null, { default: () => h(icon) })
-}
 
 // ========== 主题切换 ==========
 const themeIcon = computed(() => (themeStore.isDark ? MoonOutline : SunnyOutline))
@@ -141,9 +137,9 @@ const handleNotification = () => {
 </script>
 
 <template>
-  <n-space justify="space-between" class="h-14 px-4 flex items-center">
+  <n-space justify="space-between" class="flex h-14 items-center px-4">
     <!-- 左侧：折叠按钮 + 刷新按钮 + 面包屑 -->
-    <n-space justify="space-between" :size="4" class="flex-1 min-w-0 items-center">
+    <n-space justify="space-between" :size="4" class="min-w-0 flex-1 items-center">
       <!-- 折叠按钮 -->
       <n-button quaternary circle size="small" :focusable="false" @click="handleToggleSidebar">
         <template #icon>
@@ -154,9 +150,9 @@ const handleNotification = () => {
       </n-button>
 
       <!-- 刷新按钮 -->
-      <n-button quaternary circle size="small" :focusable="false" @click="handleRefresh">
+      <n-button quaternary circle size="small" :focusable="false" class="group" @click="handleRefresh">
         <template #icon>
-          <n-icon>
+          <n-icon class="group-hover:animate-rotate-180">
             <ReloadOutline />
           </n-icon>
         </template>
@@ -169,7 +165,7 @@ const handleNotification = () => {
     <n-space :size="12" class="items-center">
       <!-- 搜索框 -->
       <div
-        class="flex h-8 items-center gap-2 px-3 text-slate-500 bg-slate-100 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-700/50 transition-all cursor-pointer"
+        class="flex h-8 cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-slate-100 px-3 text-slate-500 transition-all hover:border-slate-300 hover:bg-slate-200 dark:border-slate-700 dark:bg-slate-800/50 dark:hover:border-slate-600 dark:hover:bg-slate-700/50"
         @click="handleSearch"
       >
         <n-icon size="16">
@@ -178,16 +174,16 @@ const handleNotification = () => {
         <input
           type="text"
           placeholder="搜索..."
-          class="bg-transparent border-none outline-none text-sm placeholder-slate-400 w-32"
+          class="w-32 border-none bg-transparent text-sm placeholder-slate-400 outline-none"
           readonly
         />
       </div>
 
       <!-- 通知按钮 -->
-      <n-button quaternary circle size="small" :focusable="false" @click="handleNotification">
+      <n-button quaternary circle size="small" :focusable="false" class="group" @click="handleNotification">
         <template #icon>
           <n-badge dot processing>
-            <n-icon>
+            <n-icon class="group-hover:animate-shake">
               <NotificationsOutline />
             </n-icon>
           </n-badge>
@@ -195,18 +191,18 @@ const handleNotification = () => {
       </n-button>
 
       <!-- 全屏切换 -->
-      <n-button quaternary circle size="small" :focusable="false" @click="toggleFullscreen">
+      <n-button quaternary circle size="small" :focusable="false" class="group" @click="toggleFullscreen">
         <template #icon>
-          <n-icon>
+          <n-icon :class="isFullscreen ? 'group-hover:animate-shrink' : 'group-hover:animate-expand'">
             <component :is="fullscreenIcon" />
           </n-icon>
         </template>
       </n-button>
 
       <!-- 主题切换 -->
-      <n-button quaternary circle size="small" :focusable="false" @click="themeStore.toggleTheme">
+      <n-button quaternary circle size="small" :focusable="false" class="group" @click="themeStore.toggleTheme">
         <template #icon>
-          <n-icon>
+          <n-icon class="group-hover:animate-move-up">
             <component :is="themeIcon" />
           </n-icon>
         </template>
@@ -221,13 +217,13 @@ const handleNotification = () => {
         :style="{ minWidth: '200px' }"
       >
         <div
-          class="flex items-center gap-2.5 px-2 py-1.5 cursor-pointer rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors duration-200"
+          class="flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 transition-colors duration-200 hover:bg-slate-100 dark:hover:bg-slate-700/50"
         >
           <n-avatar
             round
             :size="32"
             :src="avatar || undefined"
-            class="border-2 border-transparent hover:border-primary-500/30 transition-all duration-200"
+            class="hover:border-primary-500/30 border-2 border-transparent transition-all duration-200"
           >
             {{ !avatar ? username.charAt(0).toUpperCase() : '' }}
           </n-avatar>
