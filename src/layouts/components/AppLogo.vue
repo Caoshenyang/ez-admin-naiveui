@@ -12,16 +12,16 @@ function handleClick() {
 </script>
 
 <template>
-  <div class="h-15 p-10 flex items-center justify-center px-4 cursor-pointer" @click="handleClick">
+  <div class="flex h-15 cursor-pointer items-center justify-center p-4" @click="handleClick">
     <div
-      class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-primary-500 dark:bg-primary-dark-500 shadow-sm"
+      class="bg-primary-500 dark:bg-primary-dark-500 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg shadow-sm"
     >
-      <span class="text-white font-bold text-lg">E</span>
+      <span class="text-lg font-bold text-white">E</span>
     </div>
 
     <span
       v-show="!layoutStore.isSidebarCollapsed"
-      class="ml-2 text-xl font-bold text-primary dark:text-primary-dark font-display whitespace-nowrap"
+      class="text-primary dark:text-primary-dark font-display ml-2 text-xl font-bold whitespace-nowrap"
     >
       EZ Admin
     </span>
