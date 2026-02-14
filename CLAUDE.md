@@ -190,6 +190,29 @@
   - ✅ 确立技术栈分工：NaiveUI（交互组件）+ Tailwind（布局工具）+ 容器组件（封装）
   - ✅ 验证架构方案：NaiveUI 主题为主，Tailwind 正常使用
 
+- [x] **Utils 和 Composables 目录规范化重构** (2026-02-14)
+  - ✅ 目录重命名：`src/hooks` → `src/composables`（符合 Vue 官方规范）
+  - ✅ Utils 文件重命名：统一添加 `Utils` 后缀（7 个文件）
+    - `date.ts` → `dateUtils.ts`
+    - `storage.ts` → `storageUtils.ts`
+    - `validate.ts` → `validateUtils.ts`
+    - `icon.ts` → `iconUtils.ts`
+    - `route.ts` → `routeUtils.ts`
+    - `color-vars.ts` → `colorUtils.ts`
+    - `request.ts` → `requestUtils.ts`
+  - ✅ 修复 useNaiveApi.ts 内存泄漏：添加 `onUnmounted` 清理 MutationObserver
+  - ✅ 创建常用 composables（6 个）
+    - `useStorage.ts` - 响应式本地存储（useLocalStorage、useSessionStorage）
+    - `useDebounceFn.ts` - 防抖函数
+    - `useThrottleFn.ts` - 节流函数
+    - `useBreakpoints.ts` - 响应式断点
+    - `useClipboard.ts` - 剪贴板操作
+    - `useToggle.ts` - 布尔值切换
+  - ✅ 移除统一导出入口（删除 `src/utils/index.ts` 和 `src/composables/index.ts`）
+  - ✅ 更新所有导入语句：采用直接导入方式（`from '@/utils/dateUtils'`）
+  - ✅ 确立导入规范：永远从具体文件导入，不使用统一入口
+  - ✅ 架构清晰：utils（纯函数）与 composables（响应式逻辑）分离
+
 ### 待办任务
 
 - [ ] 完成工具函数库封装（storage、string、array、object、index）

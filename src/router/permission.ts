@@ -4,8 +4,8 @@
 import router from './index'
 import { useUserStore } from '@/stores/modules/user'
 import { useMenuStore } from '@/stores/modules/menu'
-import { loadingBar, message } from '@/hooks/useNaiveApi'
-import { convertMenusToRoutes, convertMenusToMenuOptions, buildMenuPathMap } from '@/utils/route'
+import { loadingBar, message } from '@/composables/useNaiveApi'
+import { convertMenusToRoutes, convertMenusToMenuOptions, buildMenuPathMap } from '@/utils/routeUtils'
 import { notFoundRoute } from './routes'
 
 // 白名单路由（不需要登录即可访问）

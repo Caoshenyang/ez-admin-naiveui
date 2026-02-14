@@ -13,7 +13,7 @@
  * - 支持传入 mode 参数或自动判断当前主题状态
  */
 import type { GlobalThemeOverrides } from 'naive-ui'
-import { getColor, getDarkColor } from '@/utils/color-vars'
+import { getColor, getDarkColor } from '@/utils/colorUtils'
 
 type ThemeMode = 'light' | 'dark'
 

@@ -1,7 +1,7 @@
 /**
  * 用户相关 API
  */
-import { request } from '@/utils/request'
+import { request } from '@/utils/requestUtils'
 import type { UserInfo } from '@/stores/types/user'
 import type { PageData, PageParams } from '@/types/api'
 

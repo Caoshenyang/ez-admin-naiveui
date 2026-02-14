@@ -3,7 +3,7 @@
  * 统一的请求拦截、响应拦截和错误处理
  */
 import { useUserStore } from '@/stores/modules/user'
-import { message } from '@/hooks/useNaiveApi'
+import { message } from '@/composables/useNaiveApi'
 import axios, {
   AxiosHeaders,
   type AxiosInstance,

@@ -1,7 +1,7 @@
 /**
  * 认证相关 API
  */
-import { request } from '@/utils/request'
+import { request } from '@/utils/requestUtils'
 import type { LoginReq, LoginVO, CurrentUserVO } from '@/stores/types/user'
 
 export const authApi = {

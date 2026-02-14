@@ -19,8 +19,8 @@ import { NButton, NIcon, NSpace, NBadge, NDropdown, NAvatar } from 'naive-ui'
 import { useLayoutStore } from '@/stores/modules/layout'
 import { useUserStore } from '@/stores/modules/user'
 import { useThemeStore } from '@/stores/modules/theme'
-import { dialog, message } from '@/hooks/useNaiveApi'
-import { renderIcon } from '@/utils/icon'
+import { dialog, message } from '@/composables/useNaiveApi'
+import { renderIcon } from '@/utils/iconUtils'
 import AppBreadcrumb from './AppBreadcrumb.vue'
 
 const router = useRouter()

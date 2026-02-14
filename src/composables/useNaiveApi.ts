@@ -5,7 +5,7 @@
  * - 使用 createDiscreteApi 创建独立的消息、对话框等组件
  * - 支持亮色/暗色模式实时切换
  */
-import { ref } from 'vue'
+import { ref, onUnmounted } from 'vue'
 import { createDiscreteApi, darkTheme } from 'naive-ui'
 import { createNaiveTheme } from '@/settings/naiveui-theme'
 
@@ -31,6 +31,13 @@ const observer = new MutationObserver(() => {
 observer.observe(document.documentElement, {
   attributes: true,
   attributeFilter: ['class']
+})
+
+/**
+ * 组件卸载时清理 MutationObserver，防止内存泄漏
+ */
+onUnmounted(() => {
+  observer.disconnect()
 })
 
 /**

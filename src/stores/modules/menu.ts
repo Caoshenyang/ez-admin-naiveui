@@ -7,7 +7,7 @@ import { ref, shallowRef, computed } from 'vue'
 import type { MenuOption } from 'naive-ui'
 import { h } from 'vue'
 import { Icon } from '@iconify/vue'
-import { localStorage } from '@/utils/storage'
+import { localStorage } from '@/utils/storageUtils'
 
 const CACHE_KEY = 'dynamic-menus'
 const CACHE_EXPIRE_KEY = 'dynamic-menus-expire'
