@@ -12,7 +12,7 @@ function handleClick() {
 </script>
 
 <template>
-  <div class="h-15 flex items-center justify-center px-4 cursor-pointer" @click="handleClick">
+  <div class="h-15 p-10 flex items-center justify-center px-4 cursor-pointer" @click="handleClick">
     <div
       class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-primary-500 dark:bg-primary-dark-500 shadow-sm"
     >

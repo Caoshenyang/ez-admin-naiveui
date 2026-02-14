@@ -4,21 +4,20 @@ import { useRouter } from 'vue-router'
 import {
   SearchOutline,
   NotificationsOutline,
-  PersonOutline,
   SettingsOutline,
   LogOutOutline,
   ExpandOutline,
   ContractOutline,
-  RefreshOutline,
+  ReloadOutline,
   SunnyOutline,
-  MoonOutline
+  MoonOutline,
+  PersonCircleOutline
 } from '@vicons/ionicons5'
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@vicons/antd'
 import { useFullscreen } from '@vueuse/core'
-import { NTooltip, NButton, NIcon, NSpace, NBadge, NDropdown, NAvatar } from 'naive-ui'
+import { NButton, NIcon, NSpace, NBadge, NDropdown, NAvatar } from 'naive-ui'
 import { useLayoutStore } from '@/stores/modules/layout'
 import { useUserStore } from '@/stores/modules/user'
-import { useAppStore } from '@/stores/modules/app'
 import { useThemeStore } from '@/stores/modules/theme'
 import { dialog, message } from '@/hooks/useNaiveApi'
 import AppBreadcrumb from './AppBreadcrumb.vue'
@@ -26,12 +25,15 @@ import AppBreadcrumb from './AppBreadcrumb.vue'
 const router = useRouter()
 const layoutStore = useLayoutStore()
 const userStore = useUserStore()
-const appStore = useAppStore()
 const themeStore = useThemeStore()
+
+// 图标渲染工具
+function renderIcon(icon: Component) {
+  return () => h(NIcon, null, { default: () => h(icon) })
+}
 
 // ========== 主题切换 ==========
 const themeIcon = computed(() => (themeStore.isDark ? MoonOutline : SunnyOutline))
-const themeTooltip = computed(() => (themeStore.isDark ? '切换到亮色模式' : '切换到暗色模式'))
 
 // 使用全屏功能（VueUse）
 const { isFullscreen, toggle: toggleFullscreen } = useFullscreen(document.documentElement)
@@ -50,24 +52,36 @@ const handleToggleSidebar = () => {
 // 用户下拉菜单选项
 const userDropdownOptions = computed(() => [
   {
-    label: '个人中心',
-    key: 'profile',
-    icon: () => h(PersonOutline)
+    key: 'header',
+    type: 'render',
+    render: () =>
+      h('div', { class: 'px-3 py-3' }, [
+        h('div', { class: 'flex items-center gap-3' }, [
+          h(NAvatar, {
+            round: true,
+            size: 'large',
+            src: avatar.value || undefined,
+            style: 'min-width: 40px;'
+          }),
+          h('div', { class: 'flex flex-col gap-0.5' }, [
+            h(
+              'div',
+              { class: 'text-sm font-semibold text-slate-900 dark:text-slate-100' },
+              username.value || '未知用户'
+            ),
+            h('div', { class: 'text-xs text-slate-500 dark:text-slate-400' }, '查看个人资料')
+          ])
+        ])
+      ])
   },
   {
-    label: '设置',
-    key: 'settings',
-    icon: () => h(SettingsOutline)
+    key: 'header-divider',
+    type: 'divider'
   },
-  {
-    type: 'divider',
-    key: 'divider'
-  },
-  {
-    label: '退出登录',
-    key: 'logout',
-    icon: () => h(LogOutOutline)
-  }
+  { label: '个人中心', key: 'profile', icon: renderIcon(PersonCircleOutline) },
+  { label: '设置', key: 'settings', icon: renderIcon(SettingsOutline) },
+  { type: 'divider', key: 'divider' },
+  { label: '退出登录', key: 'logout', icon: renderIcon(LogOutOutline) }
 ])
 
 // 处理用户下拉菜单点击
@@ -107,17 +121,17 @@ async function handleLogout() {
 const username = computed(() => userStore.username || 'Admin') // 用户名
 const avatar = computed(() => userStore.avatar || '') // 头像
 
-// 搜索功能（待实现）
-const handleSearch = () => {
-  console.log('Search')
-}
-
 // 刷新当前页面
 const handleRefresh = () => {
   // 强制组件重新加载（添加临时 query 参数触发路由变化）
   const route = router.currentRoute.value
   const query = { ...route.query, _t: Date.now() }
   router.replace({ query })
+}
+
+// 搜索功能（待实现）
+const handleSearch = () => {
+  console.log('Search')
 }
 
 // 通知功能（待实现）
@@ -127,59 +141,47 @@ const handleNotification = () => {
 </script>
 
 <template>
-  <div class="h-14 px-4 flex items-center justify-between bg-white border-b border-slate-200">
+  <n-space justify="space-between" class="h-14 px-4 flex items-center">
     <!-- 左侧：折叠按钮 + 刷新按钮 + 面包屑 -->
-    <n-space :size="4" class="flex-1 min-w-0">
+    <n-space justify="space-between" :size="4" class="flex-1 min-w-0 items-center">
       <!-- 折叠按钮 -->
-      <n-tooltip placement="bottom">
-        <template #trigger>
-          <n-button quaternary circle size="small" :focusable="false" @click="handleToggleSidebar">
-            <template #icon>
-              <n-icon>
-                <component :is="sidebarToggleIcon" />
-              </n-icon>
-            </template>
-          </n-button>
+      <n-button quaternary circle size="small" :focusable="false" @click="handleToggleSidebar">
+        <template #icon>
+          <n-icon>
+            <component :is="sidebarToggleIcon" />
+          </n-icon>
         </template>
-        {{ layoutStore.isSidebarCollapsed ? '展开侧边栏' : '折叠侧边栏' }}
-      </n-tooltip>
+      </n-button>
 
       <!-- 刷新按钮 -->
-      <n-tooltip placement="bottom">
-        <template #trigger>
-          <n-button quaternary circle size="small" :focusable="false" @click="handleRefresh">
-            <template #icon>
-              <n-icon>
-                <RefreshOutline />
-              </n-icon>
-            </template>
-          </n-button>
+      <n-button quaternary circle size="small" :focusable="false" @click="handleRefresh">
+        <template #icon>
+          <n-icon>
+            <ReloadOutline />
+          </n-icon>
         </template>
-        刷新当前页面
-      </n-tooltip>
-
+      </n-button>
       <!-- 面包屑 -->
       <app-breadcrumb />
     </n-space>
 
     <!-- 右侧：功能按钮 -->
-    <n-space :size="8" class="items-center">
+    <n-space :size="12" class="items-center">
       <!-- 搜索框 -->
-      <n-space
-        :size="8"
-        class="flex h-8 px-3 text-slate-700 bg-slate-50 rounded-lg border border-slate-200 hover:border-slate-300 transition-colors cursor-pointer"
+      <div
+        class="flex h-8 items-center gap-2 px-3 text-slate-500 bg-slate-100 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-700/50 transition-all cursor-pointer"
         @click="handleSearch"
       >
-        <n-icon class="text-slate-400 opacity-60">
+        <n-icon size="16">
           <SearchOutline />
         </n-icon>
         <input
           type="text"
           placeholder="搜索..."
-          class="bg-transparent border-none outline-none text-sm placeholder-slate-400 w-40"
+          class="bg-transparent border-none outline-none text-sm placeholder-slate-400 w-32"
           readonly
         />
-      </n-space>
+      </div>
 
       <!-- 通知按钮 -->
       <n-button quaternary circle size="small" :focusable="false" @click="handleNotification">
@@ -193,55 +195,47 @@ const handleNotification = () => {
       </n-button>
 
       <!-- 全屏切换 -->
-      <n-tooltip placement="bottom">
-        <template #trigger>
-          <n-button quaternary circle size="small" :focusable="false" @click="toggleFullscreen">
-            <template #icon>
-              <n-icon>
-                <component :is="fullscreenIcon" />
-              </n-icon>
-            </template>
-          </n-button>
+      <n-button quaternary circle size="small" :focusable="false" @click="toggleFullscreen">
+        <template #icon>
+          <n-icon>
+            <component :is="fullscreenIcon" />
+          </n-icon>
         </template>
-        {{ isFullscreen ? '退出全屏' : '全屏' }}
-      </n-tooltip>
+      </n-button>
 
       <!-- 主题切换 -->
-      <n-tooltip placement="bottom">
-        <template #trigger>
-          <n-button
-            quaternary
-            circle
-            size="small"
-            :focusable="false"
-            :aria-label="themeTooltip"
-            @click="themeStore.toggleTheme"
-          >
-            <template #icon>
-              <n-icon>
-                <component :is="themeIcon" />
-              </n-icon>
-            </template>
-          </n-button>
+      <n-button quaternary circle size="small" :focusable="false" @click="themeStore.toggleTheme">
+        <template #icon>
+          <n-icon>
+            <component :is="themeIcon" />
+          </n-icon>
         </template>
-        {{ themeTooltip }}
-      </n-tooltip>
+      </n-button>
 
       <!-- 用户下拉菜单 -->
-      <n-dropdown :options="userDropdownOptions" @select="handleUserDropdownClick">
-        <n-space
-          :size="8"
-          class="h-8 px-3 text-slate-700 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors"
+      <n-dropdown
+        :options="userDropdownOptions"
+        @select="handleUserDropdownClick"
+        trigger="click"
+        placement="bottom-end"
+        :style="{ minWidth: '200px' }"
+      >
+        <div
+          class="flex items-center gap-2.5 px-2 py-1.5 cursor-pointer rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors duration-200"
         >
-          <n-avatar v-if="avatar" round :size="28" :src="avatar" />
-          <n-avatar v-else round :size="28" class="bg-blue-600">
-            {{ username.charAt(0).toUpperCase() }}
+          <n-avatar
+            round
+            :size="32"
+            :src="avatar || undefined"
+            class="border-2 border-transparent hover:border-primary-500/30 transition-all duration-200"
+          >
+            {{ !avatar ? username.charAt(0).toUpperCase() : '' }}
           </n-avatar>
-          <span class="text-sm font-medium">
+          <span class="text-sm font-medium text-slate-700 dark:text-slate-200">
             {{ username }}
           </span>
-        </n-space>
+        </div>
       </n-dropdown>
     </n-space>
-  </div>
+  </n-space>
 </template>
