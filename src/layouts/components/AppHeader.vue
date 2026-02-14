@@ -152,7 +152,7 @@ const handleNotification = () => {
       <!-- 刷新按钮 -->
       <n-button quaternary circle size="small" :focusable="false" class="group" @click="handleRefresh">
         <template #icon>
-          <n-icon class="group-hover:animate-rotate-180">
+          <n-icon class="group-hover:animate-rotate-360">
             <ReloadOutline />
           </n-icon>
         </template>
