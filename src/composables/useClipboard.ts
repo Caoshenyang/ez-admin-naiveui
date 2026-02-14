@@ -45,7 +45,7 @@ export function useClipboard() {
       text.value = value
       message.success('复制成功')
       return true
-    } catch (error) {
+    } catch {
       message.error('复制失败')
       return false
     } finally {
